@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { AppState, User, Case, Approval, Decision } from "@/types";
 
 export interface ToastItem {
@@ -21,7 +22,9 @@ interface ChamberContextType {
   isGuideOpen: boolean;
   activeModal: { name: string; payload?: any } | null;
   toasts: ToastItem[];
+  theme: "system" | "light" | "dark";
   // Actions
+  setTheme: (theme: "system" | "light" | "dark") => void;
   setActivePage: (page: string) => void;
   setSelectedCaseId: (id: string | null) => void;
   setSearchQuery: (q: string) => void;
@@ -31,8 +34,17 @@ interface ChamberContextType {
   closeModal: () => void;
   addToast: (message: string, type?: "success" | "error" | "info") => void;
   login: (email: string, pass: string) => Promise<boolean>;
+  signupLawyer: (data: {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+    barEnrollment: string;
+    chamberName?: string;
+    primaryCourt?: string;
+  }) => Promise<boolean>;
   logout: () => void;
-  refreshState: () => Promise<void>;
+  refreshState: (userOverride?: User | null, tokenOverride?: string | null) => Promise<void>;
   sendOps: (ops: any[]) => Promise<boolean>;
   submitApproval: (item: any) => Promise<boolean>;
   decideApproval: (id: string, decision: "approve" | "reject") => Promise<boolean>;
@@ -44,6 +56,7 @@ interface ChamberContextType {
 const ChamberContext = createContext<ChamberContextType | null>(null);
 
 export function ChamberProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [state, setState] = useState<AppState | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -55,6 +68,42 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<{ name: string; payload?: any } | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [theme, setThemeState] = useState<"system" | "light" | "dark">("system");
+
+  // Apply Theme Helper
+  const applyTheme = useCallback((targetTheme: "system" | "light" | "dark") => {
+    if (typeof window === "undefined") return;
+    const prefDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = targetTheme === "dark" || (targetTheme === "system" && prefDark);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  // Sync theme on mount & listen to system changes
+  useEffect(() => {
+    const saved = (localStorage.getItem("counselbook_theme") as "system" | "light" | "dark") || "system";
+    setThemeState(saved);
+    applyTheme(saved);
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      const current = (localStorage.getItem("counselbook_theme") as "system" | "light" | "dark") || "system";
+      if (current === "system") {
+        applyTheme("system");
+      }
+    };
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
+  }, [applyTheme]);
+
+  const setTheme = (t: "system" | "light" | "dark") => {
+    setThemeState(t);
+    localStorage.setItem("counselbook_theme", t);
+    applyTheme(t);
+  };
 
   const addToast = useCallback((message: string, type: "success" | "error" | "info" = "success") => {
     const id = "t-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
@@ -64,35 +113,53 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     }, 3500);
   }, []);
 
-  const refreshState = useCallback(async () => {
-    try {
-      const res = await fetch("/api/state", { cache: "no-store" });
-      if (res.ok) {
-        const data = await res.json();
-        setState(data.state);
+  const refreshState = useCallback(
+    async (userOverride?: User | null, tokenOverride?: string | null) => {
+      try {
+        const u = userOverride !== undefined ? userOverride : currentUser;
+        const t = tokenOverride !== undefined ? tokenOverride : token;
+
+        const headers: Record<string, string> = {};
+        if (t) headers["Authorization"] = `Bearer ${t}`;
+        if (u) {
+          headers["x-user-id"] = u.id;
+          headers["x-user-role"] = u.role;
+          if (u.lawyerId) headers["x-user-lawyer-id"] = u.lawyerId;
+        }
+
+        const res = await fetch("/api/state", { cache: "no-store", headers });
+        if (res.ok) {
+          const data = await res.json();
+          setState(data.state);
+        }
+      } catch (err: any) {
+        console.warn("Could not fetch state:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err: any) {
-      console.warn("Could not fetch state:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [currentUser, token]
+  );
 
   // Initial load: restore session
   useEffect(() => {
     const savedToken = localStorage.getItem("counselbook_token");
     const savedUser = localStorage.getItem("counselbook_user");
+    let u: User | null = null;
+    let t: string | null = null;
     if (savedToken && savedUser) {
       try {
+        t = savedToken;
+        u = JSON.parse(savedUser);
         setToken(savedToken);
-        setCurrentUser(JSON.parse(savedUser));
+        setCurrentUser(u);
       } catch (e) {
         localStorage.removeItem("counselbook_token");
         localStorage.removeItem("counselbook_user");
       }
     }
-    refreshState();
-  }, [refreshState]);
+    refreshState(u, t);
+  }, []);
 
   const login = async (email: string, pass: string): Promise<boolean> => {
     try {
@@ -112,11 +179,51 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("counselbook_token", data.token);
       localStorage.setItem("counselbook_user", JSON.stringify(data.user));
       setActivePage("dashboard");
-      addToast(`Welcome back, ${data.user.name.split(" ")[0]}.`, "success");
-      await refreshState();
+      addToast(`Welcome, ${data.user.name.split(" ")[0]}. Signed in as ${data.user.role.toUpperCase()}.`, "success");
+      await refreshState(data.user, data.token);
+      if (data.user.role === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
       return true;
     } catch (err: any) {
       addToast(err.message || "Login error", "error");
+      return false;
+    }
+  };
+
+  const signupLawyer = async (formData: {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+    barEnrollment: string;
+    chamberName?: string;
+    primaryCourt?: string;
+  }): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        addToast(data.error || "Advocate registration failed", "error");
+        return false;
+      }
+      setToken(data.token);
+      setCurrentUser(data.user);
+      localStorage.setItem("counselbook_token", data.token);
+      localStorage.setItem("counselbook_user", JSON.stringify(data.user));
+      setActivePage("dashboard");
+      addToast(`Chamber created! Welcome to CounselBook, ${data.user.name}.`, "success");
+      await refreshState(data.user, data.token);
+      router.push("/dashboard");
+      return true;
+    } catch (err: any) {
+      addToast(err.message || "Registration error", "error");
       return false;
     }
   };
@@ -129,6 +236,8 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     setActivePage("dashboard");
     setSelectedCaseId(null);
     addToast("Signed out of CounselBook", "info");
+    refreshState(null, null);
+    router.push("/");
   };
 
   const sendOps = async (ops: any[]): Promise<boolean> => {
@@ -138,18 +247,23 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
         },
         body: JSON.stringify({ ops }),
       });
       const data = await res.json();
       if (!res.ok) {
-        addToast(data.error || "Failed to save changes", "error");
+        addToast(data.error || "Mutation rejected", "error");
         return false;
       }
-      setState(data.state);
+      if (data.state) {
+        setState(data.state);
+      } else {
+        await refreshState();
+      }
       return true;
     } catch (err: any) {
-      addToast(err.message || "Failed to apply operation", "error");
+      addToast(err.message || "Failed to submit operations", "error");
       return false;
     }
   };
@@ -161,27 +275,32 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
         },
-        body: JSON.stringify(item),
+        body: JSON.stringify({ item }),
       });
-      if (res.ok) {
-        await refreshState();
-        return true;
+      const data = await res.json();
+      if (!res.ok) {
+        addToast(data.error || "Submission failed", "error");
+        return false;
       }
-      return false;
+      addToast("Submitted for Senior Counsel verification", "info");
+      await refreshState();
+      return true;
     } catch (err: any) {
-      addToast(err.message || "Error submitting for approval", "error");
+      addToast(err.message || "Submission error", "error");
       return false;
     }
   };
 
   const decideApproval = async (id: string, decision: "approve" | "reject"): Promise<boolean> => {
     try {
-      const res = await fetch(`/api/approvals/${id}/decide`, {
+      const res = await fetch(`/api/approvals/${encodeURIComponent(id)}/decide`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
         },
         body: JSON.stringify({ decision }),
       });
@@ -190,16 +309,15 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         addToast(data.error || "Decision failed", "error");
         return false;
       }
-      setState(data.state);
-      addToast(
-        decision === "approve"
-          ? "Approved — modification applied to the court file."
-          : "Submission rejected.",
-        decision === "approve" ? "success" : "info"
-      );
+      addToast(decision === "approve" ? "Sign-off recorded & applied to docket" : "Submission returned to associate", "info");
+      if (data.state) {
+        setState(data.state);
+      } else {
+        await refreshState();
+      }
       return true;
     } catch (err: any) {
-      addToast(err.message || "Error deciding approval", "error");
+      addToast(err.message || "Decision error", "error");
       return false;
     }
   };
@@ -207,6 +325,11 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
   const openCase = (caseId: string) => {
     setSelectedCaseId(caseId);
     setActivePage("case-detail");
+    if (currentUser?.role === "admin") {
+      router.push(`/admin/cases/${encodeURIComponent(caseId)}`);
+    } else {
+      router.push(`/dashboard/cases/${encodeURIComponent(caseId)}`);
+    }
   };
 
   const openModal = (name: string, payload?: any) => {
@@ -222,14 +345,17 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/reset", {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
       const data = await res.json();
-      if (res.ok) {
-        setState(data.state);
-        addToast("Demo chamber data restored to clean state.", "success");
+      if (!res.ok) {
+        addToast(data.error || "Reset failed", "error");
+        return;
       }
+      addToast("Chamber database restored to default Indian court demo data", "success");
+      await refreshState();
     } catch (err: any) {
       addToast(err.message || "Reset failed", "error");
     }
@@ -237,19 +363,21 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
 
   const deleteUser = async (userId: string) => {
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/api/users/${encodeURIComponent(userId)}`, {
         method: "DELETE",
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
       const data = await res.json();
-      if (res.ok) {
-        setState(data.state);
-        addToast("User account removed.", "success");
+      if (!res.ok) {
+        addToast(data.error || "Failed to remove user", "error");
+        return;
       }
+      addToast("User account de-provisioned", "info");
+      await refreshState();
     } catch (err: any) {
-      addToast(err.message || "Delete failed", "error");
+      addToast(err.message || "Failed to delete user", "error");
     }
   };
 
@@ -267,6 +395,8 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         isGuideOpen,
         activeModal,
         toasts,
+        theme,
+        setTheme,
         setActivePage,
         setSelectedCaseId,
         setSearchQuery,
@@ -276,6 +406,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         closeModal,
         addToast,
         login,
+        signupLawyer,
         logout,
         refreshState,
         sendOps,
@@ -292,10 +423,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useChamber() {
-  const context = useContext(ChamberContext);
-  if (!context) {
-    throw new Error("useChamber must be used within a ChamberProvider");
-  }
-  return context;
+  const ctx = useContext(ChamberContext);
+  if (!ctx) throw new Error("useChamber must be used within ChamberProvider");
+  return ctx;
 }
-

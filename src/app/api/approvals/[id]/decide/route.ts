@@ -8,7 +8,9 @@ export async function POST(
 ) {
   try {
     const user = getAuthUser(req);
-    const userId = user?.id || "u-lawyer";
+    const userId = user?.id || req.headers.get("x-user-id") || "u-lawyer";
+    const userRole = user?.role || req.headers.get("x-user-role") || "lawyer";
+    const userLawyerId = req.headers.get("x-user-lawyer-id");
 
     const body = await req.json();
     const { decision } = body || {};
@@ -18,10 +20,13 @@ export async function POST(
     }
 
     await decideApproval(params.id, decision, userId);
-    const state = await getChamberState();
+    const state = await getChamberState({
+      id: userId,
+      role: userRole,
+      lawyerId: userLawyerId || undefined,
+    });
     return NextResponse.json({ state });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-

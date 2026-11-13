@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, XCircle, Clock, Check, X, ShieldAlert, ArrowRight, User } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Check, X, ShieldAlert, ArrowRight, User, FileCheck, Gavel } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function ApprovalsView() {
@@ -11,9 +11,29 @@ export function ApprovalsView() {
   if (!state || !currentUser) return null;
 
   const isLawyerOrAdmin = currentUser.role === "lawyer" || currentUser.role === "admin";
+
+  const myCases = state.cases.filter((c) => (c.lawyerId || "u-lawyer") === currentUser.id);
+  const myCaseIds = new Set(myCases.map((c) => c.id));
+  const myAssociates = state.users.filter((u) => u.role === "associate" && (u.lawyerId || "u-lawyer") === currentUser.id);
+  const myAssociateIds = new Set(myAssociates.map((u) => u.id));
+
   const approvals = currentUser.role === "associate"
     ? state.approvals.filter((a) => a.by === currentUser.id)
+    : currentUser.role === "lawyer"
+    ? state.approvals.filter((a) => {
+        const cId = a.payload?.caseId || a.payload?.case?.id;
+        return myCaseIds.has(cId) || myAssociateIds.has(a.by) || a.by === currentUser.id;
+      })
     : state.approvals;
+
+  const decided = currentUser.role === "associate"
+    ? state.decided.filter((d) => d.by === currentUser.id)
+    : currentUser.role === "lawyer"
+    ? state.decided.filter((d) => {
+        const cId = d.payload?.caseId || d.payload?.case?.id;
+        return myCaseIds.has(cId) || myAssociateIds.has(d.by) || d.by === currentUser.id;
+      })
+    : state.decided;
 
   const handleDecision = async (id: string, decision: "approve" | "reject") => {
     setDecidingId(id);
@@ -30,13 +50,13 @@ export function ApprovalsView() {
       return `Date: ${p.hearing?.date} · Purpose: ${p.hearing?.purpose}${p.hearing?.outcome ? ` — ${p.hearing.outcome}` : ""}`;
     }
     if (a.type === "addOrder") {
-      return `Order Title: "${p.order?.title}" dated ${p.order?.date}`;
+      return `Court Order: "${p.order?.title}" dated ${p.order?.date}`;
     }
     if (a.type === "setStatus") {
-      return `New Status: ${p.status}${p.stage ? ` (Stage: ${p.stage})` : ""}`;
+      return `Stage Transition: ${p.status}${p.stage ? ` (${p.stage})` : ""}`;
     }
     if (a.type === "addCase") {
-      return `New Suit: ${p.case?.caseNo} — ${p.case?.title}`;
+      return `Fresh Filing: ${p.case?.caseNo} — ${p.case?.title}`;
     }
     return JSON.stringify(p);
   };
@@ -47,132 +67,138 @@ export function ApprovalsView() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold font-display text-[#191817]">
-              {currentUser.role === "associate" ? "My Submissions in Review" : "Pending Associate Submissions"}
+            <h3 className="text-base font-bold font-cinzel text-slate-900 dark:text-white flex items-center gap-2">
+              <FileCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span>
+                {currentUser.role === "associate" ? "My Draft Submissions in Review" : "Advocate Verification Desk (Pending Review)"}
+              </span>
             </h3>
-            <p className="text-xs text-[#736e65]">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-serif italic mt-0.5">
               {currentUser.role === "associate"
-                ? "Changes will be applied to the case record once approved by the principal advocate."
-                : "Verify changes before they go on official judicial record."}
+                ? "Your draft hearing outcomes and orders will be applied to the judicial docket once signed off by Senior Counsel."
+                : "Verify and sanction junior associate draft entries before they alter official High Court and District Court records."}
             </p>
           </div>
-          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded bg-[#fcf5ec] text-[#7a491c] border border-[#ebd8c4]">
-            {approvals.length} pending
+          <span className="text-xs font-bold px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+            {approvals.length} Pending Sign-off
           </span>
         </div>
 
-        <div className="space-y-3">
-          {approvals.map((a) => {
-            const caseId = a.payload?.caseId || a.payload?.case?.id;
-            const relatedCase = caseId ? state.cases.find((c) => c.id === caseId) : null;
-            const isProcessing = decidingId === a.id;
-
-            return (
-              <div
-                key={a.id}
-                className="p-5 rounded-xl bg-white border border-[#e6e2d8] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors"
-              >
-                <div className="space-y-1.5 flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#c5a059]" />
-                    <h4 className="text-xs font-bold text-[#191817] truncate font-serif">{a.label}</h4>
-                    {relatedCase && (
-                      <button
-                        onClick={() => openCase(relatedCase.id)}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#f5f3ee] text-[#805e26] border border-[#e6e2d8] hover:bg-[#eae6dd]"
-                      >
-                        {relatedCase.caseNo}
-                      </button>
-                    )}
-                  </div>
-
-                  <p className="text-xs text-[#5e5a54] bg-[#faf8f5] p-2.5 rounded-lg border border-[#e8e4dc] font-mono text-[11px] leading-relaxed">
-                    {describePayload(a)}
-                  </p>
-
-                  <div className="flex items-center gap-2 text-[11px] text-[#736e65]">
-                    <User className="w-3.5 h-3.5 text-[#8c877e]" />
-                    <span>Submitted by <strong className="text-[#191817] font-medium">{a.byName}</strong></span>
-                    <span>·</span>
-                    <span className="font-mono">{new Date(a.ts).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}</span>
-                  </div>
-                </div>
-
-                {/* Actions for Lawyer / Admin */}
-                {isLawyerOrAdmin && (
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => handleDecision(a.id, "approve")}
-                      disabled={isProcessing}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#1b5e3a] hover:bg-[#154a2e] text-white text-xs font-semibold transition-colors disabled:opacity-50"
-                    >
-                      <Check className="w-3.5 h-3.5" /> Approve
-                    </button>
-                    <button
-                      onClick={() => handleDecision(a.id, "reject")}
-                      disabled={isProcessing}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#fef2f2] hover:bg-[#fee2e2] text-[#991b1b] border border-[#fecaca] text-xs font-semibold transition-colors disabled:opacity-50"
-                    >
-                      <X className="w-3.5 h-3.5" /> Reject
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
-          {approvals.length === 0 && (
-            <div className="p-8 text-center bg-white rounded-xl border border-[#e6e2d8] text-[#736e65] text-xs">
-              <CheckCircle2 className="w-7 h-7 mx-auto text-[#1b5e3a] mb-2" />
-              <p className="font-semibold text-[#191817]">Approval queue is clear</p>
-              <p className="text-[11px] text-[#736e65] mt-0.5">
-                New associate submissions will land here for verification.
-              </p>
+        <div className="space-y-3.5">
+          {approvals.length === 0 ? (
+            <div className="p-10 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-slate-500 dark:text-slate-400 shadow-sm">
+              <CheckCircle2 className="w-7 h-7 mx-auto mb-2 text-emerald-600 dark:text-emerald-400" />
+              <p className="text-sm font-semibold font-cinzel text-slate-900 dark:text-white">Verification desk is completely clear.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-serif italic mt-0.5">All junior associate drafts have been reviewed and sanctioned.</p>
             </div>
+          ) : (
+            approvals.map((a) => {
+              const caseId = a.payload?.caseId || a.payload?.case?.id;
+              const relatedCase = caseId ? state.cases.find((c) => c.id === caseId) : null;
+              const isProcessing = decidingId === a.id;
+
+              return (
+                <div
+                  key={a.id}
+                  className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors"
+                >
+                  <div className="space-y-2 flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                      <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate font-sans">{a.label}</h4>
+                      {relatedCase && (
+                        <button
+                          onClick={() => openCase(relatedCase.id)}
+                          className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:border-blue-500"
+                        >
+                          {relatedCase.caseNo}
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">
+                      {describePayload(a)}
+                    </p>
+
+                    <div className="flex items-center gap-2 text-[10.5px] text-slate-500 dark:text-slate-400">
+                      <User className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                      <span>Drafted by <strong className="text-slate-900 dark:text-white font-medium">{a.byName}</strong></span>
+                      <span>·</span>
+                      <span>{new Date(a.ts).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}</span>
+                    </div>
+                  </div>
+
+                  {isLawyerOrAdmin && (
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => handleDecision(a.id, "approve")}
+                        disabled={isProcessing}
+                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-xs font-semibold tracking-wider flex items-center gap-1.5 transition-all shadow-md shadow-blue-500/20 disabled:opacity-50"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Sanction &amp; Commit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDecision(a.id, "reject")}
+                        disabled={isProcessing}
+                        className="px-3 py-2 rounded-xl border border-rose-300 dark:border-rose-900/60 text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-semibold transition-colors disabled:opacity-50"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        <span>Reject Draft</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })
           )}
         </div>
       </div>
 
-      {/* Decision Audit Trail */}
+      {/* Decisions History Audit Log */}
       <div className="space-y-4">
-        <div>
-          <h3 className="text-base font-bold font-display text-[#191817]">Decision Audit Log</h3>
-          <p className="text-xs text-[#736e65]">Historical trail of approved and rejected changes</p>
-        </div>
+        <h3 className="text-base font-bold font-cinzel text-slate-900 dark:text-white">
+          Verification Log &amp; Sanctioned Submissions
+        </h3>
 
-        <div className="bg-white rounded-xl border border-[#e6e2d8] shadow-sm divide-y divide-[#f0ece4] overflow-hidden">
-          {state.decided.map((d) => (
-            <div key={d.id} className="p-4 flex items-center justify-between text-xs gap-4">
-              <div className="min-w-0">
-                <p className="font-semibold text-[#191817] truncate font-serif">{d.label}</p>
-                <p className="text-[11px] text-[#736e65] mt-0.5">
-                  Submitted by {d.byName} · Decided on{" "}
-                  <span className="font-mono">{new Date(d.decidedAt).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}</span>
-                </p>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-200 dark:divide-slate-800 overflow-hidden shadow-sm">
+          {decided.length === 0 ? (
+            <p className="p-8 text-center text-xs text-slate-500 dark:text-slate-400 font-serif italic">
+              No historical decisions recorded on this chamber ledger yet.
+            </p>
+          ) : (
+            decided.map((d) => (
+              <div key={d.id} className="p-4 flex items-center justify-between text-xs hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        d.status === "approved" ? "bg-emerald-500" : "bg-rose-500"
+                      }`}
+                    />
+                    <p className="font-semibold text-slate-900 dark:text-white truncate font-sans">{d.label}</p>
+                    <span
+                      className={`text-[9.5px] font-bold uppercase px-2 py-0.5 rounded-md ${
+                        d.status === "approved"
+                          ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40"
+                          : "bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/40"
+                      }`}
+                    >
+                      {d.status}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-serif italic">
+                    Drafted by {d.byName} · Reviewed by {state.users.find((u) => u.id === d.decidedBy)?.name || "Senior Counsel"}
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 flex-shrink-0 ml-4">
+                  {new Date(d.decidedAt).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}
+                </span>
               </div>
-
-              <div>
-                {d.status === "approved" ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-medium bg-[#edf6f0] text-[#1b5e3a] border border-[#cce4d4]">
-                    <CheckCircle2 className="w-3 h-3" /> Approved
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-medium bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]">
-                    <XCircle className="w-3 h-3" /> Rejected
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-
-          {state.decided.length === 0 && (
-            <div className="p-6 text-center text-[#736e65] text-xs">
-              No audit logs recorded yet.
-            </div>
+            ))
           )}
         </div>
       </div>
     </div>
   );
 }
-

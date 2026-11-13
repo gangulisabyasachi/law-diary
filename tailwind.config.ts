@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,61 +10,54 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: {
-          950: "#070d18",
-          900: "#0c1726",
-          850: "#111f33",
-          800: "#162740",
-          700: "#1f3659",
-          600: "#2a4975",
+        luxury: {
+          obsidian: "#08090c",
+          carbon: "#101217",
+          caviar: "#161922",
+          slate: "#1e222e",
+          ivory: "#fbf9f4",
+          alabaster: "#f5f0e6",
+          parchment: "#ede5d5",
+          gold: "#b38728",
+          brightGold: "#d4af37",
+          champagne: "#e6ca65",
+          antiqueGold: "#9b7736",
+          silk: "#f7f6f2",
+          silver: "#a6acba",
+          charcoal: "#141312",
+        },
+        navy: {
+          950: "#0b0f19",
+          900: "#0f172a",
+          800: "#1e3a8a",
+          700: "#1d4ed8",
+          600: "#2563eb",
+          500: "#3b82f6",
+          100: "#dbeafe",
+          50: "#eff6ff",
         },
         brass: {
-          DEFAULT: "#cda03c",
-          bright: "#e5c572",
-          light: "#f5e6b8",
-          dim: "rgba(205, 160, 60, 0.12)",
-          dark: "#a57d23",
-        },
-        paper: {
-          DEFAULT: "#f7f9fc",
-          2: "#eef2f7",
-          surface: "#ffffff",
-          line: "#e2e7f0",
-          "line-strong": "#cbd5e1",
+          DEFAULT: "#b38728",
+          dark: "#d4af37",
+          light: "#f5eed9",
+          subtle: "rgba(179, 135, 40, 0.12)",
         },
       },
       fontFamily: {
-        display: ["Fraunces", "Georgia", "serif"],
-        body: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        cinzel: ["Cinzel", "serif"],
+        display: ["Cinzel", "Cormorant Garamond", "Georgia", "serif"],
+        serif: ["Cormorant Garamond", "Georgia", "Times New Roman", "serif"],
+        sans: ["Plus Jakarta Sans", "Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        body: ["Plus Jakarta Sans", "Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        mono: ["JetBrains Mono", "SF Mono", "Menlo", "monospace"],
       },
       boxShadow: {
-        subtle: "0 1px 3px rgba(12, 23, 38, 0.05), 0 4px 12px rgba(12, 23, 38, 0.03)",
-        card: "0 2px 6px rgba(12, 23, 38, 0.04), 0 12px 28px rgba(12, 23, 38, 0.07)",
-        elevated: "0 16px 40px -8px rgba(12, 23, 38, 0.16)",
-        modal: "0 25px 60px -15px rgba(7, 13, 24, 0.35)",
-        gold: "0 4px 20px rgba(205, 160, 60, 0.28)",
-      },
-      borderRadius: {
-        legal: "14px",
-      },
-      animation: {
-        "fade-in": "fadeIn 0.3s ease-out forwards",
-        "slide-up": "slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "pulse-subtle": "pulseSubtle 2.5s infinite ease-in-out",
-      },
-      keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideUp: {
-          "0%": { opacity: "0", transform: "translateY(12px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        pulseSubtle: {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.6" },
-        },
+        luxury: "0 4px 20px -2px rgba(18, 16, 12, 0.05), 0 1px 3px rgba(18, 16, 12, 0.02)",
+        luxuryDark: "0 8px 32px -4px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(212, 175, 55, 0.1)",
+        goldGlow: "0 0 20px -2px rgba(212, 175, 55, 0.25)",
+        goldGlowSubtle: "0 0 12px 0 rgba(212, 175, 55, 0.12)",
+        elevated: "0 16px 40px -8px rgba(18, 16, 12, 0.08)",
+        modal: "0 24px 64px -12px rgba(0, 0, 0, 0.5)",
       },
     },
   },
@@ -71,4 +65,3 @@ const config: Config = {
 };
 
 export default config;
-

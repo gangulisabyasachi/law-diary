@@ -1,22 +1,55 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --bg-parchment: #f9f8f6;
-  --ink-primary: #191817;
-  --ink-secondary: #5e5a54;
-  --border-paper: #e6e2d8;
-  --brass-accent: #b89552;
+  --font-display: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+  --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  
+  /* Digital Lawyer Diary Professional Theme: Royal Navy, Slate & Crisp White */
+  --bg-canvas: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f5f9;
+  --bg-hover: #e2e8f0;
+  --border-paper: #e2e8f0;
+  --border-paper-strong: #cbd5e1;
+  --ink-primary: #0f172a;
+  --ink-secondary: #334155;
+  --ink-muted: #64748b;
+  --court-blue: #1e3a8a;
+  --court-blue-bright: #2563eb;
+  --court-blue-bg: rgba(30, 58, 138, 0.08);
+  --court-blue-border: rgba(30, 58, 138, 0.22);
+  --brand-navy: #1e3a8a;
+  --brand-navy-dark: #0f172a;
+}
+
+.dark {
+  /* Digital Lawyer Diary Dark Mode: Deep Midnight Navy Slate */
+  --bg-canvas: #0b0f19;
+  --bg-card: #111827;
+  --bg-subtle: #161f30;
+  --bg-hover: #1e293b;
+  --border-paper: #1e293b;
+  --border-paper-strong: #334155;
+  --ink-primary: #f8fafc;
+  --ink-secondary: #cbd5e1;
+  --ink-muted: #94a3b8;
+  --court-blue: #3b82f6;
+  --court-blue-bright: #60a5fa;
+  --court-blue-bg: rgba(59, 130, 246, 0.12);
+  --court-blue-border: rgba(59, 130, 246, 0.32);
+  --brand-navy: #3b82f6;
+  --brand-navy-dark: #1d4ed8;
 }
 
 body {
   font-family: var(--font-body);
-  background-color: var(--bg-parchment);
+  background-color: var(--bg-canvas);
   color: var(--ink-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -27,7 +60,15 @@ h1, h2, h3, h4, .font-display {
   font-family: var(--font-display);
 }
 
-/* Custom scrollbars */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+/* Custom luxury scrollbars in royal navy */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -36,29 +77,98 @@ h1, h2, h3, h4, .font-display {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d8d3c7;
+  background: #cbd5e1;
   border-radius: 4px;
 }
+.dark ::-webkit-scrollbar-thumb {
+  background: #1e293b;
+}
 ::-webkit-scrollbar-thumb:hover {
-  background: #b5ada0;
+  background: #1e3a8a;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
 }
 
-/* Clean Paper Surface */
-.paper-card {
-  background-color: #ffffff;
+/* Luxury card surfaces */
+.court-card, .luxury-card {
+  background-color: var(--bg-card);
   border: 1px solid var(--border-paper);
   border-radius: 0.875rem;
-  box-shadow: 0 1px 3px rgba(25, 24, 23, 0.03);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.paper-card-warm {
-  background-color: #fbfaf8;
+.dark .court-card, .dark .luxury-card {
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(59, 130, 246, 0.08);
+}
+
+.court-card:hover, .luxury-card:hover {
+  border-color: var(--court-blue-border);
+}
+
+.court-card-subtle {
+  background-color: var(--bg-subtle);
   border: 1px solid var(--border-paper);
   border-radius: 0.875rem;
 }
 
-.paper-subtle {
-  background-color: #f5f3ee;
-  border: 1px solid #e2ded4;
+.court-input, .luxury-input {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-paper);
+  color: var(--ink-primary);
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  transition: all 0.15s ease;
 }
 
+.court-input:focus, .luxury-input:focus {
+  outline: none;
+  border-color: var(--court-blue);
+  box-shadow: 0 0 0 3px var(--court-blue-bg);
+}
+
+/* Metallic & royal navy gradient typography */
+.blue-gradient-text {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .blue-gradient-text {
+  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Backward compatibility for previous classname */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .gold-gradient-text {
+  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Luxury seals & badges */
+.luxury-seal {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 30% 30%, rgba(30, 58, 138, 0.15), rgba(37, 99, 235, 0.05));
+  border: 1px solid var(--court-blue-border);
+  box-shadow: 0 0 16px -2px var(--court-blue-bg);
+}
+
+.luxury-badge {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.14em;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}

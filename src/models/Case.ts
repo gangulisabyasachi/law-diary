@@ -9,6 +9,7 @@ export interface ICaseDocument extends Document {
   courtRoom?: string;
   itemNo?: string;
   judge?: string;
+  lawyerId?: string;
   clientId: string;
   associateIds: string[];
   status: "Active" | "Listed" | "Reserved" | "Adjourned" | "Disposed";
@@ -17,6 +18,15 @@ export interface ICaseDocument extends Document {
   limitationDate?: string;
   limitationTask?: string;
   notes?: string;
+  feeAgreed?: number;
+  feeReceived?: number;
+  feeReceipts?: Array<{
+    receiptNo: string;
+    date: string;
+    amount: number;
+    mode?: string;
+    note?: string;
+  }>;
   hearings: Array<{
     date: string;
     purpose: string;
@@ -85,6 +95,7 @@ const CaseSchema = new Schema<ICaseDocument>(
     courtRoom: { type: String, default: "" },
     itemNo: { type: String, default: "" },
     judge: { type: String, default: "" },
+    lawyerId: { type: String, default: "u-lawyer", index: true },
     clientId: { type: String, required: true, index: true },
     associateIds: [{ type: String }],
     status: {
@@ -98,6 +109,17 @@ const CaseSchema = new Schema<ICaseDocument>(
     limitationDate: { type: String, default: "" },
     limitationTask: { type: String, default: "" },
     notes: { type: String, default: "" },
+    feeAgreed: { type: Number, default: 0 },
+    feeReceived: { type: Number, default: 0 },
+    feeReceipts: [
+      {
+        receiptNo: { type: String, default: "" },
+        date: { type: String, default: "" },
+        amount: { type: Number, default: 0 },
+        mode: { type: String, default: "NEFT / Bank Transfer" },
+        note: { type: String, default: "" },
+      },
+    ],
     hearings: [HearingSchema],
     orders: [OrderSchema],
     queries: [QuerySchema],

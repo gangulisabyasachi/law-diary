@@ -1,96 +1,55 @@
 "use client";
 
-import React from "react";
-import { ChamberProvider, useChamber } from "@/context/ChamberContext";
-import { AuthScreen } from "@/components/AuthScreen";
-import { Sidebar } from "@/components/Sidebar";
-import { Navbar } from "@/components/Navbar";
-import { DashboardView } from "@/components/views/DashboardView";
-import { CasesView } from "@/components/views/CasesView";
-import { CaseDetailView } from "@/components/views/CaseDetailView";
-import { CalendarView } from "@/components/views/CalendarView";
-import { ClientsView } from "@/components/views/ClientsView";
-import { AssociatesView } from "@/components/views/AssociatesView";
-import { ApprovalsView } from "@/components/views/ApprovalsView";
-import { ContactsView } from "@/components/views/ContactsView";
-import { UsersView } from "@/components/views/UsersView";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useChamber } from "@/context/ChamberContext";
+import { LandingPage } from "@/components/LandingPage";
 import { Modals } from "@/components/Modals";
-import { MongoGuideModal } from "@/components/MongoGuideModal";
 import { ToastContainer } from "@/components/ToastContainer";
-import { motion, AnimatePresence } from "framer-motion";
-import { Scale } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Scale, ShieldCheck } from "lucide-react";
 
-function MainApp() {
-  const { currentUser, loading, activePage } = useChamber();
+export default function HomePage() {
+  const { currentUser, loading } = useChamber();
+  const router = useRouter();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#14171a] flex flex-col items-center justify-center text-[#f2ede4]">
-        <div className="w-12 h-12 rounded-xl bg-[#20242a] border border-[#b89552]/40 flex items-center justify-center">
-          <Scale className="w-6 h-6 text-[#b89552]" />
-        </div>
-        <p className="mt-4 text-[11px] font-mono font-medium tracking-widest uppercase text-[#c5a059]">
-          CounselBook Chamber Console
-        </p>
-      </div>
-    );
-  }
-
-  if (!currentUser) {
-    return (
-      <>
-        <AuthScreen />
-        <MongoGuideModal />
-        <ToastContainer />
-      </>
-    );
-  }
+  // If user is already authenticated and visits home page, provide seamless continuation
+  useEffect(() => {
+    // We keep home page accessible, but if user explicitly logs in, routing happens via login()
+  }, [currentUser, router]);
 
   return (
-    <div className="min-h-screen flex bg-[#f9f8f6] text-[#191817] font-body selection:bg-[#ecdcb9] selection:text-[#191817]">
-      {/* Sidebar */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] text-[#0f172a] dark:text-[#f8fafc] font-sans selection:bg-blue-500/20 selection:text-blue-900 dark:selection:text-blue-200">
+      {/* Top Banner if already authenticated */}
+      {currentUser && !loading && (
+        <div className="bg-gradient-to-r from-[#1e3a8a] via-[#1d4ed8] to-[#2563eb] text-white px-4 py-2.5 text-xs flex items-center justify-between sticky top-0 z-50 shadow-md">
+          <div className="flex items-center gap-2 max-w-2xl truncate">
+            {currentUser.role === "admin" ? (
+              <ShieldCheck className="w-4 h-4 text-blue-200 flex-shrink-0" />
+            ) : (
+              <Scale className="w-4 h-4 text-blue-200 flex-shrink-0" />
+            )}
+            <span className="truncate">
+              Signed in as <strong>{currentUser.name}</strong> ({currentUser.role.toUpperCase()})
+            </span>
+          </div>
 
-      {/* Main View Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <Navbar />
+          <Link
+            href={currentUser.role === "admin" ? "/admin" : "/dashboard"}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white font-semibold transition-colors flex-shrink-0"
+          >
+            <span>Open {currentUser.role === "admin" ? "Admin Console" : "Chamber Dashboard"}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      )}
 
-        <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePage}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-            >
-              {activePage === "dashboard" && <DashboardView />}
-              {activePage === "cases" && <CasesView />}
-              {activePage === "case-detail" && <CaseDetailView />}
-              {activePage === "calendar" && <CalendarView />}
-              {activePage === "clients" && <ClientsView />}
-              {activePage === "associates" && <AssociatesView />}
-              {activePage === "approvals" && <ApprovalsView />}
-              {activePage === "contacts" && <ContactsView />}
-              {activePage === "users" && <UsersView />}
-            </motion.div>
-          </AnimatePresence>
-        </main>
-      </div>
+      {/* Main Home Landing Page */}
+      <LandingPage />
 
-      {/* Modals & Overlays */}
+      {/* Global Modals & Notifications */}
       <Modals />
-      <MongoGuideModal />
       <ToastContainer />
     </div>
   );
 }
-
-export default function Home() {
-  return (
-    <ChamberProvider>
-      <MainApp />
-    </ChamberProvider>
-  );
-}
-

@@ -1,98 +1,108 @@
 "use client";
 
 import React from "react";
-import { UserCheck, Plus, Trash2, RotateCcw, ShieldCheck } from "lucide-react";
+import { UserCheck, Plus, Trash2, Mail, Phone, ShieldCheck, Key, RefreshCw } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function UsersView() {
-  const { state, currentUser, openModal, deleteUser, resetData, addToast } = useChamber();
+  const { state, currentUser, openModal, deleteUser, resetData } = useChamber();
 
-  if (!state || !currentUser || currentUser.role !== "admin") return null;
+  if (!state || !currentUser) return null;
+
+  const users = state.users;
 
   const roleBadge: Record<string, string> = {
-    lawyer: "bg-[#fcf5ec] text-[#7a491c] border-[#ebd8c4]",
-    associate: "bg-[#edf3f8] text-[#1c4d75] border-[#caddee]",
-    client: "bg-[#edf6f0] text-[#1b5e3a] border-[#cce4d4]",
-    admin: "bg-[#fef2f2] text-[#991b1b] border-[#fecaca]",
-  };
-
-  const handleReset = async () => {
-    if (confirm("Reset all chamber data and return to clean seed state?")) {
-      await resetData();
-    }
-  };
-
-  const handleDelete = async (id: string, name: string) => {
-    if (id === currentUser.id) {
-      addToast("Cannot delete your own admin account.", "error");
-      return;
-    }
-    if (confirm(`Are you sure you want to remove user "${name}"?`)) {
-      await deleteUser(id);
-    }
+    lawyer: "bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800/40",
+    associate: "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800/40",
+    client: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40",
+    admin: "bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-800/40",
   };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-base font-bold font-display text-[#191817]">User Management</h3>
-          <p className="text-xs text-[#736e65]">Chamber accounts, credentials, and access control</p>
+          <h3 className="text-base font-bold font-cinzel text-slate-900 dark:text-white">
+            Chamber Account Directory &amp; User Credentials
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-serif italic mt-0.5">
+            Manage authorized advocate, associate, litigant, and administrator login accounts.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={() => openModal("add-user")}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#14171a] text-white text-xs font-semibold hover:bg-[#252930] transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-xs font-semibold tracking-wider transition-all shadow-md shadow-blue-500/20"
           >
-            <Plus className="w-3.5 h-3.5 text-[#c5a059]" />
-            <span>Add User</span>
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ Provision Account</span>
           </button>
 
           <button
-            onClick={handleReset}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-[#fecaca] text-[#991b1b] hover:bg-[#fef2f2] text-xs font-semibold transition-colors"
-            title="Reset database to seeded demo state"
+            onClick={() => {
+              if (confirm("Restore default chamber records and authorized accounts?")) {
+                resetData();
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold tracking-wider transition-colors shadow-xs"
+            title="Restore default chamber records"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset Demo</span>
+            <RefreshCw className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span className="hidden sm:inline">Restore Defaults</span>
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-[#e6e2d8] shadow-sm overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+        <table className="w-full text-left text-xs">
           <thead>
-            <tr className="bg-[#fbfaf8] border-b border-[#e6e2d8] text-[10px] font-mono uppercase tracking-wider text-[#736e65]">
-              <th className="py-3 px-4">Name &amp; Designation</th>
-              <th className="py-3 px-4">Role</th>
-              <th className="py-3 px-4">Email</th>
-              <th className="py-3 px-4">Phone</th>
-              <th className="py-3 px-4 text-right">Actions</th>
+            <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-cinzel text-[10px] uppercase tracking-wider">
+              <th className="py-3.5 px-4 font-semibold">User Details</th>
+              <th className="py-3.5 px-4 font-semibold">Role</th>
+              <th className="py-3.5 px-4 font-semibold">Designation</th>
+              <th className="py-3.5 px-4 font-semibold">Chamber Email</th>
+              <th className="py-3.5 px-4 font-semibold">Phone</th>
+              <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#f0ece4] text-xs">
-            {state.users.map((u) => (
-              <tr key={u.id} className="hover:bg-[#faf8f5] transition-colors">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+            {users.map((u) => (
+              <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                 <td className="py-3.5 px-4">
-                  <span className="font-bold text-[#191817] font-serif block">{u.name}</span>
-                  <span className="text-[11px] text-[#736e65] font-serif">{u.designation || "—"}</span>
+                  <div className="font-bold text-slate-900 dark:text-white font-sans">{u.name}</div>
+                  <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">{u.id}</div>
                 </td>
                 <td className="py-3.5 px-4">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium border capitalize ${roleBadge[u.role] || ""}`}>
+                  <span
+                    className={`inline-block px-2.5 py-0.5 rounded-md text-[9.5px] font-bold uppercase border ${
+                      roleBadge[u.role] || "bg-slate-100 text-slate-800"
+                    }`}
+                  >
                     {u.role}
                   </span>
                 </td>
-                <td className="py-3.5 px-4 font-mono text-[#5e5a54]">{u.email}</td>
-                <td className="py-3.5 px-4 text-[#736e65] font-mono">{u.phone || "—"}</td>
+                <td className="py-3.5 px-4 text-slate-600 dark:text-slate-400 font-serif italic">
+                  {u.designation || "—"}
+                </td>
+                <td className="py-3.5 px-4 font-mono text-slate-900 dark:text-white">
+                  {u.email}
+                </td>
+                <td className="py-3.5 px-4 font-mono text-slate-500 dark:text-slate-400">
+                  {u.phone || "—"}
+                </td>
                 <td className="py-3.5 px-4 text-right">
-                  {u.id !== currentUser.id && (
+                  {u.id !== currentUser.id && u.id !== "u-lawyer" && u.id !== "u-admin" && (
                     <button
-                      onClick={() => handleDelete(u.id, u.name)}
-                      className="p-1.5 rounded-lg text-[#8c877e] hover:text-[#991b1b] hover:bg-[#fef2f2] transition-colors"
-                      title="Delete User"
+                      onClick={() => {
+                        if (confirm(`Remove account for ${u.name}?`)) {
+                          deleteUser(u.id);
+                        }
+                      }}
+                      className="text-rose-600 hover:text-rose-800 p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors"
+                      title="De-provision user account"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </td>
@@ -104,4 +114,3 @@ export function UsersView() {
     </div>
   );
 }
-

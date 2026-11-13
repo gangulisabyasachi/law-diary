@@ -37,6 +37,14 @@ export interface ClientQuery {
   reply?: string;
 }
 
+export interface FeeReceipt {
+  receiptNo: string;
+  date: string;
+  amount: number;
+  mode?: string;
+  note?: string;
+}
+
 export type CaseStatus = "Active" | "Listed" | "Reserved" | "Adjourned" | "Disposed";
 
 export interface Case {
@@ -48,6 +56,7 @@ export interface Case {
   courtRoom?: string;
   itemNo?: string;
   judge?: string;
+  lawyerId?: string;
   clientId: string;
   associateIds: string[];
   status: CaseStatus;
@@ -56,6 +65,9 @@ export interface Case {
   limitationDate?: string;
   limitationTask?: string;
   notes?: string;
+  feeAgreed?: number;
+  feeReceived?: number;
+  feeReceipts?: FeeReceipt[];
   hearings: Hearing[];
   orders: Order[];
   queries: ClientQuery[];
