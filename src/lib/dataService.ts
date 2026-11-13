@@ -21,13 +21,22 @@ const fallbackStore: FallbackStore = {
   isInitialized: false,
 };
 
+function getSeedPasswordForUser(id: string, role: string): string {
+  if (id === "u-admin") return process.env.SEED_ADMIN_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+  if (id === "u-lawyer") return process.env.SEED_LAWYER_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+  if (id === "u-lawyer2") return process.env.SEED_SEN_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+  if (role === "associate") return process.env.SEED_ASSOC_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+  if (role === "client") return process.env.SEED_CLIENT_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+  return process.env.SEED_DEFAULT_PASSWORD || "";
+}
+
 async function initFallbackStore() {
   if (fallbackStore.isInitialized) return;
   const { users, cases, decided } = getSeedData();
   const usersWithHashes = await Promise.all(
     users.map(async (u) => ({
       ...u,
-      passwordHash: await hashPassword(u.password),
+      passwordHash: await hashPassword(getSeedPasswordForUser(u.id, u.role)),
     }))
   );
   fallbackStore.users = usersWithHashes;
@@ -48,7 +57,7 @@ export async function seedMongoIfEmpty() {
   const { users, cases, decided } = getSeedData();
 
   for (const u of users) {
-    const passwordHash = await hashPassword(u.password);
+    const passwordHash = await hashPassword(getSeedPasswordForUser(u.id, u.role));
     await UserModel.findOneAndUpdate(
       { id: u.id },
       {
@@ -402,7 +411,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         break;
       }
       case "addClient": {
-        const pw = payload.user.password || "client123";
+        const pw = payload.user.password || process.env.SEED_CLIENT_PASSWORD || "";
         const passwordHash = await hashPassword(pw);
         const lawyerId = payload.user.lawyerId || payload.by || authorId;
         await UserModel.findOneAndUpdate(
@@ -420,7 +429,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         break;
       }
       case "addAssociate": {
-        const pw = payload.user.password || "assoc123";
+        const pw = payload.user.password || process.env.SEED_ASSOC_PASSWORD || "";
         const passwordHash = await hashPassword(pw);
         const lawyerId = payload.user.lawyerId || payload.by || authorId;
         await UserModel.findOneAndUpdate(
@@ -519,7 +528,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
       break;
     }
     case "addClient": {
-      const pw = payload.user.password || "client123";
+      const pw = payload.user.password || process.env.SEED_CLIENT_PASSWORD || "";
       const lawyerId = payload.user.lawyerId || payload.by || authorId;
       fallbackStore.users.push({
         ...payload.user,
@@ -530,7 +539,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
       break;
     }
     case "addAssociate": {
-      const pw = payload.user.password || "assoc123";
+      const pw = payload.user.password || process.env.SEED_ASSOC_PASSWORD || "";
       const lawyerId = payload.user.lawyerId || payload.by || authorId;
       fallbackStore.users.push({
         ...payload.user,
@@ -541,7 +550,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
       break;
     }
     case "addUser": {
-      const pw = payload.user.password || "pass123";
+      const pw = payload.user.password || process.env.SEED_DEFAULT_PASSWORD || "";
       fallbackStore.users.push({
         ...payload.user,
         passwordHash: await hashPassword(pw),
@@ -783,7 +792,7 @@ export async function registerLawyerUser(data: LawyerRegistrationData) {
   } else {
     fallbackStore.users.push({ ...newUser, password: data.password });
   }
-  fallbackStore.users.push({ ...initialClient, password: "client123" });
+  fallbackStore.users.push({ ...initialClient, passwordHash: await hashPassword(process.env.SEED_CLIENT_PASSWORD || "") });
   fallbackStore.cases.unshift(initialCase);
 
   const token = signToken({

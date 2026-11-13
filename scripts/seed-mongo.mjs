@@ -96,20 +96,29 @@ async function seed() {
   console.log("Connecting to MongoDB Atlas to seed Indian chamber matters...");
   await mongoose.connect(uri, { serverSelectionTimeoutMS: 10000 });
 
+  const getPasswordForUser = (id, role) => {
+    if (id === "u-admin") return process.env.SEED_ADMIN_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+    if (id === "u-lawyer") return process.env.SEED_LAWYER_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+    if (id === "u-lawyer2") return process.env.SEED_SEN_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+    if (role === "associate") return process.env.SEED_ASSOC_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+    if (role === "client") return process.env.SEED_CLIENT_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
+    return process.env.SEED_DEFAULT_PASSWORD || "";
+  };
+
   const rawUsers = [
-    { id: "u-admin", role: "admin", name: "Devika Nair", email: "admin@chambers.in", password: "admin123", phone: "+91 98110 20001", designation: "Chamber Administrator & Registrar" },
-    { id: "u-lawyer", role: "lawyer", name: "Adv. Arjun Mehta", email: "lawyer@chambers.in", password: "lawyer123", phone: "+91 98110 20002", designation: "Senior Counsel & Principal Advocate (D/1482/2012)" },
-    { id: "u-assoc", role: "associate", name: "Priya Sharma", email: "associate@chambers.in", password: "assoc123", phone: "+91 98110 20003", designation: "Senior Associate Counsel", lawyerId: "u-lawyer" },
-    { id: "u-assoc2", role: "associate", name: "Kabir Rao", email: "kabir@chambers.in", password: "assoc123", phone: "+91 98110 20007", designation: "Junior Associate / Briefing Counsel", lawyerId: "u-lawyer" },
-    { id: "u-client", role: "client", name: "Rahul Verma", email: "client@chambers.in", password: "client123", phone: "+91 98110 20004", designation: "Managing Director, Verma Infra LLP", lawyerId: "u-lawyer" },
-    { id: "u-client2", role: "client", name: "Sunrise Textiles Pvt. Ltd.", email: "sunrise@chambers.in", password: "client123", phone: "+91 98110 20005", designation: "Corporate Litigant (Through Director)", lawyerId: "u-lawyer" },
-    { id: "u-lawyer2", role: "lawyer", name: "Adv. Rajeshwari Sen", email: "sen@chambers.in", password: "sen123", phone: "+91 98110 20008", designation: "Senior Advocate (D/2104/2015)", lawyerId: "u-lawyer2" },
-    { id: "u-assoc-sen", role: "associate", name: "Ananya Deshmukh", email: "ananya@chambers.in", password: "assoc123", phone: "+91 98110 20009", designation: "Associate Counsel (High Court Dockets)", lawyerId: "u-lawyer2" },
-    { id: "u-client-sen", role: "client", name: "Sen Infra Projects Pvt. Ltd.", email: "seninfra@chambers.in", password: "client123", phone: "+91 98110 20010", designation: "Corporate Litigant (Through MD)", lawyerId: "u-lawyer2" },
+    { id: "u-admin", role: "admin", name: "Devika Nair", email: "admin@chambers.in", phone: "+91 98110 20001", designation: "Chamber Administrator & Registrar" },
+    { id: "u-lawyer", role: "lawyer", name: "Adv. Arjun Mehta", email: "lawyer@chambers.in", phone: "+91 98110 20002", designation: "Senior Counsel & Principal Advocate (D/1482/2012)" },
+    { id: "u-assoc", role: "associate", name: "Priya Sharma", email: "associate@chambers.in", phone: "+91 98110 20003", designation: "Senior Associate Counsel", lawyerId: "u-lawyer" },
+    { id: "u-assoc2", role: "associate", name: "Kabir Rao", email: "kabir@chambers.in", phone: "+91 98110 20007", designation: "Junior Associate / Briefing Counsel", lawyerId: "u-lawyer" },
+    { id: "u-client", role: "client", name: "Rahul Verma", email: "client@chambers.in", phone: "+91 98110 20004", designation: "Managing Director, Verma Infra LLP", lawyerId: "u-lawyer" },
+    { id: "u-client2", role: "client", name: "Sunrise Textiles Pvt. Ltd.", email: "sunrise@chambers.in", phone: "+91 98110 20005", designation: "Corporate Litigant (Through Director)", lawyerId: "u-lawyer" },
+    { id: "u-lawyer2", role: "lawyer", name: "Adv. Rajeshwari Sen", email: "sen@chambers.in", phone: "+91 98110 20008", designation: "Senior Advocate (D/2104/2015)", lawyerId: "u-lawyer2" },
+    { id: "u-assoc-sen", role: "associate", name: "Ananya Deshmukh", email: "ananya@chambers.in", phone: "+91 98110 20009", designation: "Associate Counsel (High Court Dockets)", lawyerId: "u-lawyer2" },
+    { id: "u-client-sen", role: "client", name: "Sen Infra Projects Pvt. Ltd.", email: "seninfra@chambers.in", phone: "+91 98110 20010", designation: "Corporate Litigant (Through MD)", lawyerId: "u-lawyer2" },
   ];
 
   for (const u of rawUsers) {
-    const passwordHash = await bcrypt.hash(u.password, 10);
+    const passwordHash = await bcrypt.hash(getPasswordForUser(u.id, u.role), 10);
     await User.findOneAndUpdate(
       { id: u.id },
       { $set: { id: u.id, role: u.role, name: u.name, email: u.email, passwordHash, phone: u.phone, designation: u.designation, lawyerId: u.lawyerId || "" } },

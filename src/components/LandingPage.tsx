@@ -51,10 +51,9 @@ export function LandingPage() {
   const [authModal, setAuthModal] = useState<null | "signin" | "signup">(null);
 
   // Universal Sign In state
-  const [signInEmail, setSignInEmail] = useState("lawyer@chambers.in");
-  const [signInPassword, setSignInPassword] = useState("lawyer123");
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
   const [signingIn, setSigningIn] = useState(false);
-  const [selectedSignInRole, setSelectedSignInRole] = useState<"lawyer" | "associate" | "client" | "admin">("lawyer");
 
   // Lawyer Sign Up state (Lawyers ONLY)
   const [signUpName, setSignUpName] = useState("");
@@ -80,77 +79,6 @@ export function LandingPage() {
   const [simulatorTab, setSimulatorTab] = useState<"today" | "tomorrow" | "billing" | "search">("today");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
-
-  const ROLES = [
-    {
-      id: "lawyer" as const,
-      tag: "ADVOCATE (CHAMBER I)",
-      title: "Adv. Arjun Mehta",
-      designation: "Senior Counsel (D/1482/2012)",
-      email: "lawyer@chambers.in",
-      pass: "lawyer123",
-      headline: "Full Chamber Command & Cause List Calling Board",
-      scope: "Oversee active Vakalatnamas, High Court cause lists, court hall appearances, and sanction junior drafts at the Verification Desk.",
-      icon: Scale,
-    },
-    {
-      id: "lawyer" as const,
-      tag: "ADVOCATE (CHAMBER II)",
-      title: "Adv. Rajeshwari Sen",
-      designation: "Senior Advocate (D/2104/2015)",
-      email: "sen@chambers.in",
-      pass: "sen123",
-      headline: "Dedicated Chamber Portfolio & Docket",
-      scope: "Manage Chamber II's isolated matters, Court Room 05 cause list, and dedicated briefing associate roster.",
-      icon: Scale,
-    },
-    {
-      id: "associate" as const,
-      tag: "ASSOCIATE ADVOCATE / BRIEFING COUNSEL",
-      title: "Priya Sharma",
-      designation: "Senior Associate Counsel",
-      email: "associate@chambers.in",
-      pass: "assoc123",
-      headline: "Court Room Call-Overs & Draft Submissions",
-      scope: "Attend daily bench call-overs, record verbatim court proceedings, and submit draft hearing updates for Senior Counsel sign-off.",
-      icon: Briefcase,
-    },
-    {
-      id: "client" as const,
-      tag: "LITIGANT CLIENT PORTAL",
-      title: "Rahul Verma",
-      designation: "Managing Director, Verma Infra LLP",
-      email: "client@chambers.in",
-      pass: "client123",
-      headline: "Transparent Case Docket & Counsel Advice",
-      scope: "Track Next Date of Hearing (NDOH), read verbatim certified judicial orders, and submit direct inquiries to briefed counsel.",
-      icon: User,
-    },
-    {
-      id: "admin" as const,
-      tag: "CHAMBER REGISTRAR & ADMINISTRATOR",
-      title: "Devika Nair",
-      designation: "Chamber Registrar & Practice Manager",
-      email: "admin@chambers.in",
-      pass: "admin123",
-      headline: "Chamber Roster, Audit Trail & Security",
-      scope: "Provision advocate credentials, manage multi-lawyer roster, monitor chamber dockets, and audit tamper-proof decision records.",
-      icon: ShieldCheck,
-    },
-  ];
-
-  const handleSelectRole = (r: (typeof ROLES)[0]) => {
-    setSelectedSignInRole(r.id);
-    setSignInEmail(r.email);
-    setSignInPassword(r.pass);
-  };
-
-  const handleInstantLogin = async (r: (typeof ROLES)[0]) => {
-    handleSelectRole(r);
-    setSigningIn(true);
-    await login(r.email, r.pass);
-    setSigningIn(false);
-  };
 
   const handleSignInSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1459,82 +1387,48 @@ export function LandingPage() {
 
             {/* Body */}
             <div className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
-              {/* 4 Role Selector Tabs for 1-Click Instant Demo Entry */}
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#64748b] dark:text-[#94a3b8] block mb-2">
-                  1-Click Instant Persona Sign-In:
-                </span>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {ROLES.map((r) => (
-                    <button
-                      key={r.email}
-                      type="button"
-                      onClick={() => handleInstantLogin(r)}
-                      className={`p-3 rounded-xl border text-left transition-all ${
-                        signInEmail === r.email
-                          ? "bg-[#eff6ff] dark:bg-[#1e293b] border-[#1e3a8a] dark:border-[#3b82f6] text-[#0f172a] dark:text-white"
-                          : "bg-[#f8fafc] dark:bg-[#161f30] border-[#cbd5e1] dark:border-[#334155] hover:border-[#1e3a8a]"
-                      }`}
-                    >
-                      <span className="text-[10px] font-bold text-[#1e3a8a] dark:text-[#60a5fa] block uppercase">
-                        {r.id}
-                      </span>
-                      <span className="text-xs font-bold text-[#0f172a] dark:text-white block truncate mt-0.5">
-                        {r.title}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] text-[#1d4ed8] dark:text-[#60a5fa] mt-2 font-semibold">
-                        <Zap className="w-2.5 h-2.5 fill-current" /> Instant Entry
-                      </span>
-                    </button>
-                  ))}
+              {/* Secure Credentials Sign In Form */}
+              <form onSubmit={handleSignInSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1.5">
+                    Chamber Registered Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="name@chambers.in"
+                    value={signInEmail}
+                    onChange={(e) => setSignInEmail(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
+                  />
                 </div>
-              </div>
 
-              {/* Or Enter Custom Credentials Form */}
-              <div className="pt-3 border-t border-[#e2e8f0] dark:border-[#1e293b]">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#64748b] dark:text-[#94a3b8] block mb-3">
-                  Or Sign In with Email &amp; Password
-                </span>
-                <form onSubmit={handleSignInSubmit} className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
-                      Chamber Email
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={signInEmail}
-                      onChange={(e) => setSignInEmail(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono focus:outline-none focus:border-[#1e3a8a]"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1.5">
+                    Chamber Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    value={signInPassword}
+                    onChange={(e) => setSignInPassword(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
+                  />
+                </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={signInPassword}
-                      onChange={(e) => setSignInPassword(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono focus:outline-none focus:border-[#1e3a8a]"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={signingIn}
-                    className="w-full py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
-                  >
-                    <span>{signingIn ? "Verifying..." : "Sign In to Chamber Diary"}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </form>
-              </div>
+                <button
+                  type="submit"
+                  disabled={signingIn}
+                  className="w-full py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
+                >
+                  <span>{signingIn ? "Verifying..." : "Sign In to Chamber Diary"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
 
               {/* Note for Lawyers looking for signup */}
-              <div className="p-3 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#e2e8f0] dark:border-[#1e293b] flex items-center justify-between text-xs">
+              <div className="p-3.5 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#e2e8f0] dark:border-[#1e293b] flex items-center justify-between text-xs">
                 <span className="text-[#64748b] dark:text-[#94a3b8]">
                   Are you an Advocate without a chamber yet?
                 </span>

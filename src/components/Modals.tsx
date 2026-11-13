@@ -827,7 +827,7 @@ function AddClientForm({ onClose, onSubmit }: any) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("client123");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -919,7 +919,7 @@ function AddAssociateForm({ onClose, onSubmit }: any) {
   const [email, setEmail] = useState("");
   const [designation, setDesignation] = useState("Associate Counsel");
   const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("assoc123");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

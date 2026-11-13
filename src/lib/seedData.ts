@@ -3,7 +3,6 @@ export interface RawUserSeed {
   role: "lawyer" | "associate" | "client" | "admin";
   name: string;
   email: string;
-  password: string;
   phone?: string;
   designation?: string;
   lawyerId?: string;
@@ -16,7 +15,6 @@ export function getSeedData() {
       role: "admin",
       name: "Devika Nair",
       email: "admin@chambers.in",
-      password: "admin123",
       phone: "+91 98110 20001",
       designation: "Chamber Administrator & Registrar",
     },
@@ -25,7 +23,6 @@ export function getSeedData() {
       role: "lawyer",
       name: "Adv. Arjun Mehta",
       email: "lawyer@chambers.in",
-      password: "lawyer123",
       phone: "+91 98110 20002",
       designation: "Senior Counsel & Principal Advocate (D/1482/2012)",
     },
@@ -34,7 +31,6 @@ export function getSeedData() {
       role: "associate",
       name: "Priya Sharma",
       email: "associate@chambers.in",
-      password: "assoc123",
       phone: "+91 98110 20003",
       designation: "Senior Associate Counsel",
       lawyerId: "u-lawyer",
@@ -44,7 +40,6 @@ export function getSeedData() {
       role: "associate",
       name: "Kabir Rao",
       email: "kabir@chambers.in",
-      password: "assoc123",
       phone: "+91 98110 20007",
       designation: "Junior Associate / Briefing Counsel",
       lawyerId: "u-lawyer",
@@ -54,7 +49,6 @@ export function getSeedData() {
       role: "client",
       name: "Rahul Verma",
       email: "client@chambers.in",
-      password: "client123",
       phone: "+91 98110 20004",
       designation: "Managing Director, Verma Infra LLP",
       lawyerId: "u-lawyer",
@@ -64,7 +58,6 @@ export function getSeedData() {
       role: "client",
       name: "Sunrise Textiles Pvt. Ltd.",
       email: "sunrise@chambers.in",
-      password: "client123",
       phone: "+91 98110 20005",
       designation: "Corporate Litigant (Through Director)",
       lawyerId: "u-lawyer",
@@ -75,7 +68,6 @@ export function getSeedData() {
       role: "lawyer",
       name: "Adv. Rajeshwari Sen",
       email: "sen@chambers.in",
-      password: "sen123",
       phone: "+91 98110 30001",
       designation: "Senior Advocate & Managing Partner (D/2210/2015)",
     },
@@ -84,7 +76,6 @@ export function getSeedData() {
       role: "associate",
       name: "Ananya Deshmukh",
       email: "ananya@chambers.in",
-      password: "assoc123",
       phone: "+91 98110 30003",
       designation: "Associate Counsel (Sen Law Chambers)",
       lawyerId: "u-lawyer2",
@@ -94,7 +85,6 @@ export function getSeedData() {
       role: "client",
       name: "Sen Infra Projects Pvt. Ltd.",
       email: "seninfra@chambers.in",
-      password: "client123",
       phone: "+91 98110 30002",
       designation: "Corporate Petitioner (Through Director)",
       lawyerId: "u-lawyer2",
