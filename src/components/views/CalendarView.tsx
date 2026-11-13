@@ -40,43 +40,43 @@ export function CalendarView() {
 
     return (
       <div className="space-y-3">
-        <h3 className="text-sm font-bold font-display text-slate-900 flex items-center gap-2">
-          {title} <span className="text-xs text-slate-400 font-normal">({list.length})</span>
+        <h3 className="text-sm font-bold font-display text-[#191817] flex items-center gap-2">
+          {title} <span className="text-xs text-[#736e65] font-normal font-mono">({list.length})</span>
         </h3>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+        <div className="bg-white rounded-xl border border-[#e6e2d8] shadow-sm divide-y divide-[#f0ece4] overflow-hidden">
           {list.map((h, i) => {
             const dm = getDayMonth(h.date);
             return (
               <div
                 key={i}
                 onClick={() => openCase(h.caseItem.id)}
-                className="p-4 hover:bg-amber-50/20 cursor-pointer transition-colors flex items-center justify-between gap-4 group"
+                className="p-4 hover:bg-[#faf8f4] cursor-pointer transition-colors flex items-center justify-between gap-4 group"
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <div
-                    className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center text-center flex-shrink-0 font-display ${
-                      isUpcoming ? "bg-slate-950 text-amber-300 shadow-sm" : "bg-slate-100 text-slate-600"
+                    className={`w-11 h-11 rounded-lg flex flex-col items-center justify-center text-center flex-shrink-0 font-display ${
+                      isUpcoming ? "bg-[#14171a] text-[#c5a059]" : "bg-[#f0ede6] text-[#5c5852]"
                     }`}
                   >
-                    <span className="text-base font-bold leading-tight">{dm.day}</span>
-                    <span className="text-[10px] uppercase tracking-wider font-body font-semibold">{dm.mon}</span>
+                    <span className="text-sm font-bold leading-tight">{dm.day}</span>
+                    <span className="text-[9px] uppercase font-mono font-medium">{dm.mon}</span>
                   </div>
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <p className="text-xs font-bold text-slate-900 group-hover:text-amber-700 transition-colors truncate">
+                      <p className="text-xs font-bold text-[#191817] group-hover:text-[#805e26] transition-colors truncate font-serif">
                         {h.purpose}
                       </p>
-                      <span className="text-[11px] font-mono text-slate-500 font-medium">
+                      <span className="text-[11px] font-mono text-[#736e65] font-medium">
                         [{h.caseItem.caseNo}]
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                    <p className="text-[11px] text-[#635f59] truncate mt-0.5 font-serif">
                       {h.caseItem.title} · {h.caseItem.court}
                     </p>
                     {h.outcome && (
-                      <p className="text-[11px] text-emerald-700 font-medium mt-1 truncate">
+                      <p className="text-[11px] text-[#1b5e3a] font-medium mt-1 truncate font-serif">
                         Outcome: {h.outcome}
                       </p>
                     )}
@@ -84,8 +84,8 @@ export function CalendarView() {
                 </div>
 
                 <div className="text-right flex-shrink-0">
-                  <span className="text-xs font-semibold text-slate-700 block">{formatDate(h.date)}</span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 group-hover:translate-x-0.5 transition-transform mt-0.5">
+                  <span className="text-xs font-semibold text-[#191817] block">{formatDate(h.date)}</span>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#805e26] group-hover:text-[#5c431b] transition-colors mt-0.5">
                     Case File <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>

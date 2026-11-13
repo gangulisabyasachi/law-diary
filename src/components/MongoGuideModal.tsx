@@ -46,32 +46,32 @@ export function MongoGuideModal() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0c0e]/70">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-2xl overflow-hidden bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]"
+          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-2xl overflow-hidden bg-white rounded-xl shadow-2xl border border-[#e6e2d8] flex flex-col max-h-[90vh]"
         >
           {/* Header */}
-          <div className="p-6 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between border-b border-slate-800">
+          <div className="p-5 bg-[#14171a] text-white flex items-center justify-between border-b border-[#252930]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-                <Database className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-[#20252b] border border-[#c5a059]/40 flex items-center justify-center text-[#c5a059]">
+                <Database className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold font-display tracking-tight text-white flex items-center gap-2">
-                  MongoDB Connection Guide
+                <h2 className="text-lg font-bold font-display tracking-tight text-white flex items-center gap-2">
+                  MongoDB Connection Status
                 </h2>
-                <p className="text-xs text-slate-300">
-                  Step-by-step setup for CounselBook Legal Diary
+                <p className="text-xs text-[#9ca3af]">
+                  CounselBook Chamber Database Configuration
                 </p>
               </div>
             </div>
             <button
               onClick={() => setIsGuideOpen(false)}
-              className="w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700/50 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-lg text-[#9ca3af] hover:text-white hover:bg-[#20252b] flex items-center justify-center transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

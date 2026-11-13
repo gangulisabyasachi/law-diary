@@ -109,12 +109,17 @@ export async function getChamberState(): Promise<AppState> {
         caseNo: c.caseNo,
         title: c.title,
         court: c.court,
+        courtRoom: c.courtRoom,
+        itemNo: c.itemNo,
+        cnr: c.cnr,
         judge: c.judge,
         clientId: c.clientId,
         associateIds: c.associateIds || [],
         status: c.status,
         stage: c.stage,
         filingDate: c.filingDate,
+        limitationDate: c.limitationDate,
+        limitationTask: c.limitationTask,
         notes: c.notes,
         hearings: c.hearings || [],
         orders: c.orders || [],
@@ -278,6 +283,19 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         );
         break;
       }
+      case "replyQuery": {
+        await CaseModel.findOneAndUpdate(
+          { id: payload.caseId, "queries.id": payload.queryId },
+          {
+            $set: {
+              "queries.$.reply": payload.reply,
+              "queries.$.answered": true,
+              updatedAt: now,
+            },
+          }
+        );
+        break;
+      }
       case "addClient": {
         const pw = payload.user.password || "client123";
         const passwordHash = await hashPassword(pw);
@@ -374,6 +392,18 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
       const c = fallbackStore.cases.find((x) => x.id === payload.caseId);
       if (c) {
         c.queries.push(payload.query);
+        c.updatedAt = now;
+      }
+      break;
+    }
+    case "replyQuery": {
+      const c = fallbackStore.cases.find((x) => x.id === payload.caseId);
+      if (c) {
+        const q = c.queries.find((item: any) => item.id === payload.queryId);
+        if (q) {
+          q.reply = payload.reply;
+          q.answered = true;
+        }
         c.updatedAt = now;
       }
       break;

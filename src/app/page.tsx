@@ -25,12 +25,12 @@ function MainApp() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-500 to-amber-300 flex items-center justify-center text-slate-950 shadow-xl shadow-amber-500/20 animate-pulse">
-          <Scale className="w-7 h-7 text-slate-950" />
+      <div className="min-h-screen bg-[#14171a] flex flex-col items-center justify-center text-[#f2ede4]">
+        <div className="w-12 h-12 rounded-xl bg-[#20242a] border border-[#b89552]/40 flex items-center justify-center">
+          <Scale className="w-6 h-6 text-[#b89552]" />
         </div>
-        <p className="mt-4 text-xs font-semibold tracking-widest uppercase text-amber-400">
-          Loading CounselBook...
+        <p className="mt-4 text-[11px] font-mono font-medium tracking-widest uppercase text-[#c5a059]">
+          CounselBook Chamber Console
         </p>
       </div>
     );
@@ -47,7 +47,7 @@ function MainApp() {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50 text-slate-900 font-body">
+    <div className="min-h-screen flex bg-[#f9f8f6] text-[#191817] font-body selection:bg-[#ecdcb9] selection:text-[#191817]">
       {/* Sidebar */}
       <Sidebar />
 

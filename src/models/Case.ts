@@ -3,14 +3,19 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface ICaseDocument extends Document {
   id: string;
   caseNo: string;
+  cnr?: string;
   title: string;
   court: string;
+  courtRoom?: string;
+  itemNo?: string;
   judge?: string;
   clientId: string;
   associateIds: string[];
   status: "Active" | "Listed" | "Reserved" | "Adjourned" | "Disposed";
   stage: string;
   filingDate: string;
+  limitationDate?: string;
+  limitationTask?: string;
   notes?: string;
   hearings: Array<{
     date: string;
@@ -23,6 +28,7 @@ export interface ICaseDocument extends Document {
     title: string;
     text: string;
     addedBy?: string;
+    citation?: string;
   }>;
   queries: Array<{
     id: string;
@@ -30,6 +36,7 @@ export interface ICaseDocument extends Document {
     text: string;
     ts: string;
     answered: boolean;
+    reply?: string;
   }>;
   createdAt: Date;
   updatedAt: Date;
@@ -51,6 +58,7 @@ const OrderSchema = new Schema(
     title: { type: String, required: true },
     text: { type: String, required: true },
     addedBy: { type: String, default: "" },
+    citation: { type: String, default: "" },
   },
   { _id: false }
 );
@@ -62,6 +70,7 @@ const QuerySchema = new Schema(
     text: { type: String, required: true },
     ts: { type: String, required: true },
     answered: { type: Boolean, default: false },
+    reply: { type: String, default: "" },
   },
   { _id: false }
 );
@@ -70,8 +79,11 @@ const CaseSchema = new Schema<ICaseDocument>(
   {
     id: { type: String, required: true, unique: true, index: true },
     caseNo: { type: String, required: true, index: true },
+    cnr: { type: String, default: "" },
     title: { type: String, required: true },
     court: { type: String, required: true },
+    courtRoom: { type: String, default: "" },
+    itemNo: { type: String, default: "" },
     judge: { type: String, default: "" },
     clientId: { type: String, required: true, index: true },
     associateIds: [{ type: String }],
@@ -83,6 +95,8 @@ const CaseSchema = new Schema<ICaseDocument>(
     },
     stage: { type: String, default: "Fresh Filing" },
     filingDate: { type: String, required: true },
+    limitationDate: { type: String, default: "" },
+    limitationTask: { type: String, default: "" },
     notes: { type: String, default: "" },
     hearings: [HearingSchema],
     orders: [OrderSchema],

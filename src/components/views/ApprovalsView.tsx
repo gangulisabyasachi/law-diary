@@ -47,16 +47,16 @@ export function ApprovalsView() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold font-display text-slate-900">
+            <h3 className="text-base font-bold font-display text-[#191817]">
               {currentUser.role === "associate" ? "My Submissions in Review" : "Pending Associate Submissions"}
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[#736e65]">
               {currentUser.role === "associate"
                 ? "Changes will be applied to the case record once approved by the principal advocate."
                 : "Verify changes before they go on official judicial record."}
             </p>
           </div>
-          <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+          <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded bg-[#fcf5ec] text-[#7a491c] border border-[#ebd8c4]">
             {approvals.length} pending
           </span>
         </div>
@@ -70,31 +70,31 @@ export function ApprovalsView() {
             return (
               <div
                 key={a.id}
-                className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-300 transition-all"
+                className="p-5 rounded-xl bg-white border border-[#e6e2d8] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors"
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
-                    <h4 className="text-xs font-bold text-slate-900 truncate">{a.label}</h4>
+                    <span className="w-2 h-2 rounded-full bg-[#c5a059]" />
+                    <h4 className="text-xs font-bold text-[#191817] truncate font-serif">{a.label}</h4>
                     {relatedCase && (
                       <button
                         onClick={() => openCase(relatedCase.id)}
-                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-amber-800 hover:bg-slate-200"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#f5f3ee] text-[#805e26] border border-[#e6e2d8] hover:bg-[#eae6dd]"
                       >
                         {relatedCase.caseNo}
                       </button>
                     )}
                   </div>
 
-                  <p className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-mono text-[11px]">
+                  <p className="text-xs text-[#5e5a54] bg-[#faf8f5] p-2.5 rounded-lg border border-[#e8e4dc] font-mono text-[11px] leading-relaxed">
                     {describePayload(a)}
                   </p>
 
-                  <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                    <User className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Submitted by <strong className="text-slate-700">{a.byName}</strong></span>
+                  <div className="flex items-center gap-2 text-[11px] text-[#736e65]">
+                    <User className="w-3.5 h-3.5 text-[#8c877e]" />
+                    <span>Submitted by <strong className="text-[#191817] font-medium">{a.byName}</strong></span>
                     <span>·</span>
-                    <span>{new Date(a.ts).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}</span>
+                    <span className="font-mono">{new Date(a.ts).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}</span>
                   </div>
                 </div>
 
@@ -104,14 +104,14 @@ export function ApprovalsView() {
                     <button
                       onClick={() => handleDecision(a.id, "approve")}
                       disabled={isProcessing}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors shadow-sm disabled:opacity-50"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#1b5e3a] hover:bg-[#154a2e] text-white text-xs font-semibold transition-colors disabled:opacity-50"
                     >
                       <Check className="w-3.5 h-3.5" /> Approve
                     </button>
                     <button
                       onClick={() => handleDecision(a.id, "reject")}
                       disabled={isProcessing}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-colors disabled:opacity-50"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#fef2f2] hover:bg-[#fee2e2] text-[#991b1b] border border-[#fecaca] text-xs font-semibold transition-colors disabled:opacity-50"
                     >
                       <X className="w-3.5 h-3.5" /> Reject
                     </button>
@@ -122,10 +122,10 @@ export function ApprovalsView() {
           })}
 
           {approvals.length === 0 && (
-            <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-400 text-xs">
-              <CheckCircle2 className="w-8 h-8 mx-auto text-emerald-400 mb-2" />
-              <p className="font-semibold text-slate-700">Approval queue is clear</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+            <div className="p-8 text-center bg-white rounded-xl border border-[#e6e2d8] text-[#736e65] text-xs">
+              <CheckCircle2 className="w-7 h-7 mx-auto text-[#1b5e3a] mb-2" />
+              <p className="font-semibold text-[#191817]">Approval queue is clear</p>
+              <p className="text-[11px] text-[#736e65] mt-0.5">
                 New associate submissions will land here for verification.
               </p>
             </div>
@@ -136,28 +136,28 @@ export function ApprovalsView() {
       {/* Decision Audit Trail */}
       <div className="space-y-4">
         <div>
-          <h3 className="text-base font-bold font-display text-slate-900">Decision Audit Log</h3>
-          <p className="text-xs text-slate-500">Historical trail of approved and rejected changes</p>
+          <h3 className="text-base font-bold font-display text-[#191817]">Decision Audit Log</h3>
+          <p className="text-xs text-[#736e65]">Historical trail of approved and rejected changes</p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+        <div className="bg-white rounded-xl border border-[#e6e2d8] shadow-sm divide-y divide-[#f0ece4] overflow-hidden">
           {state.decided.map((d) => (
             <div key={d.id} className="p-4 flex items-center justify-between text-xs gap-4">
               <div className="min-w-0">
-                <p className="font-semibold text-slate-900 truncate">{d.label}</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="font-semibold text-[#191817] truncate font-serif">{d.label}</p>
+                <p className="text-[11px] text-[#736e65] mt-0.5">
                   Submitted by {d.byName} · Decided on{" "}
-                  {new Date(d.decidedAt).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}
+                  <span className="font-mono">{new Date(d.decidedAt).toLocaleString("en-IN", { dateStyle: "short", timeStyle: "short" })}</span>
                 </p>
               </div>
 
               <div>
                 {d.status === "approved" ? (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-medium bg-[#edf6f0] text-[#1b5e3a] border border-[#cce4d4]">
                     <CheckCircle2 className="w-3 h-3" /> Approved
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-medium bg-[#fef2f2] text-[#991b1b] border border-[#fecaca]">
                     <XCircle className="w-3 h-3" /> Rejected
                   </span>
                 )}
@@ -166,7 +166,7 @@ export function ApprovalsView() {
           ))}
 
           {state.decided.length === 0 && (
-            <div className="p-6 text-center text-slate-400 text-xs">
+            <div className="p-6 text-center text-[#736e65] text-xs">
               No audit logs recorded yet.
             </div>
           )}

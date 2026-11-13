@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Scale, ShieldCheck, CheckCircle2, User, KeyRound, Database, ArrowRight, Sparkles } from "lucide-react";
+import { Scale, ShieldCheck, User, KeyRound, ArrowRight, Building, CheckCircle2, Database } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function AuthScreen() {
@@ -11,16 +11,48 @@ export function AuthScreen() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const DEMO_ACCOUNTS = [
-    { label: "Principal Counsel", role: "lawyer", email: "lawyer@chambers.in", pass: "lawyer123", icon: Scale },
-    { label: "Junior Associate", role: "associate", email: "associate@chambers.in", pass: "assoc123", icon: User },
-    { label: "Client Portal", role: "client", email: "client@chambers.in", pass: "client123", icon: User },
-    { label: "Chamber Admin", role: "admin", email: "admin@chambers.in", pass: "admin123", icon: ShieldCheck },
+  const DEMO_ROSTER = [
+    {
+      title: "Principal Advocate",
+      name: "Adv. Arjun Mehta",
+      email: "lawyer@chambers.in",
+      pass: "lawyer123",
+      role: "lawyer",
+      badge: "Full Chamber Control & Verification Desk",
+      icon: Scale,
+    },
+    {
+      title: "Senior Associate",
+      name: "Priya Sharma",
+      email: "associate@chambers.in",
+      pass: "assoc123",
+      role: "associate",
+      badge: "Drafts Hearings & Orders (Requires Approval)",
+      icon: User,
+    },
+    {
+      title: "Client Portal",
+      name: "Rahul Verma",
+      email: "client@chambers.in",
+      pass: "client123",
+      role: "client",
+      badge: "Transparent Docket, Orders & Direct Counsel Q&A",
+      icon: User,
+    },
+    {
+      title: "Chamber Administrator",
+      name: "Devika Nair",
+      email: "admin@chambers.in",
+      pass: "admin123",
+      role: "admin",
+      badge: "User Account Provisioning & Audit Trail",
+      icon: ShieldCheck,
+    },
   ];
 
-  const handleDemoSelect = (accountEmail: string, pass: string) => {
-    setEmail(accountEmail);
-    setPassword(pass);
+  const handleSelectRole = (accEmail: string, accPass: string) => {
+    setEmail(accEmail);
+    setPassword(accPass);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,139 +64,130 @@ export function AuthScreen() {
   };
 
   return (
-    <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-12 bg-slate-950 font-body">
-      {/* Left Column: Oxblood / Midnight Heritage Hero */}
-      <div className="lg:col-span-7 relative p-8 md:p-14 flex flex-col justify-between overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-        {/* Subtle decorative glow */}
-        <div className="absolute top-0 -left-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="min-h-screen w-full grid grid-cols-1 lg:grid-cols-12 bg-[#121518] text-[#e5e7eb] font-body">
+      {/* Left 7 Columns: Organic Chamber Heritage Desk */}
+      <div className="lg:col-span-7 p-8 md:p-14 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#262a31] relative bg-[#121518]">
         {/* Brand */}
         <div className="relative z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-300 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-amber-500/20">
-              <Scale className="w-6 h-6 text-slate-950" />
+            <div className="w-10 h-10 rounded-lg bg-[#1e232a] border border-[#c5a059]/40 flex items-center justify-center text-[#c5a059] font-bold shadow-sm">
+              <Scale className="w-5 h-5 text-[#c5a059]" />
             </div>
             <div>
-              <span className="text-xl font-bold font-display text-white tracking-tight">
+              <span className="text-xl font-bold font-display tracking-tight text-[#f9f8f6] block leading-tight">
                 CounselBook
               </span>
-              <span className="block text-[11px] font-semibold uppercase tracking-widest text-amber-400">
-                Advocates' Chamber Management
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#c5a059]">
+                Chamber Case Diary &amp; Docket System
               </span>
             </div>
           </div>
 
           <button
             onClick={() => setIsGuideOpen(true)}
-            className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-slate-900/90 text-amber-300 border border-amber-500/30 hover:bg-slate-800 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-mono font-medium bg-[#1e232a] text-[#c5a059] border border-[#c5a059]/30 hover:bg-[#252b33] transition-colors"
           >
-            <Database className="w-3.5 h-3.5 text-amber-400" />
-            <span>MongoDB: {state?.dbConnected ? "Connected" : "Setup Guide"}</span>
+            <Database className="w-3.5 h-3.5 text-[#c5a059]" />
+            <span>MongoDB: {state?.dbConnected ? "Atlas Connected" : "Local Mode"}</span>
           </button>
         </div>
 
-        {/* Hero Tagline */}
-        <div className="relative z-10 my-12 lg:my-0 max-w-xl">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/25 mb-4">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" /> High Courts · Supreme Court · Tribunals
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-display text-white tracking-tight leading-[1.08]">
-              The diary behind every <span className="italic text-amber-300 font-normal">victory</span>.
-            </h1>
-            <p className="mt-5 text-sm md:text-base text-slate-300 font-light leading-relaxed">
-              A bespoke digital chamber for legal practitioners. Connect your case diaries, cause lists,
-              judicial orders, and junior associate approvals seamlessly with MongoDB.
-            </p>
-          </motion.div>
+        {/* Narrative / Information Architecture */}
+        <div className="relative z-10 my-10 lg:my-0 max-w-xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-[11px] font-mono font-semibold bg-[#1f242b] text-[#c5a059] border border-[#c5a059]/20 mb-5">
+            <Building className="w-3.5 h-3.5 text-[#c5a059]" />
+            <span>Delhi High Court · National Company Law Tribunal · District Benches</span>
+          </div>
 
-          {/* Value Props */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.25 }}
-            className="mt-8 space-y-3.5 text-xs text-slate-300"
-          >
+          <h1 className="text-3xl md:text-5xl font-bold font-display text-[#f9f8f6] tracking-tight leading-tight">
+            Advocates' Chamber Case Diary &amp; Cause List.
+          </h1>
+
+          <p className="mt-4 text-sm text-[#9ca3af] leading-relaxed font-serif">
+            A bespoke litigation system for advocates, junior associates, and clients.
+            Built with strict legal hierarchy: junior associate drafts, hearing dates, and court orders
+            require principal advocate sign-off before being formally entered into the chamber docket.
+          </p>
+
+          <div className="mt-8 space-y-3.5 text-xs text-[#d1d5db]">
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+              <span className="text-[#c5a059] font-mono text-sm leading-none mt-0.5">§</span>
               <span>
-                <strong className="text-white">Strict Legal Hierarchy:</strong> Principal advocate approval
-                workflow for all associate hearings, filings, and status changes.
+                <strong className="text-white font-semibold">Associate Verification Workflow:</strong> Junior associates
+                draft hearings and orders, while changes route to the advocate's verification desk for one-click sign-off.
               </span>
             </div>
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+              <span className="text-[#c5a059] font-mono text-sm leading-none mt-0.5">§</span>
               <span>
-                <strong className="text-white">Full MongoDB Architecture:</strong> Mongoose schemas for
-                Users, Cases, Hearings, Orders, Approvals, and Decisions.
+                <strong className="text-white font-semibold">Live Docket &amp; Statutory Deadlines:</strong> Track daily courtrooms,
+                item numbers, and statutory limitation periods under the Limitation Act.
               </span>
             </div>
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+              <span className="text-[#c5a059] font-mono text-sm leading-none mt-0.5">§</span>
               <span>
-                <strong className="text-white">Client Portal:</strong> Real-time transparent visibility into
-                listings and orders with bilateral query messaging.
+                <strong className="text-white font-semibold">Client Transparency Portal:</strong> Litigants view their active
+                suits, next court appearances, operative orders, and directly communicate with counsel.
               </span>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Footer info */}
-        <div className="relative z-10 pt-4 border-t border-slate-800/80 text-xs text-slate-500 flex items-center justify-between">
-          <span>CounselBook v2.0 · React &amp; Next.js</span>
-          <button
-            onClick={() => setIsGuideOpen(true)}
-            className="text-amber-400 hover:text-amber-300 underline font-medium"
-          >
-            How to Connect MongoDB
-          </button>
+        {/* Bottom meta */}
+        <div className="relative z-10 text-[11px] text-[#6b7280] font-mono pt-4 border-t border-[#262a31] flex items-center justify-between">
+          <span>CounselBook Legal Console</span>
+          <span>Hilary Session 2026</span>
         </div>
       </div>
 
-      {/* Right Column: Clean Authentication Desk */}
-      <div className="lg:col-span-5 p-8 md:p-14 flex flex-col justify-center bg-slate-900/50 backdrop-blur-xl">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-md mx-auto"
-        >
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold font-display text-white tracking-tight">
-              Sign in to Chamber
+      {/* Right 5 Columns: Authentication Desk */}
+      <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-center bg-[#171a1f]">
+        <div className="w-full max-w-md mx-auto space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold font-display text-[#f9f8f6] tracking-tight">
+              Sign In to Chambers
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
-              Select a demo role below or enter your chamber credentials.
+            <p className="text-xs text-[#9ca3af] mt-1">
+              Select one of the 4 chamber roles below or enter your credentials.
             </p>
           </div>
 
-          {/* Quick Demo Role Selector */}
-          <div className="mb-6 p-4 rounded-xl bg-slate-950/80 border border-slate-800">
-            <p className="text-[11px] font-semibold text-amber-400 uppercase tracking-wider mb-2.5">
-              1-Click Demo Accounts:
+          {/* 4 Login Role Cards */}
+          <div className="space-y-2">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#c5a059] font-mono">
+              Chamber Logins (1-Click Fill):
             </p>
-            <div className="grid grid-cols-2 gap-2">
-              {DEMO_ACCOUNTS.map((acc) => {
-                const Icon = acc.icon;
-                const isSelected = email === acc.email;
+            <div className="space-y-2">
+              {DEMO_ROSTER.map((item) => {
+                const Icon = item.icon;
+                const isSelected = email === item.email;
                 return (
                   <button
-                    key={acc.email}
+                    key={item.email}
                     type="button"
-                    onClick={() => handleDemoSelect(acc.email, acc.pass)}
-                    className={`flex items-center gap-2 p-2 rounded-lg text-left text-xs font-medium border transition-all ${
+                    onClick={() => handleSelectRole(item.email, item.pass)}
+                    className={`w-full p-3 rounded-lg border text-left transition-colors flex items-center justify-between group ${
                       isSelected
-                        ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm"
-                        : "bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700 hover:bg-slate-850"
+                        ? "bg-[#232932] border-[#c5a059] text-white"
+                        : "bg-[#1d2127] border-[#2c313a] text-[#d1d5db] hover:border-[#3d434f] hover:bg-[#22272f]"
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-                    <span className="truncate">{acc.label}</span>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded bg-[#16191e] border border-[#2e343e] flex items-center justify-center text-[#c5a059] flex-shrink-0">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-white">{item.title}</span>
+                          <span className="text-[10px] font-mono text-[#9ca3af]">({item.name})</span>
+                        </div>
+                        <p className="text-[10px] text-[#9ca3af] truncate">{item.badge}</p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-mono text-[#c5a059] opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                      Select
+                    </span>
                   </button>
                 );
               })}
@@ -172,61 +195,46 @@ export function AuthScreen() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-[#d1d5db] mb-1">
                 Chamber Email
               </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="lawyer@chambers.in"
-                  required
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
-                />
-              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="lawyer@chambers.in"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[#121518] border border-[#2d323c] text-white text-xs placeholder:text-[#6b7280] focus:outline-none focus:border-[#c5a059] font-mono transition-colors"
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                Access Password
+              <label className="block text-xs font-semibold text-[#d1d5db] mb-1">
+                Password
               </label>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
-                />
-              </div>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[#121518] border border-[#2d323c] text-white text-xs placeholder:text-[#6b7280] focus:outline-none focus:border-[#c5a059] font-mono transition-colors"
+              />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-95 transition-opacity shadow-lg shadow-amber-500/20 disabled:opacity-50"
+              className="w-full py-2.5 px-4 rounded-lg bg-[#c5a059] hover:bg-[#d4b067] text-[#121518] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
             >
-              <span>{submitting ? "Verifying..." : "Enter Chamber"}</span>
+              <span>{submitting ? "Authenticating..." : "Access Chamber Desk"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          <div className="mt-8 pt-4 border-t border-slate-800 text-center">
-            <button
-              onClick={() => setIsGuideOpen(true)}
-              className="text-xs text-amber-400/90 hover:text-amber-300 font-medium inline-flex items-center gap-1.5"
-            >
-              <Database className="w-3.5 h-3.5" />
-              <span>Step-by-step MongoDB Connection Instructions</span>
-            </button>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
 }
-

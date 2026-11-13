@@ -5,56 +5,60 @@
 @tailwind utilities;
 
 :root {
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bg-parchment: #f9f8f6;
+  --ink-primary: #191817;
+  --ink-secondary: #5e5a54;
+  --border-paper: #e6e2d8;
+  --brass-accent: #b89552;
 }
 
 body {
   font-family: var(--font-body);
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--bg-parchment);
+  color: var(--ink-primary);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, .font-display {
+h1, h2, h3, h4, .font-display {
   font-family: var(--font-display);
 }
 
 /* Custom scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
+  background: #d8d3c7;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #b5ada0;
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Clean Paper Surface */
+.paper-card {
+  background-color: #ffffff;
+  border: 1px solid var(--border-paper);
+  border-radius: 0.875rem;
+  box-shadow: 0 1px 3px rgba(25, 24, 23, 0.03);
 }
 
-.glass-dark {
-  background: rgba(12, 23, 38, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+.paper-card-warm {
+  background-color: #fbfaf8;
+  border: 1px solid var(--border-paper);
+  border-radius: 0.875rem;
 }
 
-.gold-glow {
-  box-shadow: 0 0 25px -4px rgba(205, 160, 60, 0.35);
-}
-
-.gold-border {
-  border-color: rgba(205, 160, 60, 0.4);
+.paper-subtle {
+  background-color: #f5f3ee;
+  border: 1px solid #e2ded4;
 }
 

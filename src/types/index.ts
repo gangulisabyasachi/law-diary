@@ -24,6 +24,8 @@ export interface Order {
   title: string;
   text: string;
   addedBy?: string;
+  citation?: string;
+  pdfUrl?: string;
 }
 
 export interface ClientQuery {
@@ -32,6 +34,7 @@ export interface ClientQuery {
   text: string;
   ts: string;
   answered: boolean;
+  reply?: string;
 }
 
 export type CaseStatus = "Active" | "Listed" | "Reserved" | "Adjourned" | "Disposed";
@@ -39,14 +42,19 @@ export type CaseStatus = "Active" | "Listed" | "Reserved" | "Adjourned" | "Dispo
 export interface Case {
   id: string;
   caseNo: string;
+  cnr?: string;
   title: string;
   court: string;
+  courtRoom?: string;
+  itemNo?: string;
   judge?: string;
   clientId: string;
   associateIds: string[];
   status: CaseStatus;
   stage: string;
   filingDate: string;
+  limitationDate?: string;
+  limitationTask?: string;
   notes?: string;
   hearings: Hearing[];
   orders: Order[];

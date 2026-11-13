@@ -39,13 +39,13 @@ export function Modals() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0c0e]/70">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-lg overflow-hidden bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-lg overflow-hidden bg-white rounded-xl shadow-2xl border border-[#e6e2d8] flex flex-col max-h-[90vh]"
         >
           {name === "add-case" && (
             <AddCaseForm
@@ -177,12 +177,17 @@ function AddCaseForm({
 }) {
   const [title, setTitle] = useState("");
   const [caseNo, setCaseNo] = useState("");
+  const [cnr, setCnr] = useState("");
   const [filingDate, setFilingDate] = useState(new Date().toISOString().slice(0, 10));
   const [court, setCourt] = useState("");
+  const [courtRoom, setCourtRoom] = useState("");
+  const [itemNo, setItemNo] = useState("");
   const [judge, setJudge] = useState("");
   const [clientId, setClientId] = useState(clients[0]?.id || "");
   const [status, setStatus] = useState("Active");
   const [stage, setStage] = useState("Fresh Filing");
+  const [limitationDate, setLimitationDate] = useState("");
+  const [limitationTask, setLimitationTask] = useState("");
   const [selectedAssociates, setSelectedAssociates] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
 
@@ -193,14 +198,19 @@ function AddCaseForm({
     const newCase = {
       id: "c-" + Date.now(),
       caseNo: caseNo.trim(),
+      cnr: cnr.trim(),
       title: title.trim(),
       court: court.trim(),
+      courtRoom: courtRoom.trim(),
+      itemNo: itemNo.trim(),
       judge: judge.trim(),
       clientId,
       associateIds: selectedAssociates,
       status,
       stage: stage.trim() || "Fresh Filing",
       filingDate,
+      limitationDate: limitationDate.trim(),
+      limitationTask: limitationTask.trim(),
       notes: notes.trim(),
       hearings: [],
       orders: [],
@@ -250,6 +260,61 @@ function AddCaseForm({
               required
               value={filingDate}
               onChange={(e) => setFilingDate(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">CNR Number</label>
+            <input
+              type="text"
+              value={cnr}
+              onChange={(e) => setCnr(e.target.value)}
+              placeholder="e.g. DLHC01-002934-2024"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500 font-mono"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Court Room</label>
+            <input
+              type="text"
+              value={courtRoom}
+              onChange={(e) => setCourtRoom(e.target.value)}
+              placeholder="e.g. Court 14"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Item No</label>
+            <input
+              type="text"
+              value={itemNo}
+              onChange={(e) => setItemNo(e.target.value)}
+              placeholder="e.g. 09"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500 font-mono"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Limitation Deadline</label>
+            <input
+              type="date"
+              value={limitationDate}
+              onChange={(e) => setLimitationDate(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Limitation Task</label>
+            <input
+              type="text"
+              value={limitationTask}
+              onChange={(e) => setLimitationTask(e.target.value)}
+              placeholder="e.g. File appeal u/s 37 Arbitration Act"
               className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
             />
           </div>
@@ -447,12 +512,13 @@ function AddHearingForm({ caseId, onClose, onSubmit }: any) {
 function AddOrderForm({ caseId, onClose, onSubmit }: any) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [citation, setCitation] = useState("");
   const [text, setText] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !date || !text) return;
-    onSubmit({ title: title.trim(), date, text: text.trim() });
+    onSubmit({ title: title.trim(), date, citation: citation.trim(), text: text.trim() });
   };
 
   return (
@@ -475,15 +541,27 @@ function AddOrderForm({ caseId, onClose, onSubmit }: any) {
             className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
           />
         </div>
-        <div>
-          <label className="block font-semibold text-slate-700 mb-1">Date of Order</label>
-          <input
-            type="date"
-            required
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
-          />
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Date of Order</label>
+            <input
+              type="date"
+              required
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Citation (Optional)</label>
+            <input
+              type="text"
+              value={citation}
+              onChange={(e) => setCitation(e.target.value)}
+              placeholder="e.g. 2024 SCC OnLine Del 3412"
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500 font-mono"
+            />
+          </div>
         </div>
         <div>
           <label className="block font-semibold text-slate-700 mb-1">Operative Order Text</label>
@@ -580,10 +658,15 @@ function SetStatusForm({ caseId, currentStatus, currentStage, onClose, onSubmit 
 
 function EditCaseForm({ caseItem, clients, associates, onClose, onSubmit }: any) {
   const [title, setTitle] = useState(caseItem.title || "");
+  const [cnr, setCnr] = useState(caseItem.cnr || "");
   const [court, setCourt] = useState(caseItem.court || "");
+  const [courtRoom, setCourtRoom] = useState(caseItem.courtRoom || "");
+  const [itemNo, setItemNo] = useState(caseItem.itemNo || "");
   const [judge, setJudge] = useState(caseItem.judge || "");
   const [clientId, setClientId] = useState(caseItem.clientId || "");
   const [selectedAssociates, setSelectedAssociates] = useState<string[]>(caseItem.associateIds || []);
+  const [limitationDate, setLimitationDate] = useState(caseItem.limitationDate || "");
+  const [limitationTask, setLimitationTask] = useState(caseItem.limitationTask || "");
   const [nextDate, setNextDate] = useState("");
   const [notes, setNotes] = useState(caseItem.notes || "");
 
@@ -591,10 +674,15 @@ function EditCaseForm({ caseItem, clients, associates, onClose, onSubmit }: any)
     e.preventDefault();
     const fields = {
       title: title.trim(),
+      cnr: cnr.trim(),
       court: court.trim(),
+      courtRoom: courtRoom.trim(),
+      itemNo: itemNo.trim(),
       judge: judge.trim(),
       clientId,
       associateIds: selectedAssociates,
+      limitationDate: limitationDate.trim(),
+      limitationTask: limitationTask.trim(),
       notes: notes.trim(),
     };
     onSubmit(fields, nextDate || null);
@@ -636,6 +724,56 @@ function EditCaseForm({ caseItem, clients, associates, onClose, onSubmit }: any)
               type="text"
               value={judge}
               onChange={(e) => setJudge(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">CNR Number</label>
+            <input
+              type="text"
+              value={cnr}
+              onChange={(e) => setCnr(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500 font-mono"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Court Room</label>
+            <input
+              type="text"
+              value={courtRoom}
+              onChange={(e) => setCourtRoom(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Item No</label>
+            <input
+              type="text"
+              value={itemNo}
+              onChange={(e) => setItemNo(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500 font-mono"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Limitation Deadline</label>
+            <input
+              type="date"
+              value={limitationDate}
+              onChange={(e) => setLimitationDate(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Limitation Task</label>
+            <input
+              type="text"
+              value={limitationTask}
+              onChange={(e) => setLimitationTask(e.target.value)}
+              placeholder="e.g. Statutory limitation deadline"
               className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-amber-500"
             />
           </div>
