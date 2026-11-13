@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Scale, Database, Bell, LogOut, Search, Command } from "lucide-react";
+import { Scale, Database, Bell, LogOut, Search, Command, Users, ChevronDown } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 import { CommandPalette } from "./CommandPalette";
 
@@ -17,12 +17,25 @@ const PAGE_META: Record<string, { title: string; subtitle: string }> = {
   "case-detail": { title: "Case File", subtitle: "Orders, hearings timeline, and confidential briefs" },
 };
 
+const ROLES_LIST = [
+  { role: "lawyer", label: "Lawyer", name: "Adv. Arjun Mehta", email: "lawyer@chambers.in", pass: "lawyer123" },
+  { role: "associate", label: "Associate", name: "Priya Sharma", email: "associate@chambers.in", pass: "assoc123" },
+  { role: "client", label: "Client", name: "Rahul Verma", email: "client@chambers.in", pass: "client123" },
+  { role: "admin", label: "Site Admin", name: "Devika Nair", email: "admin@chambers.in", pass: "admin123" },
+];
+
 export function Navbar() {
-  const { activePage, currentUser, state, logout, setIsGuideOpen, setActivePage } = useChamber();
+  const { activePage, currentUser, state, logout, setIsGuideOpen, setActivePage, login } = useChamber();
   const [isCmdOpen, setIsCmdOpen] = useState(false);
+  const [showRoleMenu, setShowRoleMenu] = useState(false);
 
   const meta = PAGE_META[activePage] || { title: "CounselBook", subtitle: "Advocates' Chamber" };
   const pendingCount = state?.approvals?.length || 0;
+
+  const handleQuickSwitchRole = async (email: string, pass: string) => {
+    setShowRoleMenu(false);
+    await login(email, pass);
+  };
 
   return (
     <>
@@ -51,6 +64,47 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Quick 4-Role Switcher */}
+          <div className="relative">
+            <button
+              onClick={() => setShowRoleMenu(!showRoleMenu)}
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono bg-[#faf8f5] hover:bg-[#f2ece2] text-[#5c5852] border border-[#e2ded5] transition-colors"
+              title="Switch between the 4 Chamber roles"
+            >
+              <Users className="w-3.5 h-3.5 text-[#c5a059]" />
+              <span className="text-[11px] font-semibold text-[#191817]">
+                Role: <span className="text-[#b89552] uppercase">{currentUser?.role || "lawyer"}</span>
+              </span>
+              <ChevronDown className="w-3 h-3 text-[#8c877e]" />
+            </button>
+
+            {showRoleMenu && (
+              <div className="absolute right-0 mt-2 w-56 rounded-lg bg-[#14171a] border border-[#2b303a] shadow-xl py-1.5 z-50 text-xs">
+                <div className="px-3 py-1.5 border-b border-[#242930] text-[10px] uppercase font-mono text-[#8c877e]">
+                  Switch Demo Account (1-Click)
+                </div>
+                {ROLES_LIST.map((r) => (
+                  <button
+                    key={r.role}
+                    type="button"
+                    onClick={() => handleQuickSwitchRole(r.email, r.pass)}
+                    className={`w-full px-3 py-2 text-left flex items-center justify-between hover:bg-[#20252b] transition-colors ${
+                      currentUser?.role === r.role ? "text-[#c5a059] font-bold" : "text-[#d1d5db]"
+                    }`}
+                  >
+                    <div>
+                      <span className="block font-medium">{r.label}</span>
+                      <span className="text-[10px] text-[#8c877e]">{r.name}</span>
+                    </div>
+                    {currentUser?.role === r.role && (
+                      <span className="text-[10px] font-mono text-[#c5a059]">Active</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* MongoDB Connection Status Pill */}
           <button
             onClick={() => setIsGuideOpen(true)}
