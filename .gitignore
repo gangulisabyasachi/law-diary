@@ -13,6 +13,8 @@
 
 # Environment files and credentials (NEVER commit secrets!)
 .env
+.env*
+.env.example
 .env*.local
 .env.local
 .env.development.local

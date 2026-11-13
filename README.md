@@ -39,18 +39,13 @@ npm install
 ```
 
 ### 2. Configure Environment Variables
-Copy `.env.example` to `.env.local`:
-```bash
-cp .env.example .env.local
-```
-
-Configure your MongoDB URI and secret in `.env.local`:
+Create a `.env.local` file in the project root:
 ```env
 # MongoDB Atlas Cloud or Local MongoDB
 MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/counselbook?retryWrites=true&w=majority
 
 # JWT Secret
-JWT_SECRET=counselbook-court-vault-secret-key-2026-prod-jwt-9842
+JWT_SECRET=your-secret-key-here
 
 PORT=3000
 ```
@@ -122,3 +117,4 @@ The application automatically seeds 6 demo accounts upon first connection:
 
 ## 📄 License
 MIT
+
