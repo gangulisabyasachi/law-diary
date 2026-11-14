@@ -127,69 +127,69 @@ export default function PricingPage() {
   return (
     <PublicLayout>
       {/* Header Banner */}
-      <section className="py-20 md:py-28 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-[#3df2e0]/20 to-transparent dark:from-[#3df2e0]/10 dark:via-transparent blur-3xl rounded-full pointer-events-none" />
+      <section className="py-20 md:py-28 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-[#f3eee3]/20 to-transparent dark:from-[#f3eee3]/10 dark:via-transparent blur-3xl rounded-full pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-cinzel font-bold tracking-widest bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-cinzel font-bold tracking-widest bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
             <span>CHAMBER RETAINER TIERS</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] tracking-tight leading-[1.2]">
+          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] tracking-tight leading-[1.2]">
             Transparent Retainers, Sovereign Peace of Mind.
           </h1>
 
-          <p className="text-base sm:text-lg text-[#0b0f14]/75 dark:text-[#3df2e0]/70 font-serif italic max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-[#111111]/75 dark:text-[#f3eee3]/70 font-serif italic max-w-2xl mx-auto leading-relaxed">
             Choose the subscription tier tailored to your chamber size. No per-case fees, no hidden surcharges, and total data sovereignty.
           </p>
         </div>
       </section>
 
       {/* 3 Pricing Cards */}
-      <section className="py-20 md:py-28 max-w-7xl mx-auto px-5 sm:px-8 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+      <section className="py-20 md:py-28 max-w-7xl mx-auto px-5 sm:px-8 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
           {plans.map((p, idx) => (
             <div
               key={idx}
               className={`p-8 sm:p-9 rounded-3xl flex flex-col justify-between transition-all relative ${
                 p.highlight
-                  ? "bg-white dark:bg-[#0f151c] border-2 border-[#0b0f14] dark:border-[#3df2e0] shadow-xl shadow-black/5 dark:shadow-[#3df2e0]/5"
-                  : "bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs"
+                  ? "bg-white dark:bg-[#181818] border-2 border-[#111111] dark:border-[#f3eee3] shadow-xl shadow-black/5 dark:shadow-[#f3eee3]/5"
+                  : "bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
               }`}
             >
               {p.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-cinzel font-bold uppercase tracking-widest bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-xs">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-cinzel font-bold uppercase tracking-widest bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white shadow-xs">
                   {p.badge}
                 </div>
               )}
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                  <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                     {p.name}
                   </h3>
-                  <p className="text-xs font-serif italic text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-1">
+                  <p className="text-xs font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1">
                     {p.tagline}
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-1.5 pb-6 border-b border-[#0b0f14]/10 dark:border-[#3df2e0]/15">
-                  <span className="text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                <div className="flex items-baseline gap-1.5 pb-6 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+                  <span className="text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                     {p.price}
                   </span>
-                  <span className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-serif">
+                  <span className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif">
                     {p.period}
                   </span>
                 </div>
 
                 <div className="space-y-3">
-                  <span className="text-[10px] font-cinzel font-bold uppercase tracking-wider text-[#0b0f14]/60 dark:text-[#3df2e0]/60 block">
+                  <span className="text-[10px] font-cinzel font-bold uppercase tracking-wider text-[#111111]/60 dark:text-[#f3eee3]/60 block">
                     Included Capabilities
                   </span>
-                  <ul className="space-y-2.5 text-xs font-serif text-[#0b0f14]/85 dark:text-[#3df2e0]/85">
+                  <ul className="space-y-2.5 text-xs font-serif text-[#111111]/85 dark:text-[#f3eee3]/85">
                     {p.features.map((f, i) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0 mt-0.5" />
+                        <Check className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
@@ -197,7 +197,7 @@ export default function PricingPage() {
 
                   {p.notIncluded.length > 0 && (
                     <div className="pt-3 opacity-60">
-                      <ul className="space-y-2 text-xs font-serif text-[#0b0f14]/60 dark:text-[#3df2e0]/50 line-through">
+                      <ul className="space-y-2 text-xs font-serif text-[#111111]/60 dark:text-[#f3eee3]/50 line-through">
                         {p.notIncluded.map((f, i) => (
                           <li key={i} className="flex items-center gap-2.5">
                             <X className="w-3.5 h-3.5 flex-shrink-0" />
@@ -210,11 +210,11 @@ export default function PricingPage() {
                 </div>
               </div>
 
-              <div className="pt-8 mt-6 border-t border-[#0b0f14]/10 dark:border-[#3df2e0]/15">
+              <div className="pt-8 mt-6 border-t border-[#111111]/10 dark:border-[#f3eee3]/15">
                 {p.isCustom ? (
                   <Link
                     href="/contact"
-                    className="w-full py-3 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 font-cinzel font-bold text-xs tracking-wider text-[#0b0f14] dark:text-[#3df2e0] hover:bg-[#f3efe6] dark:hover:bg-[#1a232f] transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-bold text-xs tracking-wider text-[#111111] dark:text-[#f3eee3] hover:bg-[#f3efe6] dark:hover:bg-[#1a232f] transition-all flex items-center justify-center gap-2"
                   >
                     <span>{p.cta}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -230,8 +230,8 @@ export default function PricingPage() {
                     }}
                     className={`w-full py-3 rounded-2xl font-cinzel font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${
                       p.highlight
-                        ? "bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2]"
-                        : "bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] hover:bg-[#f3efe6]"
+                        ? "bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm"
+                        : "bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] hover:bg-[#f3efe6]"
                     }`}
                   >
                     <span>{currentUser ? "Open Dashboard" : p.cta}</span>
@@ -245,49 +245,49 @@ export default function PricingPage() {
       </section>
 
       {/* Feature Comparison Matrix */}
-      <section className="py-20 md:py-28 max-w-6xl mx-auto px-5 sm:px-8 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+      <section className="py-20 md:py-28 max-w-6xl mx-auto px-5 sm:px-8 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
             DETAILED SPECIFICATIONS
           </span>
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
             Compare Chamber Capabilities
           </h2>
-          <p className="text-sm font-serif italic text-[#0b0f14]/70 dark:text-[#3df2e0]/60">
+          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60">
             A granular comparison of capabilities across practice tiers.
           </p>
         </div>
 
-        <div className="rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#0f151c] overflow-hidden shadow-xs">
+        <div className="rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-serif">
               <thead>
-                <tr className="border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-[#0b0f14]/5 dark:bg-[#0b0f14]">
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Feature</th>
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Solo</th>
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] bg-[#3df2e0]/10 dark:bg-[#3df2e0]/10">Chamber Pro</th>
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Enterprise</th>
+                <tr className="border-b border-[#111111]/15 dark:border-[#f3eee3]/20 bg-[#111111]/5 dark:bg-[#111111]">
+                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Feature</th>
+                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Solo</th>
+                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] bg-[#f3eee3]/10 dark:bg-[#f3eee3]/10">Chamber Pro</th>
+                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Enterprise</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#0b0f14]/10 dark:divide-[#3df2e0]/15">
+              <tbody className="divide-y divide-[#111111]/10 dark:divide-[#f3eee3]/15">
                 {comparisonRows.map((row, idx) => (
                   <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
-                    <td className="p-4 sm:p-5 font-semibold text-[#0b0f14] dark:text-[#3df2e0]">{row.feature}</td>
-                    <td className="p-4 sm:p-5 text-[#0b0f14]/80 dark:text-[#3df2e0]/80">
+                    <td className="p-4 sm:p-5 font-semibold text-[#111111] dark:text-[#f3eee3]">{row.feature}</td>
+                    <td className="p-4 sm:p-5 text-[#111111]/80 dark:text-[#f3eee3]/80">
                       {typeof row.solo === "boolean" ? (
                         row.solo ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <X className="w-4 h-4 opacity-30" />
                       ) : (
                         row.solo
                       )}
                     </td>
-                    <td className="p-4 sm:p-5 font-semibold text-[#0b0f14] dark:text-[#3df2e0] bg-[#3df2e0]/10 dark:bg-[#3df2e0]/10">
+                    <td className="p-4 sm:p-5 font-semibold text-[#111111] dark:text-[#f3eee3] bg-[#f3eee3]/10 dark:bg-[#f3eee3]/10">
                       {typeof row.pro === "boolean" ? (
                         row.pro ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <X className="w-4 h-4 opacity-30" />
                       ) : (
                         row.pro
                       )}
                     </td>
-                    <td className="p-4 sm:p-5 text-[#0b0f14]/80 dark:text-[#3df2e0]/80">
+                    <td className="p-4 sm:p-5 text-[#111111]/80 dark:text-[#f3eee3]/80">
                       {typeof row.enterprise === "boolean" ? (
                         row.enterprise ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <X className="w-4 h-4 opacity-30" />
                       ) : (
@@ -305,10 +305,10 @@ export default function PricingPage() {
       {/* FAQ Section */}
       <section className="py-20 md:py-28 max-w-4xl mx-auto px-5 sm:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
             TRANSPARENCY &amp; TRUST
           </span>
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
             Frequently Answered Questions
           </h2>
         </div>
@@ -317,22 +317,22 @@ export default function PricingPage() {
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#0f151c] overflow-hidden"
+              className="rounded-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] overflow-hidden"
             >
               <button
                 type="button"
                 onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                className="w-full p-5 text-left flex items-center justify-between text-xs sm:text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]"
+                className="w-full p-5 text-left flex items-center justify-between text-xs sm:text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3]"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-[#0b0f14]/65 dark:text-[#3df2e0]/60 transition-transform ${
+                  className={`w-4 h-4 text-[#111111]/65 dark:text-[#f3eee3]/60 transition-transform ${
                     activeFaq === i ? "rotate-180" : ""
                   }`}
                 />
               </button>
               {activeFaq === i && (
-                <div className="px-5 pb-5 pt-1 text-xs font-serif leading-relaxed text-[#0b0f14]/75 dark:text-[#3df2e0]/70 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                <div className="px-5 pb-5 pt-1 text-xs font-serif leading-relaxed text-[#111111]/75 dark:text-[#f3eee3]/70 border-t border-[#111111]/15 dark:border-[#f3eee3]/20">
                   {faq.a}
                 </div>
               )}

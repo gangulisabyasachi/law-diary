@@ -59,20 +59,20 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   ].filter((a) => !q || a.label.toLowerCase().includes(q));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 p-4 bg-[#0b0f14]/80 backdrop-blur-md transition-all">
-      <div className="relative w-full max-w-xl overflow-hidden bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/30 rounded-3xl shadow-2xl text-[#0b0f14] dark:text-[#3df2e0] animate-in fade-in-0 zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 p-4 bg-[#111111]/80 backdrop-blur-md transition-all">
+      <div className="relative w-full max-w-xl overflow-hidden bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/30 rounded-3xl shadow-2xl text-[#111111] dark:text-[#f3eee3] animate-in fade-in-0 zoom-in-95 duration-150">
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3.5 px-5 py-4 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-[#3df2e0]/10 dark:bg-[#0b0f14]">
-          <Search className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
+        <div className="flex items-center gap-3.5 px-5 py-4 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 bg-[#f3eee3]/10 dark:bg-[#111111]">
+          <Search className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by CNR, Case Number, Court, Bench or Client..."
-            className="w-full bg-transparent text-sm text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 dark:placeholder:text-[#3df2e0]/40 focus:outline-none font-sans"
+            className="w-full bg-transparent text-sm text-[#111111] dark:text-[#f3eee3] placeholder:text-[#111111]/50 dark:placeholder:text-[#f3eee3]/40 focus:outline-none font-sans"
           />
-          <kbd className="px-2 py-0.5 text-[9.5px] bg-[#0b0f14]/10 dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/30 rounded-md text-[#0b0f14] dark:text-[#3df2e0] font-mono">
+          <kbd className="px-2 py-0.5 text-[9.5px] bg-[#111111]/10 dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/30 rounded-md text-[#111111] dark:text-[#f3eee3] font-mono">
             ESC
           </kbd>
         </div>
@@ -82,7 +82,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           {/* Quick Actions */}
           {actions.length > 0 && (
             <div>
-              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mb-1.5">
+              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#111111]/60 dark:text-[#f3eee3]/60 mb-1.5">
                 Chamber Shortcuts
               </p>
               <div className="space-y-1">
@@ -92,10 +92,10 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                     <button
                       key={i}
                       onClick={act.action}
-                      className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#3df2e0]/15 dark:hover:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] transition-colors text-left group"
+                      className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#f3eee3]/15 dark:hover:bg-[#202020] text-[#111111] dark:text-[#f3eee3] transition-colors text-left group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-xl bg-[#0b0f14] dark:bg-[#3df2e0]/15 flex items-center justify-center text-[#3df2e0]">
+                        <div className="w-7 h-7 rounded-xl bg-[#111111] dark:bg-[#f3eee3]/15 flex items-center justify-center text-[#f3eee3]">
                           <Icon className="w-3.5 h-3.5" />
                         </div>
                         <span className="font-sans font-medium">{act.label}</span>
@@ -111,7 +111,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           {/* Matching Cases */}
           {matchingCases.length > 0 && (
             <div>
-              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mb-1.5">
+              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#111111]/60 dark:text-[#f3eee3]/60 mb-1.5">
                 Matching Matters ({matchingCases.length})
               </p>
               <div className="space-y-1">
@@ -119,17 +119,17 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                   <button
                     key={c.id}
                     onClick={() => { openCase(c.id); onClose(); }}
-                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#3df2e0]/15 dark:hover:bg-[#141d27] text-left transition-colors group"
+                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#f3eee3]/15 dark:hover:bg-[#202020] text-left transition-colors group"
                   >
                     <div className="min-w-0 flex-1 pr-3">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-[#0b0f14] dark:text-[#3df2e0]">{c.caseNo}</span>
-                        {c.cnr && <span className="font-mono text-[10px] text-[#0b0f14]/60 dark:text-[#3df2e0]/60">({c.cnr})</span>}
+                        <span className="font-mono font-bold text-[#111111] dark:text-[#f3eee3]">{c.caseNo}</span>
+                        {c.cnr && <span className="font-mono text-[10px] text-[#111111]/60 dark:text-[#f3eee3]/60">({c.cnr})</span>}
                       </div>
-                      <p className="text-xs text-[#0b0f14] dark:text-[#3df2e0] font-medium truncate mt-0.5 font-sans">{c.title}</p>
-                      <p className="text-[10.5px] text-[#0b0f14]/60 dark:text-[#3df2e0]/60 truncate font-serif italic">{c.court}</p>
+                      <p className="text-xs text-[#111111] dark:text-[#f3eee3] font-medium truncate mt-0.5 font-sans">{c.title}</p>
+                      <p className="text-[10.5px] text-[#111111]/60 dark:text-[#f3eee3]/60 truncate font-serif italic">{c.court}</p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#0b0f14]/50 dark:text-[#3df2e0]/50 group-hover:text-[#0b0f14] dark:group-hover:text-[#3df2e0] group-hover:translate-x-1 transition-all flex-shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#111111]/50 dark:text-[#f3eee3]/50 group-hover:text-[#111111] dark:group-hover:text-[#f3eee3] group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </button>
                 ))}
               </div>
@@ -139,7 +139,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           {/* Matching Clients */}
           {matchingClients.length > 0 && (
             <div>
-              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mb-1.5">
+              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#111111]/60 dark:text-[#f3eee3]/60 mb-1.5">
                 Registered Clients ({matchingClients.length})
               </p>
               <div className="space-y-1">
@@ -147,18 +147,18 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                   <button
                     key={u.id}
                     onClick={() => { setActivePage("clients"); onClose(); }}
-                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#3df2e0]/15 dark:hover:bg-[#141d27] text-left transition-colors group"
+                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#f3eee3]/15 dark:hover:bg-[#202020] text-left transition-colors group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-xl bg-[#0b0f14] dark:bg-[#3df2e0]/15 flex items-center justify-center text-[#3df2e0]">
+                      <div className="w-7 h-7 rounded-xl bg-[#111111] dark:bg-[#f3eee3]/15 flex items-center justify-center text-[#f3eee3]">
                         <Users className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <span className="font-bold text-[#0b0f14] dark:text-[#3df2e0] block font-sans">{u.name}</span>
-                        <span className="text-[10px] text-[#0b0f14]/60 dark:text-[#3df2e0]/60 font-mono">{u.email}</span>
+                        <span className="font-bold text-[#111111] dark:text-[#f3eee3] block font-sans">{u.name}</span>
+                        <span className="text-[10px] text-[#111111]/60 dark:text-[#f3eee3]/60 font-mono">{u.email}</span>
                       </div>
                     </div>
-                    <span className="text-[10.5px] font-semibold text-[#0b0f14] dark:text-[#3df2e0] group-hover:underline">Inspect Briefs →</span>
+                    <span className="text-[10.5px] font-semibold text-[#111111] dark:text-[#f3eee3] group-hover:underline">Inspect Briefs →</span>
                   </button>
                 ))}
               </div>
@@ -166,7 +166,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           )}
 
           {q && matchingCases.length === 0 && matchingClients.length === 0 && actions.length === 0 && (
-            <div className="p-8 text-center text-[#0b0f14]/60 dark:text-[#3df2e0]/60">
+            <div className="p-8 text-center text-[#111111]/60 dark:text-[#f3eee3]/60">
               <p className="text-xs font-semibold">No court matters found matching &ldquo;{query}&rdquo;</p>
             </div>
           )}

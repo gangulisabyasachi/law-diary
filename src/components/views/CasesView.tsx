@@ -70,11 +70,11 @@ export function CasesView() {
   };
 
   const statusColor: Record<string, string> = {
-    Active: "bg-[#3df2e0]/25 dark:bg-[#3df2e0]/15 text-[#0b0f14] dark:text-[#3df2e0] border-[#0b0f14]/50 dark:border-[#3df2e0]/40",
-    Listed: "bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border-[#0b0f14]/15 dark:border-[#3df2e0]/20",
-    Reserved: "bg-white dark:bg-[#141d27] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 border-[#0b0f14]/15 dark:border-[#3df2e0]/20",
+    Active: "bg-[#f3eee3]/25 dark:bg-[#f3eee3]/15 text-[#111111] dark:text-[#f3eee3] border-[#111111]/50 dark:border-[#f3eee3]/40",
+    Listed: "bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border-[#111111]/15 dark:border-[#f3eee3]/20",
+    Reserved: "bg-white dark:bg-[#202020] text-[#111111]/65 dark:text-[#f3eee3]/60 border-[#111111]/15 dark:border-[#f3eee3]/20",
     Adjourned: "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/40",
-    Disposed: "bg-white dark:bg-[#141d27] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 border-[#0b0f14]/15 dark:border-[#3df2e0]/20",
+    Disposed: "bg-white dark:bg-[#202020] text-[#111111]/65 dark:text-[#f3eee3]/60 border-[#111111]/15 dark:border-[#f3eee3]/20",
   };
 
   const tabs = [
@@ -90,13 +90,13 @@ export function CasesView() {
       {/* Search and Action Bar */}
       <div className="flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center justify-between">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0b0f14]/65 dark:text-[#3df2e0]/60" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111]/65 dark:text-[#f3eee3]/60" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by CNR, Case Number, Court, Bench or Stage..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#0f151c] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#8e929f] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] shadow-xs transition-colors font-sans"
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] text-xs text-[#111111] dark:text-[#f3eee3] placeholder:text-[#8e929f] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] shadow-xs transition-colors font-sans"
           />
         </div>
 
@@ -104,7 +104,7 @@ export function CasesView() {
           {(currentUser.role === "lawyer" || currentUser.role === "associate") && (
             <button
               onClick={() => openModal("add-case")}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] text-xs font-cinzel font-bold tracking-wider transition-all shadow-md"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm text-xs font-cinzel font-bold tracking-wider transition-all shadow-md"
             >
               <Plus className="w-4 h-4" />
               <span>File Fresh Matter</span>
@@ -113,17 +113,17 @@ export function CasesView() {
 
           <button
             onClick={handleExport}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] hover:bg-white dark:hover:bg-[#161820] text-xs font-cinzel font-semibold tracking-wider transition-colors shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] hover:bg-white dark:hover:bg-[#161820] text-xs font-cinzel font-semibold tracking-wider transition-colors shadow-xs"
             title="Export master case register to JSON"
           >
-            <Download className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" />
+            <Download className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" />
             <span className="hidden sm:inline">Export Register</span>
           </button>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2.5 overflow-x-auto pb-1 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+      <div className="flex gap-2.5 overflow-x-auto pb-1 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
         {tabs.map((t) => {
           const isActive = filter === t.id;
           const count = t.id === "all" ? visibleCases.length : visibleCases.filter((c) => c.status === t.id).length;
@@ -134,12 +134,12 @@ export function CasesView() {
               onClick={() => setFilter(t.id)}
               className={`px-4 py-2 rounded-xl text-xs font-cinzel font-bold tracking-wider whitespace-nowrap transition-all flex items-center gap-2 ${
                 isActive
-                  ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
-                  : "bg-white dark:bg-[#0f151c] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white border border-[#0b0f14]/15 dark:border-[#3df2e0]/20"
+                  ? "bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white shadow-sm"
+                  : "bg-white dark:bg-[#181818] text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white border border-[#111111]/15 dark:border-[#f3eee3]/20"
               }`}
             >
               <span>{t.label}</span>
-              <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-mono ${isActive ? "bg-[#e8d5b5]/20 text-[#e8d5b5] dark:bg-[#1b1d3a]/20 dark:text-[#1b1d3a]" : "bg-white dark:bg-[#141d27] text-[#0b0f14]/65 dark:text-[#3df2e0]/60"}`}>
+              <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-mono ${isActive ? "bg-white/25 text-white" : "bg-white dark:bg-[#202020] text-[#111111]/65 dark:text-[#f3eee3]/60"}`}>
                 {count}
               </span>
             </button>
@@ -148,11 +148,11 @@ export function CasesView() {
       </div>
 
       {/* Indian Court Matters Table */}
-      <div className="rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#0f151c] overflow-hidden shadow-xs">
+      <div className="rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-white dark:bg-[#0b0f14] border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-cinzel text-[10px] uppercase tracking-wider">
+              <tr className="bg-white dark:bg-[#111111] border-b border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/65 dark:text-[#f3eee3]/60 font-cinzel text-[10px] uppercase tracking-wider">
                 <th className="py-4 px-5 font-bold">Case No &amp; CNR</th>
                 <th className="py-4 px-5 font-bold">Parties (Cause Title)</th>
                 <th className="py-4 px-5 font-bold">Court &amp; Presiding Bench</th>
@@ -164,10 +164,10 @@ export function CasesView() {
             <tbody className="divide-y divide-[#e5dfd2] dark:divide-[#222630]">
               {filteredCases.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-16 text-center text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
-                    <Scale className="w-8 h-8 mx-auto mb-2 text-[#0b0f14] dark:text-[#3df2e0]" />
-                    <p className="font-bold font-cinzel text-sm text-[#0b0f14] dark:text-[#3df2e0]">No registered court matters found.</p>
-                    <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-1">Try modifying your search or filter criteria.</p>
+                  <td colSpan={6} className="py-16 text-center text-[#111111]/65 dark:text-[#f3eee3]/60">
+                    <Scale className="w-8 h-8 mx-auto mb-2 text-[#111111] dark:text-[#f3eee3]" />
+                    <p className="font-bold font-cinzel text-sm text-[#111111] dark:text-[#f3eee3]">No registered court matters found.</p>
+                    <p className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60 mt-1">Try modifying your search or filter criteria.</p>
                   </td>
                 </tr>
               ) : (
@@ -183,18 +183,18 @@ export function CasesView() {
                     >
                       {/* Case No & CNR */}
                       <td className="py-4 px-5">
-                        <div className="font-mono font-bold text-[#0b0f14] dark:text-[#3df2e0] group-hover:text-[#0b0f14] dark:group-hover:text-[#3df2e0] transition-colors">
+                        <div className="font-mono font-bold text-[#111111] dark:text-[#f3eee3] group-hover:text-[#111111] dark:group-hover:text-[#f3eee3] transition-colors">
                           {c.caseNo}
                         </div>
                         {c.cnr && (
                           <div className="flex items-center gap-1.5 mt-1">
-                            <span className="font-mono text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+                            <span className="font-mono text-[10px] text-[#111111]/65 dark:text-[#f3eee3]/60">
                               {c.cnr}
                             </span>
                             <button
                               type="button"
                               onClick={(e) => handleCopyCNR(e, c.cnr || "")}
-                              className="text-[#0b0f14] dark:text-[#3df2e0] hover:opacity-80 p-0.5 rounded"
+                              className="text-[#111111] dark:text-[#f3eee3] hover:opacity-80 p-0.5 rounded"
                               title="Copy 16-digit CNR Number"
                             >
                               {copiedCNR === c.cnr ? (
@@ -206,7 +206,7 @@ export function CasesView() {
                           </div>
                         )}
                         {hasPending && (
-                          <span className="inline-block mt-1.5 text-[9px] font-cinzel font-bold px-2 py-0.5 rounded-full bg-[#3df2e0]/30 dark:bg-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/50 dark:border-[#3df2e0]/40">
+                          <span className="inline-block mt-1.5 text-[9px] font-cinzel font-bold px-2 py-0.5 rounded-full bg-[#f3eee3]/30 dark:bg-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] border border-[#111111]/50 dark:border-[#f3eee3]/40">
                             Drafts Pending Review
                           </span>
                         )}
@@ -214,27 +214,27 @@ export function CasesView() {
 
                       {/* Title */}
                       <td className="py-4 px-5 max-w-xs">
-                        <div className="font-serif font-bold text-xs text-[#0b0f14] dark:text-[#3df2e0] truncate">
+                        <div className="font-serif font-bold text-xs text-[#111111] dark:text-[#f3eee3] truncate">
                           {c.title}
                         </div>
-                        <div className="text-[11px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 truncate mt-0.5 font-serif italic">
+                        <div className="text-[11px] text-[#111111]/65 dark:text-[#f3eee3]/60 truncate mt-0.5 font-serif italic">
                           Filed: {formatDate(c.filingDate)}
                         </div>
                       </td>
 
                       {/* Court & Bench */}
                       <td className="py-4 px-5 max-w-xs">
-                        <div className="text-xs font-serif text-[#0b0f14] dark:text-[#3df2e0] truncate">
+                        <div className="text-xs font-serif text-[#111111] dark:text-[#f3eee3] truncate">
                           {c.court}
                         </div>
-                        <div className="text-[11px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 truncate mt-0.5 font-serif italic">
+                        <div className="text-[11px] text-[#111111]/65 dark:text-[#f3eee3]/60 truncate mt-0.5 font-serif italic">
                           {c.judge || "Hon'ble Bench"} {c.courtRoom ? `· ${c.courtRoom}` : ""}
                         </div>
                       </td>
 
                       {/* Stage */}
                       <td className="py-4 px-5">
-                        <span className="inline-block px-3 py-1 rounded-xl text-[11px] font-serif bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                        <span className="inline-block px-3 py-1 rounded-xl text-[11px] font-serif bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20">
                           {c.stage}
                         </span>
                       </td>
@@ -243,17 +243,17 @@ export function CasesView() {
                       <td className="py-4 px-5">
                         {nextH ? (
                           <div>
-                            <span className="font-mono text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                            <span className="font-mono text-xs font-bold text-[#111111] dark:text-[#f3eee3]">
                               {formatDate(nextH.date)}
                             </span>
                             {c.itemNo && (
-                              <div className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-0.5">
+                              <div className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] mt-0.5">
                                 Item {c.itemNo}
                               </div>
                             )}
                           </div>
                         ) : (
-                          <span className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60">—</span>
+                          <span className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60">—</span>
                         )}
                       </td>
 
@@ -261,7 +261,7 @@ export function CasesView() {
                       <td className="py-4 px-5 text-right">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-[9.5px] font-bold font-cinzel border ${
-                            statusColor[c.status] || "bg-white text-[#0b0f14] border-[#0b0f14]/15"
+                            statusColor[c.status] || "bg-white text-[#111111] border-[#111111]/15"
                           }`}
                         >
                           {c.status.toUpperCase()}

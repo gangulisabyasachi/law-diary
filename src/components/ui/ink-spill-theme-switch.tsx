@@ -300,7 +300,7 @@ export default function InkSpillThemeSwitch({
         {/* Base Layer: Currently Active Theme Content */}
         <div
           ref={baseRef}
-          className={`ist-layer ${theme === "dark" ? "dark bg-[#0b0f14] text-[#3df2e0]" : "bg-[#3df2e0] text-[#0b0f14]"}`}
+          className={`ist-layer ${theme === "dark" ? "dark bg-[#111111] text-[#f3eee3]" : "bg-[#f3eee3] text-[#111111]"}`}
           data-theme={theme}
         >
           <InkContext.Provider value={{ theme, toggle, spilling: !!spill }}>
@@ -312,7 +312,7 @@ export default function InkSpillThemeSwitch({
         {spill && (
           <div
             ref={topRef}
-            className={`ist-layer ist-top ${spill.to === "dark" ? "dark bg-[#0b0f14] text-[#3df2e0]" : "bg-[#3df2e0] text-[#0b0f14]"}`}
+            className={`ist-layer ist-top ${spill.to === "dark" ? "dark bg-[#111111] text-[#f3eee3]" : "bg-[#f3eee3] text-[#111111]"}`}
             data-theme={spill.to}
             aria-hidden="true"
             inert

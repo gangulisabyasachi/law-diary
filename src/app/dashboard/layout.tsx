@@ -29,11 +29,11 @@ export default function DashboardLayout({
 
   if (loading || !currentUser) {
     return (
-      <div className="min-h-screen bg-[#3df2e0] dark:bg-[#0b0f14] flex flex-col items-center justify-center text-[#0b0f14] dark:text-[#3df2e0]">
-        <div className="w-12 h-12 rounded-2xl bg-[#0b0f14] border border-[#3df2e0]/60 flex items-center justify-center shadow-lg">
-          <Scale className="w-6 h-6 text-[#3df2e0]" />
+      <div className="min-h-screen bg-[#f3eee3] dark:bg-[#111111] flex flex-col items-center justify-center text-[#111111] dark:text-[#f3eee3]">
+        <div className="w-12 h-12 rounded-2xl bg-[#111111] border border-[#f3eee3]/60 flex items-center justify-center shadow-lg">
+          <Scale className="w-6 h-6 text-[#f3eee3]" />
         </div>
-        <p className="mt-4 text-xs font-cinzel font-bold tracking-widest uppercase text-[#0b0f14] dark:text-[#3df2e0]">
+        <p className="mt-4 text-xs font-cinzel font-bold tracking-widest uppercase text-[#111111] dark:text-[#f3eee3]">
           UPDATED LAW DIARY
         </p>
       </div>
@@ -41,7 +41,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen flex bg-[#3df2e0] dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] font-sans selection:bg-[#0b0f14] selection:text-[#3df2e0] dark:selection:bg-[#3df2e0] dark:selection:text-[#0b0f14]">
+    <div className="min-h-screen flex bg-[#f3eee3] dark:bg-[#111111] text-[#111111] dark:text-[#f3eee3] font-sans selection:bg-[#111111] selection:text-[#f3eee3] dark:selection:bg-[#f3eee3] dark:selection:text-[#111111]">
       {/* Chamber Sidebar */}
       <Sidebar />
 

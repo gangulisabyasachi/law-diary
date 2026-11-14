@@ -147,22 +147,22 @@ export function DashboardView() {
   return (
     <div className="space-y-7">
       {/* Real Litigation Status Header Bar */}
-      <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-xs transition-all">
+      <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-xs transition-all">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#0b0f14] border border-[#0b0f14]/50 dark:border-[#3df2e0]/50 flex items-center justify-center text-[#0b0f14] dark:text-[#3df2e0] shadow-sm flex-shrink-0 group">
+          <div className="w-12 h-12 rounded-2xl bg-[#111111] border border-[#111111]/50 dark:border-[#f3eee3]/50 flex items-center justify-center text-[#111111] dark:text-[#f3eee3] shadow-sm flex-shrink-0 group">
             <Gavel className="w-5 h-5 transition-transform group-hover:scale-110" />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="text-xs font-cinzel font-bold tracking-widest text-[#0b0f14] dark:text-[#3df2e0] uppercase">
+              <span className="text-xs font-cinzel font-bold tracking-widest text-[#111111] dark:text-[#f3eee3] uppercase">
                 DAILY CAUSE LIST &amp; CHAMBER CAUSE BOARD
               </span>
-              <span className="w-2 h-2 rounded-full bg-[#0b0f14] dark:bg-[#3df2e0] animate-pulse" />
-              <span className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+              <span className="w-2 h-2 rounded-full bg-[#111111] dark:bg-[#f3eee3] animate-pulse" />
+              <span className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
                 {new Date().toLocaleDateString("en-IN", { weekday: "long", year: "numeric", month: "short", day: "numeric" })}
               </span>
             </div>
-            <p className="text-xs font-serif text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-1">
+            <p className="text-xs font-serif text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1">
               Sher Shah Road (Delhi High Court) · Tis Hazari Courts · NCLT Principal Bench · Supreme Court Registry
             </p>
           </div>
@@ -172,18 +172,18 @@ export function DashboardView() {
           {(currentUser.role === "lawyer" || currentUser.role === "associate") && (
             <button
               onClick={() => openModal("add-case")}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
             >
-              <Plus className="w-4 h-4 text-[#e8d5b5] dark:text-[#1b1d3a]" /> File Fresh Matter
+              <Plus className="w-4 h-4 text-white" /> File Fresh Matter
             </button>
           )}
 
           <button
             onClick={handlePrintCauseList}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#141d27] hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] text-[#0b0f14] dark:text-[#3df2e0] text-xs font-cinzel font-semibold tracking-wide border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 transition-colors shadow-xs"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#202020] hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] text-[#111111] dark:text-[#f3eee3] text-xs font-cinzel font-semibold tracking-wide border border-[#111111]/15 dark:border-[#f3eee3]/20 transition-colors shadow-xs"
             title="Print Official Chamber Cause List"
           >
-            <Printer className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" /> Print Cause List
+            <Printer className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" /> Print Cause List
           </button>
         </div>
       </div>
@@ -191,65 +191,65 @@ export function DashboardView() {
       {/* KPI Stat Strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1 */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs flex items-center justify-between group hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all">
+        <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">I.</span>
-              <p className="text-[10px] font-cinzel font-bold text-[#0b0f14]/65 dark:text-[#3df2e0]/60 uppercase tracking-wider">Vakalatnama Dossier</p>
+              <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">I.</span>
+              <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Vakalatnama Dossier</p>
             </div>
-            <p className="text-3xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">{visibleCases.length}</p>
+            <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">{visibleCases.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-center font-bold shadow-xs">
+          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center font-bold shadow-xs">
             <Scale className="w-5 h-5" />
           </div>
         </div>
 
         {/* Metric 2 */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs flex items-center justify-between group hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all">
+        <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">II.</span>
-              <p className="text-[10px] font-cinzel font-bold text-[#0b0f14]/65 dark:text-[#3df2e0]/60 uppercase tracking-wider">Listed on Board</p>
+              <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">II.</span>
+              <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Listed on Board</p>
             </div>
-            <p className="text-3xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">{upcomingHearings.length}</p>
-            <span className="text-[10.5px] font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+            <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">{upcomingHearings.length}</p>
+            <span className="text-[10.5px] font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
               {todayHearings.length} Today · {tomorrowHearings.length} Tomorrow
             </span>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-center font-bold shadow-xs">
+          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center font-bold shadow-xs">
             <Calendar className="w-5 h-5" />
           </div>
         </div>
 
         {/* Metric 3 */}
         {currentUser.role === "lawyer" || currentUser.role === "admin" ? (
-          <div className="p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs flex items-center justify-between group hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all">
+          <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
             <div>
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">III.</span>
-                <p className="text-[10px] font-cinzel font-bold text-[#0b0f14]/65 dark:text-[#3df2e0]/60 uppercase tracking-wider">Fee Collections</p>
+                <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">III.</span>
+                <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Fee Collections</p>
               </div>
-              <p className="text-3xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+              <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                 ₹{(totalFeeReceived / 1000).toFixed(0)}k
               </p>
-              <span className="text-[10.5px] font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+              <span className="text-[10.5px] font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
                 ₹{(totalFeePending / 1000).toFixed(0)}k Pending Dues
               </span>
             </div>
-            <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-center font-bold shadow-xs">
+            <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center font-bold shadow-xs">
               <Receipt className="w-5 h-5" />
             </div>
           </div>
         ) : (
-          <div className="p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs flex items-center justify-between group hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all">
+          <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
             <div>
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">III.</span>
-                <p className="text-[10px] font-cinzel font-bold text-[#0b0f14]/65 dark:text-[#3df2e0]/60 uppercase tracking-wider">Active Pleadings</p>
+                <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">III.</span>
+                <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Active Pleadings</p>
               </div>
-              <p className="text-3xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">{activeCases.length}</p>
+              <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">{activeCases.length}</p>
             </div>
-            <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-center font-bold shadow-xs">
+            <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center font-bold shadow-xs">
               <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
@@ -258,25 +258,25 @@ export function DashboardView() {
         {/* Metric 4 */}
         <div
           onClick={() => (currentUser.role === "lawyer" || currentUser.role === "admin" || currentUser.role === "associate") && setActivePage("approvals")}
-          className={`p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs flex items-center justify-between group transition-all ${
-            pendingApprovalsCount > 0 ? "cursor-pointer hover:border-[#0b0f14] dark:hover:border-[#3df2e0]" : ""
+          className={`p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group transition-all ${
+            pendingApprovalsCount > 0 ? "cursor-pointer hover:border-[#111111] dark:hover:border-[#f3eee3]" : ""
           }`}
         >
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">IV.</span>
-              <p className="text-[10px] font-cinzel font-bold text-[#0b0f14]/65 dark:text-[#3df2e0]/60 uppercase tracking-wider">
+              <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">IV.</span>
+              <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">
                 {currentUser.role === "associate" ? "My Submissions" : "Verification Desk"}
               </p>
             </div>
-            <p className={`text-3xl font-serif font-bold ${pendingApprovalsCount > 0 ? "text-[#0b0f14] dark:text-[#3df2e0]" : "text-[#0b0f14] dark:text-[#3df2e0]"}`}>
+            <p className={`text-3xl font-serif font-bold ${pendingApprovalsCount > 0 ? "text-[#111111] dark:text-[#f3eee3]" : "text-[#111111] dark:text-[#f3eee3]"}`}>
               {pendingApprovalsCount}
             </p>
-            <span className="text-[10.5px] font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+            <span className="text-[10.5px] font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
               {pendingApprovalsCount > 0 ? "Action Required" : "Up to date"}
             </span>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-center font-bold shadow-xs">
+          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center font-bold shadow-xs">
             <FileText className="w-5 h-5" />
           </div>
         </div>
@@ -288,22 +288,22 @@ export function DashboardView() {
         <div className="lg:col-span-8 space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] flex items-center gap-2">
+              <h2 className="text-base font-serif font-bold text-[#111111] dark:text-[#f3eee3] flex items-center gap-2">
                 <span>Daily Cause List &amp; Calling Board</span>
               </h2>
-              <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+              <p className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
                 Court Room, Item Number, Presiding Bench &amp; Purpose of Listing
               </p>
             </div>
 
             {/* Bench Filter Pills */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#f3efe6] dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#f3efe6] dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20">
               <button
                 onClick={() => setFilterCourt("all")}
                 className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
                   filterCourt === "all"
-                    ? "bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] shadow-xs"
-                    : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14]"
+                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
+                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
                 }`}
               >
                 All Benches
@@ -312,8 +312,8 @@ export function DashboardView() {
                 onClick={() => setFilterCourt("delhi")}
                 className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
                   filterCourt === "delhi"
-                    ? "bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] shadow-xs"
-                    : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14]"
+                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
+                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
                 }`}
               >
                 High Court
@@ -322,8 +322,8 @@ export function DashboardView() {
                 onClick={() => setFilterCourt("district")}
                 className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
                   filterCourt === "district"
-                    ? "bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] shadow-xs"
-                    : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14]"
+                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
+                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
                 }`}
               >
                 Tis Hazari
@@ -332,8 +332,8 @@ export function DashboardView() {
                 onClick={() => setFilterCourt("nclt")}
                 className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
                   filterCourt === "nclt"
-                    ? "bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] shadow-xs"
-                    : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14]"
+                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
+                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
                 }`}
               >
                 NCLT
@@ -342,13 +342,13 @@ export function DashboardView() {
           </div>
 
           {/* Today / Tomorrow / All Listed View Mode Tabs */}
-          <div className="flex items-center gap-2 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 pb-2.5">
+          <div className="flex items-center gap-2 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 pb-2.5">
             <button
               onClick={() => setDateFilter("all")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-cinzel font-bold transition-all ${
                 dateFilter === "all"
-                  ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
-                  : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+                  ? "bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white shadow-sm"
+                  : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
               }`}
             >
               All Listed Matters ({upcomingHearings.length})
@@ -357,19 +357,19 @@ export function DashboardView() {
               onClick={() => setDateFilter("today")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-cinzel font-bold transition-all flex items-center gap-2 ${
                 dateFilter === "today"
-                  ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
-                  : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+                  ? "bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white shadow-sm"
+                  : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${dateFilter === "today" ? "bg-[#e8d5b5] dark:bg-[#1b1d3a]" : "bg-[#0b0f14] dark:bg-[#3df2e0]"} animate-pulse`} />
+              <span className={`w-2 h-2 rounded-full ${dateFilter === "today" ? "bg-[#d9541e] text-white" : "bg-[#111111] dark:bg-[#f3eee3]"} animate-pulse`} />
               <span>Today&apos;s Board ({todayHearings.length})</span>
             </button>
             <button
               onClick={() => setDateFilter("tomorrow")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-cinzel font-bold transition-all ${
                 dateFilter === "tomorrow"
-                  ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
-                  : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+                  ? "bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white shadow-sm"
+                  : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
               }`}
             >
               Tomorrow&apos;s Board ({tomorrowHearings.length})
@@ -379,10 +379,10 @@ export function DashboardView() {
           {/* Hearing Items List */}
           <div className="space-y-3.5">
             {filteredHearings.length === 0 ? (
-              <div className="p-10 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-center text-[#0b0f14]/65 dark:text-[#3df2e0]/60 shadow-xs">
-                <Calendar className="w-8 h-8 mx-auto mb-2 text-[#0b0f14] dark:text-[#3df2e0]" />
-                <p className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">No hearings listed under this filter.</p>
-                <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-1">Switch to &ldquo;All Listed Matters&rdquo; or select another court bench above.</p>
+              <div className="p-10 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-center text-[#111111]/65 dark:text-[#f3eee3]/60 shadow-xs">
+                <Calendar className="w-8 h-8 mx-auto mb-2 text-[#111111] dark:text-[#f3eee3]" />
+                <p className="text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3]">No hearings listed under this filter.</p>
+                <p className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60 mt-1">Switch to &ldquo;All Listed Matters&rdquo; or select another court bench above.</p>
               </div>
             ) : (
               filteredHearings.map((h, i) => {
@@ -394,17 +394,17 @@ export function DashboardView() {
                   <div
                     key={h.caseItem.id + "-" + h.date + "-" + i}
                     onClick={() => openCase(h.caseItem.id)}
-                    className="p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all cursor-pointer shadow-xs group"
+                    className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all cursor-pointer shadow-xs group"
                   >
                     <div className="flex items-start gap-4">
                       {/* Date Badge */}
                       <div
                         className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center flex-shrink-0 font-mono transition-colors shadow-xs ${
                           isToday
-                            ? "bg-[#3df2e0] text-[#0b0f14] dark:bg-[#3df2e0] dark:text-[#0b0f14] font-bold"
+                            ? "bg-[#f3eee3] text-[#111111] dark:bg-[#f3eee3] dark:text-[#111111] font-bold"
                             : isTomorrow
-                            ? "bg-[#0b0f14] text-[#f5f3ef] dark:bg-[#3df2e0]/20 dark:text-[#3df2e0]"
-                            : "bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20"
+                            ? "bg-[#111111] text-[#f5f3ef] dark:bg-[#f3eee3]/20 dark:text-[#f3eee3]"
+                            : "bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20"
                         }`}
                       >
                         <span className="text-lg font-bold leading-none">{dateMeta.day}</span>
@@ -424,13 +424,13 @@ export function DashboardView() {
                       {/* Case Details */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-xs font-mono font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                          <span className="text-xs font-mono font-bold text-[#111111] dark:text-[#f3eee3]">
                             {h.caseItem.caseNo}
                           </span>
                           {h.caseItem.cnr && (
                             <button
                               onClick={(e) => handleCopyCNR(e, h.caseItem.cnr!)}
-                              className="inline-flex items-center gap-1 text-[10px] font-mono text-[#0b0f14]/65 dark:text-[#3df2e0]/60 bg-white dark:bg-[#141d27] hover:bg-[#f3efe6] px-2 py-0.5 rounded-lg border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 transition-colors"
+                              className="inline-flex items-center gap-1 text-[10px] font-mono text-[#111111]/65 dark:text-[#f3eee3]/60 bg-white dark:bg-[#202020] hover:bg-[#f3efe6] px-2 py-0.5 rounded-lg border border-[#111111]/15 dark:border-[#f3eee3]/20 transition-colors"
                               title="Click to copy 16-character CNR"
                             >
                               <span>CNR: {h.caseItem.cnr}</span>
@@ -442,37 +442,37 @@ export function DashboardView() {
                             </button>
                           )}
                           {h.caseItem.courtRoom && (
-                            <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] bg-white dark:bg-[#141d27] px-2 py-0.5 rounded-lg border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                            <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] bg-white dark:bg-[#202020] px-2 py-0.5 rounded-lg border border-[#111111]/15 dark:border-[#f3eee3]/20">
                               {h.caseItem.courtRoom}
                             </span>
                           )}
                           {h.caseItem.itemNo && (
-                            <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] bg-[#3df2e0]/25 dark:bg-[#3df2e0]/15 px-2 py-0.5 rounded-lg border border-[#0b0f14]/50 dark:border-[#3df2e0]/30">
+                            <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] bg-[#f3eee3]/25 dark:bg-[#f3eee3]/15 px-2 py-0.5 rounded-lg border border-[#111111]/50 dark:border-[#f3eee3]/30">
                               {h.caseItem.itemNo}
                             </span>
                           )}
                         </div>
 
-                        <h3 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1.5 group-hover:text-[#0b0f14] dark:group-hover:text-[#3df2e0] transition-colors">
+                        <h3 className="text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1.5 group-hover:text-[#111111] dark:group-hover:text-[#f3eee3] transition-colors">
                           {h.caseItem.title}
                         </h3>
 
-                        <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-0.5">
+                        <p className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60 mt-0.5">
                           {h.caseItem.court} · {h.caseItem.judge || "Hon'ble Presiding Bench"}
                         </p>
 
-                        <div className="mt-3 p-3 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs font-serif">
-                          <span className="font-bold text-[#0b0f14] dark:text-[#3df2e0] text-[11px] font-cinzel">Purpose of Listing: </span>
-                          <span className="text-[#0b0f14]/70 dark:text-[#3df2e0]/60">{h.purpose || "Regular hearing board"}</span>
+                        <div className="mt-3 p-3 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs font-serif">
+                          <span className="font-bold text-[#111111] dark:text-[#f3eee3] text-[11px] font-cinzel">Purpose of Listing: </span>
+                          <span className="text-[#111111]/70 dark:text-[#f3eee3]/60">{h.purpose || "Regular hearing board"}</span>
                           {h.outcome && (
-                            <div className="mt-1.5 pt-1.5 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[11px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
-                              <strong className="text-[#0b0f14] dark:text-[#3df2e0] font-cinzel">Business Recorded: </strong>{h.outcome}
+                            <div className="mt-1.5 pt-1.5 border-t border-[#111111]/15 dark:border-[#f3eee3]/20 text-[11px] text-[#111111]/65 dark:text-[#f3eee3]/60">
+                              <strong className="text-[#111111] dark:text-[#f3eee3] font-cinzel">Business Recorded: </strong>{h.outcome}
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <ArrowRight className="w-4 h-4 text-[#8e929f] group-hover:text-[#0b0f14] dark:group-hover:text-[#3df2e0] group-hover:translate-x-1 transition-all flex-shrink-0 mt-2" />
+                      <ArrowRight className="w-4 h-4 text-[#8e929f] group-hover:text-[#111111] dark:group-hover:text-[#f3eee3] group-hover:translate-x-1 transition-all flex-shrink-0 mt-2" />
                     </div>
                   </div>
                 );
@@ -484,20 +484,20 @@ export function DashboardView() {
         {/* Right 4 Cols: Limitation Period Radar & Expedited Entries */}
         <div className="lg:col-span-4 space-y-5">
           <div>
-            <h2 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" />
+            <h2 className="text-base font-serif font-bold text-[#111111] dark:text-[#f3eee3] flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" />
               <span>Limitation Period Radar</span>
             </h2>
-            <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+            <p className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
               Statutory deadlines under The Limitation Act, 1963
             </p>
           </div>
 
           <div className="space-y-3.5">
             {limitationItems.length === 0 ? (
-              <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-center text-[#0b0f14]/65 dark:text-[#3df2e0]/60 shadow-xs">
+              <div className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-center text-[#111111]/65 dark:text-[#f3eee3]/60 shadow-xs">
                 <CheckCircle2 className="w-6 h-6 mx-auto mb-1.5 text-emerald-600" />
-                <p className="text-xs font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">No statutory limitation alerts pending.</p>
+                <p className="text-xs font-serif font-bold text-[#111111] dark:text-[#f3eee3]">No statutory limitation alerts pending.</p>
               </div>
             ) : (
               limitationItems.map((item, idx) => {
@@ -508,36 +508,36 @@ export function DashboardView() {
                     onClick={() => openCase(item.caseItem.id)}
                     className={`p-4.5 rounded-3xl border transition-all cursor-pointer shadow-xs ${
                       isUrgent
-                        ? "bg-rose-50/50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/50 text-[#0b0f14] dark:text-rose-200 hover:border-rose-400"
-                        : "bg-white dark:bg-[#0f151c] border-[#0b0f14]/15 dark:border-[#3df2e0]/20 hover:border-[#0b0f14] dark:hover:border-[#3df2e0]"
+                        ? "bg-rose-50/50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/50 text-[#111111] dark:text-rose-200 hover:border-rose-400"
+                        : "bg-white dark:bg-[#181818] border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#111111] dark:hover:border-[#f3eee3]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="text-[10px] font-mono font-bold tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+                      <span className="text-[10px] font-mono font-bold tracking-wider text-[#111111] dark:text-[#f3eee3]">
                         {item.caseItem.caseNo}
                       </span>
                       <span
                         className={`text-[9.5px] font-cinzel font-bold px-2 py-0.5 rounded-full ${
                           isUrgent
                             ? "bg-rose-100 dark:bg-rose-900/60 text-rose-900 dark:text-rose-200"
-                            : "bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20"
+                            : "bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20"
                         }`}
                       >
                         {item.daysLeft > 0 ? `${item.daysLeft} DAYS LEFT` : "LIMITATION EXPIRED"}
                       </span>
                     </div>
 
-                    <h4 className="text-xs font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] truncate">
+                    <h4 className="text-xs font-serif font-bold text-[#111111] dark:text-[#f3eee3] truncate">
                       {item.caseItem.title}
                     </h4>
 
-                    <p className="text-[11px] font-serif text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-1 leading-snug">
+                    <p className="text-[11px] font-serif text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1 leading-snug">
                       {item.task}
                     </p>
 
-                    <div className="mt-2.5 pt-2 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-between text-[10px] font-mono text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+                    <div className="mt-2.5 pt-2 border-t border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-between text-[10px] font-mono text-[#111111]/65 dark:text-[#f3eee3]/60">
                       <span>Due: {formatDate(item.caseItem.limitationDate || "")}</span>
-                      <span className="text-[#0b0f14] dark:text-[#3df2e0] font-cinzel font-bold">Inspect Brief →</span>
+                      <span className="text-[#111111] dark:text-[#f3eee3] font-cinzel font-bold">Inspect Brief →</span>
                     </div>
                   </div>
                 );
@@ -546,23 +546,23 @@ export function DashboardView() {
           </div>
 
           {/* Quick Expedited Entries */}
-          <div className="p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 space-y-3 shadow-xs">
-            <h3 className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+          <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-3 shadow-xs">
+            <h3 className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#111111]/65 dark:text-[#f3eee3]/60">
               Expedited Court Entries
             </h3>
             <button
               onClick={() => openModal("add-hearing")}
-              className="w-full py-3 px-3.5 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-cinzel font-semibold text-left hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all flex items-center justify-between shadow-xs"
+              className="w-full py-3 px-3.5 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] text-xs font-cinzel font-semibold text-left hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all flex items-center justify-between shadow-xs"
             >
               <span>Record Next Date of Hearing (NDOH)</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#0b0f14] dark:text-[#3df2e0]" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" />
             </button>
             <button
               onClick={() => openModal("add-order")}
-              className="w-full py-3 px-3.5 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-cinzel font-semibold text-left hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all flex items-center justify-between shadow-xs"
+              className="w-full py-3 px-3.5 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] text-xs font-cinzel font-semibold text-left hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all flex items-center justify-between shadow-xs"
             >
               <span>Enter Certified Judicial Order</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#0b0f14] dark:text-[#3df2e0]" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" />
             </button>
           </div>
         </div>

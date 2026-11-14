@@ -49,8 +49,8 @@ export function CinematicThemeSwitcher({
       title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
       className={`group relative inline-flex items-center gap-2.5 rounded-full p-[1.5px] transition-all duration-500 cursor-pointer select-none focus:outline-none shadow-md ${
         dark
-          ? "bg-gradient-to-r from-[#3df2e0]/60 via-[#1b1d3a] to-[#3df2e0]/40 shadow-[0_0_16px_rgba(61,242,224,0.25)]"
-          : "bg-gradient-to-r from-amber-400/80 via-orange-400/70 to-yellow-500/80 shadow-[0_0_16px_rgba(245,158,11,0.3)]"
+          ? "bg-gradient-to-r from-[#d9541e]/70 via-[#111111] to-[#d9541e]/50 shadow-[0_0_16px_rgba(217,84,30,0.35)]"
+          : "bg-gradient-to-r from-[#d9541e]/80 via-[#ea6026] to-[#d9541e]/80 shadow-[0_0_16px_rgba(217,84,30,0.35)]"
       } ${className}`}
       style={style}
     >
@@ -58,8 +58,8 @@ export function CinematicThemeSwitcher({
       <div
         className={`flex items-center gap-2 rounded-full px-3 py-1.5 backdrop-blur-xl transition-colors duration-500 ${
           dark
-            ? "bg-[#0b0f14]/90 text-[#3df2e0]"
-            : "bg-white/90 text-[#0b0f14]"
+            ? "bg-[#111111]/90 text-[#f3eee3]"
+            : "bg-white/90 text-[#111111]"
         }`}
       >
         {/* Animated Icon Container */}
@@ -74,9 +74,9 @@ export function CinematicThemeSwitcher({
                 animate={{ y: 0, opacity: 1, rotate: 0, scale: 1 }}
                 exit={{ y: 16, opacity: 0, rotate: 45, scale: 0.6 }}
                 transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-                className="flex items-center justify-center text-[#3df2e0]"
+                className="flex items-center justify-center text-[#f3eee3]"
               >
-                <Moon className="size-4 fill-[#3df2e0]/20 stroke-[1.8]" />
+                <Moon className="size-4 fill-[#f3eee3]/20 stroke-[1.8]" />
               </motion.div>
             ) : (
               <motion.div

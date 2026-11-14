@@ -28,17 +28,17 @@ export function PublicNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#3df2e0]/90 dark:bg-[#0b0f14]/90 backdrop-blur-xl border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+    <header className="sticky top-0 z-40 bg-[#f3eee3]/90 dark:bg-[#111111]/90 backdrop-blur-xl border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-3.5 flex items-center justify-between gap-4">
         {/* Brand Text Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <span className="text-lg sm:text-xl font-cinzel font-black tracking-wider text-[#0b0f14] dark:text-[#3df2e0] group-hover:opacity-90 transition-opacity">
+          <span className="text-lg sm:text-xl font-cinzel font-black tracking-wider text-[#111111] dark:text-[#f3eee3] group-hover:opacity-90 transition-opacity">
             Updated Law Diary
           </span>
         </Link>
 
         {/* Center Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-2xl bg-white/60 dark:bg-[#0f151c]/80 border border-[#0b0f14]/10 dark:border-[#3df2e0]/20 shadow-xs">
+        <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-2xl bg-white/60 dark:bg-[#181818]/80 border border-[#111111]/10 dark:border-[#f3eee3]/20 shadow-xs">
           {navLinks.map((link) => {
             const active = isActive(link.href);
             return (
@@ -47,8 +47,8 @@ export function PublicNavbar() {
                 href={link.href}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-cinzel font-semibold transition-all ${
                   active
-                    ? "bg-[#0b0f14] text-[#3df2e0] dark:bg-[#3df2e0] dark:text-[#0b0f14] shadow-xs"
-                    : "text-[#0b0f14]/75 dark:text-[#3df2e0]/70 hover:text-[#0b0f14] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                    ? "bg-[#d9541e] text-white shadow-xs"
+                    : "text-[#111111]/75 dark:text-[#f3eee3]/70 hover:text-[#111111] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                 }`}
               >
                 {link.label}
@@ -66,7 +66,7 @@ export function PublicNavbar() {
           {currentUser ? (
             <Link
               href={dashboardHref}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider transition-all shadow-md group"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md group"
             >
               <span>Dashboard</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -75,13 +75,13 @@ export function PublicNavbar() {
             <>
               <button
                 onClick={() => setAuthModal("signin")}
-                className="px-4 py-2 rounded-xl bg-white dark:bg-[#0f151c] hover:bg-white/80 dark:hover:bg-[#181b22] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 font-cinzel font-semibold text-xs tracking-wider transition-all shadow-xs"
+                className="px-4 py-2 rounded-xl bg-white dark:bg-[#181818] hover:bg-white/80 dark:hover:bg-[#181b22] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-semibold text-xs tracking-wider transition-all shadow-xs"
               >
                 Sign In
               </button>
               <button
                 onClick={() => setAuthModal("signup")}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
               >
                 <span>Sign Up</span>
               </button>
@@ -93,7 +93,7 @@ export function PublicNavbar() {
         <div className="flex lg:hidden items-center gap-2">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20"
+            className="p-2 rounded-xl bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -103,7 +103,7 @@ export function PublicNavbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#0b0f14]/10 dark:border-[#3df2e0]/15 bg-white/95 dark:bg-[#0b0f14]/95 backdrop-blur-2xl p-5 space-y-4">
+        <div className="lg:hidden border-t border-[#111111]/10 dark:border-[#f3eee3]/15 bg-white/95 dark:bg-[#111111]/95 backdrop-blur-2xl p-5 space-y-4">
           <nav className="flex flex-col space-y-1">
             {navLinks.map((link) => {
               const active = isActive(link.href);
@@ -114,8 +114,8 @@ export function PublicNavbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`px-4 py-2.5 rounded-xl text-xs font-cinzel font-bold transition-colors ${
                     active
-                      ? "bg-[#0b0f14] text-[#3df2e0] dark:bg-[#3df2e0] dark:text-[#0b0f14]"
-                      : "text-[#0b0f14] dark:text-[#3df2e0] hover:bg-black/5 dark:hover:bg-white/5"
+                      ? "bg-[#d9541e] text-white"
+                      : "text-[#111111] dark:text-[#f3eee3] hover:bg-black/5 dark:hover:bg-white/5"
                   }`}
                 >
                   {link.label}
@@ -124,8 +124,8 @@ export function PublicNavbar() {
             })}
           </nav>
 
-          <div className="pt-3 border-t border-[#0b0f14]/10 dark:border-[#3df2e0]/15 flex items-center justify-between">
-            <span className="text-xs font-cinzel font-bold text-[#0b0f14]/70 dark:text-[#3df2e0]/70">Appearance:</span>
+          <div className="pt-3 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 flex items-center justify-between">
+            <span className="text-xs font-cinzel font-bold text-[#111111]/70 dark:text-[#f3eee3]/70">Appearance:</span>
             <AnimatedThemeToggle />
           </div>
 
@@ -134,7 +134,7 @@ export function PublicNavbar() {
               <Link
                 href={dashboardHref}
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] font-cinzel font-bold text-xs text-center uppercase tracking-wider"
+                className="w-full py-3 rounded-xl bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white font-cinzel font-bold text-xs text-center uppercase tracking-wider"
               >
                 Go to Dashboard
               </Link>
@@ -142,13 +142,13 @@ export function PublicNavbar() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => { setAuthModal("signin"); setMobileMenuOpen(false); }}
-                  className="py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-cinzel font-bold"
+                  className="py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] text-xs font-cinzel font-bold"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={() => { setAuthModal("signup"); setMobileMenuOpen(false); }}
-                  className="py-2.5 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] text-xs font-cinzel font-bold"
+                  className="py-2.5 rounded-xl bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white text-xs font-cinzel font-bold"
                 >
                   Sign Up
                 </button>

@@ -51,13 +51,13 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
 
   if (!c) {
     return (
-      <div className="p-14 text-center bg-white dark:bg-[#0f151c] rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
-        <Scale className="w-10 h-10 mx-auto text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mb-3" />
-        <h2 className="text-base font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Court Brief Not Found</h2>
-        <p className="text-xs font-serif text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-1">This dossier does not exist in your chamber registry.</p>
+      <div className="p-14 text-center bg-white dark:bg-[#181818] rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
+        <Scale className="w-10 h-10 mx-auto text-[#111111]/65 dark:text-[#f3eee3]/60 mb-3" />
+        <h2 className="text-base font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Court Brief Not Found</h2>
+        <p className="text-xs font-serif text-[#111111]/65 dark:text-[#f3eee3]/60 mt-1">This dossier does not exist in your chamber registry.</p>
         <button
           onClick={() => setActivePage("cases")}
-          className="inline-block mt-5 text-xs font-cinzel font-bold px-5 py-2.5 rounded-xl bg-[#0b0f14] dark:bg-[#3df2e0] text-[#0b0f14] transition-all shadow-md"
+          className="inline-block mt-5 text-xs font-cinzel font-bold px-5 py-2.5 rounded-xl bg-[#111111] dark:bg-[#f3eee3] text-[#111111] transition-all shadow-md"
         >
           Return to Case Diary
         </button>
@@ -90,11 +90,11 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
   };
 
   const statusColor: Record<string, string> = {
-    Active: "bg-[#3df2e0]/25 dark:bg-[#3df2e0]/15 text-[#0b0f14] dark:text-[#3df2e0] border-[#0b0f14]/50 dark:border-[#3df2e0]/40",
-    Listed: "bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border-[#0b0f14]/15 dark:border-[#3df2e0]/20",
-    Reserved: "bg-white dark:bg-[#141d27] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 border-[#0b0f14]/15 dark:border-[#3df2e0]/20",
+    Active: "bg-[#f3eee3]/25 dark:bg-[#f3eee3]/15 text-[#111111] dark:text-[#f3eee3] border-[#111111]/50 dark:border-[#f3eee3]/40",
+    Listed: "bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border-[#111111]/15 dark:border-[#f3eee3]/20",
+    Reserved: "bg-white dark:bg-[#202020] text-[#111111]/65 dark:text-[#f3eee3]/60 border-[#111111]/15 dark:border-[#f3eee3]/20",
     Adjourned: "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/40",
-    Disposed: "bg-white dark:bg-[#141d27] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 border-[#0b0f14]/15 dark:border-[#3df2e0]/20",
+    Disposed: "bg-white dark:bg-[#202020] text-[#111111]/65 dark:text-[#f3eee3]/60 border-[#111111]/15 dark:border-[#f3eee3]/20",
   };
 
   // Client Query Handler
@@ -160,18 +160,18 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       <div>
         <button
           onClick={() => setActivePage("cases")}
-          className="inline-flex items-center gap-2 text-xs font-cinzel font-semibold tracking-wider text-[#0b0f14]/65 hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-cinzel font-semibold tracking-wider text-[#111111]/65 hover:text-[#111111] dark:hover:text-[#f3eee3] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Return to Case Diary
         </button>
       </div>
 
       {/* Header Banner */}
-      <div className="rounded-3xl bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] p-6 md:p-8 border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+      <div className="rounded-3xl bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] p-6 md:p-8 border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-5">
           <div className="space-y-2.5 max-w-3xl">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+              <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#111111] dark:text-[#f3eee3]">
                 {c.caseNo}
               </span>
               <span className={`text-[10px] font-cinzel font-bold px-2.5 py-0.5 rounded-full border ${statusColor[c.status] || "bg-slate-100"}`}>
@@ -181,7 +181,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                 <button
                   type="button"
                   onClick={() => handleCopyCNR(c.cnr!)}
-                  className="inline-flex items-center gap-1 font-mono text-[11px] bg-white dark:bg-[#141d27] hover:bg-[#f3efe6] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 px-2 py-0.5 rounded-lg text-[#0b0f14] dark:text-[#3df2e0] transition-colors"
+                  className="inline-flex items-center gap-1 font-mono text-[11px] bg-white dark:bg-[#202020] hover:bg-[#f3efe6] border border-[#111111]/15 dark:border-[#f3eee3]/20 px-2 py-0.5 rounded-lg text-[#111111] dark:text-[#f3eee3] transition-colors"
                   title="Copy 16-digit CNR"
                 >
                   <span>CNR: {c.cnr}</span>
@@ -190,26 +190,26 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
               )}
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#0b0f14] dark:text-[#3df2e0]">
+            <h1 className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#111111] dark:text-[#f3eee3]">
               {c.title}
             </h1>
 
-            <div className="flex items-center gap-4 text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60 flex-wrap">
+            <div className="flex items-center gap-4 text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60 flex-wrap">
               <span className="flex items-center gap-1.5">
-                <Building className="w-3.5 h-3.5 text-[#0b0f14] dark:text-[#3df2e0]" /> {c.court}
-                {c.courtRoom && <span className="text-[#0b0f14] dark:text-[#3df2e0] font-mono font-bold">({c.courtRoom})</span>}
+                <Building className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" /> {c.court}
+                {c.courtRoom && <span className="text-[#111111] dark:text-[#f3eee3] font-mono font-bold">({c.courtRoom})</span>}
               </span>
               {c.judge && (
                 <span className="flex items-center gap-1.5">
-                  <Gavel className="w-3.5 h-3.5 text-[#0b0f14] dark:text-[#3df2e0]" /> Bench: {c.judge}
+                  <Gavel className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" /> Bench: {c.judge}
                 </span>
               )}
               {c.filingDate && <span>Filed: {formatDate(c.filingDate)}</span>}
             </div>
 
             <div className="pt-2 flex items-center gap-2">
-              <span className="text-xs font-cinzel font-bold text-[#0b0f14]/65 dark:text-[#3df2e0]/60">Active Stage:</span>
-              <span className="px-3 py-1 rounded-xl text-xs font-serif bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+              <span className="text-xs font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60">Active Stage:</span>
+              <span className="px-3 py-1 rounded-xl text-xs font-serif bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20">
                 {c.stage}
               </span>
             </div>
@@ -221,27 +221,27 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
               <>
                 <button
                   onClick={() => openModal("add-hearing", { caseId: c.id })}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs uppercase tracking-wider transition-all shadow-md"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs uppercase tracking-wider transition-all shadow-md"
                 >
-                  <Calendar className="w-4 h-4 text-[#e8d5b5] dark:text-[#1b1d3a]" /> + Hearing (NDOH)
+                  <Calendar className="w-4 h-4 text-white" /> + Hearing (NDOH)
                 </button>
                 <button
                   onClick={() => openModal("add-order", { caseId: c.id })}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] font-cinzel font-semibold text-xs hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] transition-colors border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] font-cinzel font-semibold text-xs hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
                 >
-                  <FileText className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" /> + Court Order
+                  <FileText className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" /> + Court Order
                 </button>
                 <button
                   onClick={() => openModal("set-status", { caseId: c.id, currentStatus: c.status, currentStage: c.stage })}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] font-cinzel font-semibold text-xs hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] transition-colors border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] font-cinzel font-semibold text-xs hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" /> Update Stage
+                  <CheckCircle2 className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" /> Update Stage
                 </button>
                 <button
                   onClick={() => openModal("edit-case", { case: c })}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] font-cinzel font-semibold text-xs hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] transition-colors border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] font-cinzel font-semibold text-xs hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
                 >
-                  <Edit className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" /> Edit Brief
+                  <Edit className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" /> Edit Brief
                 </button>
               </>
             )}
@@ -250,14 +250,14 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
 
         {/* Limitation Act 1963 Radar Box */}
         {limitation && (
-          <div className="mt-6 p-4 rounded-2xl bg-[#0b0f14]/10 dark:bg-[#3df2e0]/15 border border-[#0b0f14]/40 dark:border-[#3df2e0]/30 flex items-start gap-3">
-            <ShieldAlert className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] mt-0.5 flex-shrink-0" />
+          <div className="mt-6 p-4 rounded-2xl bg-[#111111]/10 dark:bg-[#f3eee3]/15 border border-[#111111]/40 dark:border-[#f3eee3]/30 flex items-start gap-3">
+            <ShieldAlert className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] mt-0.5 flex-shrink-0" />
             <div className="text-xs font-serif">
-              <span className="font-bold font-cinzel text-[#0b0f14] dark:text-[#3df2e0]">
+              <span className="font-bold font-cinzel text-[#111111] dark:text-[#f3eee3]">
                 Limitation Act 1963 Radar:{" "}
               </span>
               <span>{limitation.task} due on </span>
-              <span className="text-[#0b0f14] dark:text-[#3df2e0] font-mono font-bold">
+              <span className="text-[#111111] dark:text-[#f3eee3] font-mono font-bold">
                 {limitation.date} ({limitation.daysLeft > 0 ? `${limitation.daysLeft} days remaining` : "Limitation expired"})
               </span>
             </div>
@@ -266,13 +266,13 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       </div>
 
       {/* Tabs Row */}
-      <div className="flex border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 gap-6 text-xs font-cinzel font-bold tracking-wider overflow-x-auto pb-0.5">
+      <div className="flex border-b border-[#111111]/15 dark:border-[#f3eee3]/20 gap-6 text-xs font-cinzel font-bold tracking-wider overflow-x-auto pb-0.5">
         <button
           onClick={() => setActiveTab("hearings")}
           className={`pb-3 transition-colors ${
             activeTab === "hearings"
-              ? "text-[#0b0f14] dark:text-[#3df2e0] border-b-2 border-[#0b0f14] dark:border-[#3df2e0]"
-              : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+              ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
+              : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
           }`}
         >
           Hearings Board ({(c.hearings || []).length})
@@ -282,8 +282,8 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           onClick={() => setActiveTab("orders")}
           className={`pb-3 transition-colors ${
             activeTab === "orders"
-              ? "text-[#0b0f14] dark:text-[#3df2e0] border-b-2 border-[#0b0f14] dark:border-[#3df2e0]"
-              : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+              ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
+              : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
           }`}
         >
           Certified Orders ({(c.orders || []).length})
@@ -293,8 +293,8 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           onClick={() => setActiveTab("queries")}
           className={`pb-3 transition-colors ${
             activeTab === "queries"
-              ? "text-[#0b0f14] dark:text-[#3df2e0] border-b-2 border-[#0b0f14] dark:border-[#3df2e0]"
-              : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+              ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
+              : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
           }`}
         >
           Client Query Desk ({(c.queries || []).length})
@@ -304,8 +304,8 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           onClick={() => setActiveTab("billing")}
           className={`pb-3 transition-colors ${
             activeTab === "billing"
-              ? "text-[#0b0f14] dark:text-[#3df2e0] border-b-2 border-[#0b0f14] dark:border-[#3df2e0]"
-              : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+              ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
+              : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
           }`}
         >
           Fee Ledger &amp; Receipts
@@ -315,8 +315,8 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           onClick={() => setActiveTab("parties")}
           className={`pb-3 transition-colors ${
             activeTab === "parties"
-              ? "text-[#0b0f14] dark:text-[#3df2e0] border-b-2 border-[#0b0f14] dark:border-[#3df2e0]"
-              : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+              ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
+              : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
           }`}
         >
           Parties &amp; Associates
@@ -326,8 +326,8 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           onClick={() => setActiveTab("notes")}
           className={`pb-3 transition-colors ${
             activeTab === "notes"
-              ? "text-[#0b0f14] dark:text-[#3df2e0] border-b-2 border-[#0b0f14] dark:border-[#3df2e0]"
-              : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
+              ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
+              : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
           }`}
         >
           Chamber Notes
@@ -338,13 +338,13 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       {activeTab === "hearings" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-serif italic">
+            <p className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">
               Chronological hearings record and upcoming court listings (NDOH).
             </p>
             {(currentUser.role === "lawyer" || currentUser.role === "associate") && (
               <button
                 onClick={() => openModal("add-hearing", { caseId: c.id })}
-                className="text-xs font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] hover:underline"
+                className="text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:underline"
               >
                 + Record Next Date (NDOH)
               </button>
@@ -352,9 +352,9 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           </div>
 
           {(c.hearings || []).length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#0f151c] rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/65 dark:text-[#3df2e0]/60 shadow-xs">
-              <Calendar className="w-8 h-8 mx-auto mb-2 text-[#0b0f14] dark:text-[#3df2e0]" />
-              <p className="font-cinzel font-bold text-sm text-[#0b0f14] dark:text-[#3df2e0]">No hearings recorded yet.</p>
+            <div className="p-12 text-center bg-white dark:bg-[#181818] rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/65 dark:text-[#f3eee3]/60 shadow-xs">
+              <Calendar className="w-8 h-8 mx-auto mb-2 text-[#111111] dark:text-[#f3eee3]" />
+              <p className="font-cinzel font-bold text-sm text-[#111111] dark:text-[#f3eee3]">No hearings recorded yet.</p>
               <p className="text-xs font-serif italic mt-1">Record the first hearing date to activate this matter on the daily cause list.</p>
             </div>
           ) : (
@@ -368,34 +368,34 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                       key={i}
                       className={`p-5 rounded-3xl border transition-all ${
                         isFuture
-                          ? "bg-white dark:bg-[#0f151c] border-[#0b0f14]/30 dark:border-[#3df2e0]/40 shadow-xs"
-                          : "bg-white dark:bg-[#0f151c] border-[#0b0f14]/15 dark:border-[#3df2e0]/20"
+                          ? "bg-white dark:bg-[#181818] border-[#111111]/30 dark:border-[#f3eee3]/40 shadow-xs"
+                          : "bg-white dark:bg-[#181818] border-[#111111]/15 dark:border-[#f3eee3]/20"
                       }`}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2.5">
-                            <span className="font-mono text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                            <span className="font-mono text-xs font-bold text-[#111111] dark:text-[#f3eee3]">
                               {formatDate(h.date)}
                             </span>
                             {isFuture && (
-                              <span className="text-[9.5px] font-cinzel font-bold px-2 py-0.5 rounded-full bg-[#3df2e0]/30 dark:bg-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/50 dark:border-[#3df2e0]/40">
+                              <span className="text-[9.5px] font-cinzel font-bold px-2 py-0.5 rounded-full bg-[#f3eee3]/30 dark:bg-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] border border-[#111111]/50 dark:border-[#f3eee3]/40">
                                 Upcoming NDOH
                               </span>
                             )}
                           </div>
-                          <p className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                          <p className="text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                             {h.purpose}
                           </p>
                         </div>
                       </div>
 
                       {h.outcome && (
-                        <div className="mt-3 p-3.5 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs font-serif">
-                          <span className="font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] text-[11px] block mb-1">
+                        <div className="mt-3 p-3.5 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs font-serif">
+                          <span className="font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] text-[11px] block mb-1">
                             Court Outcome / Business Recorded:
                           </span>
-                          <p className="text-[#0b0f14]/70 dark:text-[#3df2e0]/60 leading-relaxed whitespace-pre-wrap">{h.outcome}</p>
+                          <p className="text-[#111111]/70 dark:text-[#f3eee3]/60 leading-relaxed whitespace-pre-wrap">{h.outcome}</p>
                         </div>
                       )}
                     </div>
@@ -410,13 +410,13 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       {activeTab === "orders" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-serif italic">
+            <p className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">
               Order sheets, interlocutory directions, and certified rulings.
             </p>
             {(currentUser.role === "lawyer" || currentUser.role === "associate") && (
               <button
                 onClick={() => openModal("add-order", { caseId: c.id })}
-                className="text-xs font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] hover:underline"
+                className="text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:underline"
               >
                 + File Certified Order
               </button>
@@ -424,28 +424,28 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           </div>
 
           {(c.orders || []).length === 0 ? (
-            <div className="p-12 text-center bg-white dark:bg-[#0f151c] rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/65 dark:text-[#3df2e0]/60 shadow-xs">
-              <FileText className="w-8 h-8 mx-auto mb-2 text-[#0b0f14] dark:text-[#3df2e0]" />
-              <p className="font-cinzel font-bold text-sm text-[#0b0f14] dark:text-[#3df2e0]">No certified court orders filed on record.</p>
+            <div className="p-12 text-center bg-white dark:bg-[#181818] rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/65 dark:text-[#f3eee3]/60 shadow-xs">
+              <FileText className="w-8 h-8 mx-auto mb-2 text-[#111111] dark:text-[#f3eee3]" />
+              <p className="font-cinzel font-bold text-sm text-[#111111] dark:text-[#f3eee3]">No certified court orders filed on record.</p>
             </div>
           ) : (
             <div className="space-y-4">
               {c.orders?.map((ord, idx) => (
                 <div
                   key={idx}
-                  className="p-6 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs space-y-3"
+                  className="p-6 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs space-y-3"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                      <h4 className="text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                         {ord.title}
                       </h4>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="font-mono text-[10px] text-[#0b0f14] dark:text-[#3df2e0] bg-white dark:bg-[#141d27] px-2 py-0.5 rounded-lg border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                        <span className="font-mono text-[10px] text-[#111111] dark:text-[#f3eee3] bg-white dark:bg-[#202020] px-2 py-0.5 rounded-lg border border-[#111111]/15 dark:border-[#f3eee3]/20">
                           {formatDate(ord.date)}
                         </span>
                         {ord.citation && (
-                          <span className="font-mono text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 bg-white dark:bg-[#141d27] px-2 py-0.5 rounded-lg border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                          <span className="font-mono text-[10px] text-[#111111]/65 dark:text-[#f3eee3]/60 bg-white dark:bg-[#202020] px-2 py-0.5 rounded-lg border border-[#111111]/15 dark:border-[#f3eee3]/20">
                             Citation: {ord.citation}
                           </span>
                         )}
@@ -453,7 +453,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs font-serif leading-relaxed text-[#0b0f14]/85 dark:text-[#3df2e0]/85">
+                  <div className="p-4 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs font-serif leading-relaxed text-[#111111]/85 dark:text-[#f3eee3]/85">
                     {ord.text}
                   </div>
                 </div>
@@ -467,8 +467,8 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       {activeTab === "queries" && (
         <div className="space-y-5">
           {currentUser.role === "client" && (
-            <form onSubmit={handleSendQuery} className="p-6 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 space-y-3.5 shadow-xs">
-              <label className="block text-xs font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+            <form onSubmit={handleSendQuery} className="p-6 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-3.5 shadow-xs">
+              <label className="block text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">
                 Submit Direct Query to Chamber Legal Counsel
               </label>
               <textarea
@@ -477,11 +477,11 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                 value={queryText}
                 onChange={(e) => setQueryText(e.target.value)}
                 placeholder="Inquire regarding upcoming arguments, order status, or documents required..."
-                className="w-full p-4 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#8e929f] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] font-serif"
+                className="w-full p-4 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs text-[#111111] dark:text-[#f3eee3] placeholder:text-[#8e929f] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] font-serif"
               />
               <button
                 type="submit"
-                className="px-5 py-2.5 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs uppercase tracking-wider transition-all shadow-md"
+                className="px-5 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs uppercase tracking-wider transition-all shadow-md"
               >
                 Dispatch Query to Counsel
               </button>
@@ -490,33 +490,33 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
 
           <div className="space-y-4">
             {(c.queries || []).length === 0 ? (
-              <div className="p-12 text-center bg-white dark:bg-[#111827] rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/65 dark:text-[#3df2e0]/60 shadow-xs">
-                <MessageSquare className="w-8 h-8 mx-auto mb-2 text-[#0b0f14] dark:text-[#3df2e0]" />
-                <p className="font-cinzel font-bold text-sm text-[#0b0f14] dark:text-[#3df2e0]">No litigant inquiries on this docket.</p>
+              <div className="p-12 text-center bg-white dark:bg-[#111827] rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/65 dark:text-[#f3eee3]/60 shadow-xs">
+                <MessageSquare className="w-8 h-8 mx-auto mb-2 text-[#111111] dark:text-[#f3eee3]" />
+                <p className="font-cinzel font-bold text-sm text-[#111111] dark:text-[#f3eee3]">No litigant inquiries on this docket.</p>
               </div>
             ) : (
               c.queries.map((q) => (
                 <div
                   key={q.id}
-                  className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 space-y-3.5 shadow-xs"
+                  className="p-6 rounded-3xl bg-white dark:bg-[#111827] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-3.5 shadow-xs"
                 >
-                  <div className="flex items-center justify-between text-[11px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
-                    <span className="font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                  <div className="flex items-center justify-between text-[11px] text-[#111111]/65 dark:text-[#f3eee3]/60">
+                    <span className="font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">
                       From: {state.users.find((u) => u.id === q.by)?.name || q.by}
                     </span>
                     <span className="font-mono">{formatDate(q.ts)}</span>
                   </div>
 
-                  <p className="text-xs text-[#0b0f14] dark:text-[#3df2e0] font-serif leading-relaxed">
+                  <p className="text-xs text-[#111111] dark:text-[#f3eee3] font-serif leading-relaxed">
                     &ldquo;{q.text}&rdquo;
                   </p>
 
                   {q.reply ? (
-                    <div className="mt-3 p-4 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs">
-                      <span className="font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] block mb-1">
+                    <div className="mt-3 p-4 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs">
+                      <span className="font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] block mb-1">
                         Counsel Advice:
                       </span>
-                      <p className="text-[#0b0f14]/85 dark:text-[#3df2e0]/85 font-serif leading-relaxed">{q.reply}</p>
+                      <p className="text-[#111111]/85 dark:text-[#f3eee3]/85 font-serif leading-relaxed">{q.reply}</p>
                     </div>
                   ) : (
                     (currentUser.role === "lawyer" || currentUser.role === "associate") && (
@@ -528,19 +528,19 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                               value={replyText}
                               onChange={(e) => setReplyText(e.target.value)}
                               placeholder="Type counsel response..."
-                              className="w-full p-3.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs text-[#0b0f14] dark:text-[#3df2e0] font-serif"
+                              className="w-full p-3.5 rounded-xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs text-[#111111] dark:text-[#f3eee3] font-serif"
                             />
                             <div className="flex gap-2.5">
                               <button
                                 onClick={() => handleReplySubmit(q.id)}
                                 disabled={submittingReply || !replyText.trim()}
-                                className="px-5 py-2 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs"
+                                className="px-5 py-2 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs"
                               >
                                 {submittingReply ? "Saving..." : "Send Advice"}
                               </button>
                               <button
                                 onClick={() => setReplyingTo(null)}
-                                className="px-4 py-2 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs font-cinzel font-semibold"
+                                className="px-4 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs font-cinzel font-semibold"
                               >
                                 Cancel
                               </button>
@@ -549,7 +549,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                         ) : (
                           <button
                             onClick={() => setReplyingTo(q.id)}
-                            className="text-xs font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] hover:underline"
+                            className="text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:underline"
                           >
                             Reply as Chamber Counsel →
                           </button>
@@ -567,19 +567,19 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       {/* 4. Client Fee & Invoicing Ledger */}
       {activeTab === "billing" && (
         <div className="space-y-6">
-          <p className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-serif italic">
+          <p className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">
             Case accounting ledger for Vakalatnama retainer, drafting charges, and court appearance receipts.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-5 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
-              <span className="text-[10px] font-cinzel font-bold text-[#0b0f14]/65 dark:text-[#3df2e0]/60 uppercase block">
+            <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
+              <span className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase block">
                 Total Agreed Fee
               </span>
-              <span className="text-2xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1.5 block">
+              <span className="text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1.5 block">
                 ₹{(c.feeAgreed || 0).toLocaleString("en-IN")}
               </span>
-              <span className="text-[10px] font-serif text-[#0b0f14]/65 dark:text-[#3df2e0]/60">Agreed under Vakalatnama</span>
+              <span className="text-[10px] font-serif text-[#111111]/65 dark:text-[#f3eee3]/60">Agreed under Vakalatnama</span>
             </div>
 
             <div className="p-5 rounded-3xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 shadow-xs">
@@ -594,33 +594,33 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
               </span>
             </div>
 
-            <div className="p-5 rounded-3xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
-              <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] uppercase block">
+            <div className="p-5 rounded-3xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
+              <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] uppercase block">
                 Outstanding Balance
               </span>
-              <span className="text-2xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1.5 block">
+              <span className="text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1.5 block">
                 ₹{Math.max(0, (c.feeAgreed || 0) - (c.feeReceived || 0)).toLocaleString("en-IN")}
               </span>
-              <span className="text-[10px] font-serif text-[#0b0f14]/65 dark:text-[#3df2e0]/60">Payable at next judicial stage</span>
+              <span className="text-[10px] font-serif text-[#111111]/65 dark:text-[#f3eee3]/60">Payable at next judicial stage</span>
             </div>
           </div>
 
           {/* Receipts Table */}
-          <div className="rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#0f151c] overflow-hidden shadow-xs">
-            <div className="p-5 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-between">
-              <h4 className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+          <div className="rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] overflow-hidden shadow-xs">
+            <div className="p-5 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-between">
+              <h4 className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#111111] dark:text-[#f3eee3]">
                 Payment Receipts &amp; Disbursements
               </h4>
               <button
                 onClick={() => addToast("Receipt statement exported for client record.", "success")}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#141d27] text-xs font-cinzel font-semibold hover:bg-[#f3efe6] transition-colors border border-[#0b0f14]/15 dark:border-[#3df2e0]/20"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#202020] text-xs font-cinzel font-semibold hover:bg-[#f3efe6] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20"
               >
-                <Printer className="w-3.5 h-3.5 text-[#0b0f14] dark:text-[#3df2e0]" /> Print Statement
+                <Printer className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" /> Print Statement
               </button>
             </div>
 
             {(c.feeReceipts || []).length === 0 ? (
-              <div className="p-10 text-center text-xs font-serif text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+              <div className="p-10 text-center text-xs font-serif text-[#111111]/65 dark:text-[#f3eee3]/60">
                 No payment receipts issued for this matter yet.
               </div>
             ) : (
@@ -629,24 +629,24 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                   <div key={i} className="p-5 flex items-center justify-between text-xs font-serif">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                        <span className="font-mono font-bold text-[#111111] dark:text-[#f3eee3]">
                           {rec.receiptNo || `REC-${i + 1}`}
                         </span>
                         <span className="text-[10px] font-cinzel font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
                           {rec.mode || "Bank Transfer"}
                         </span>
                       </div>
-                      <p className="text-[#0b0f14]/85 dark:text-[#3df2e0]/85 mt-1">{rec.note || "Professional fee disbursement"}</p>
-                      <span className="text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60">Issued on {formatDate(rec.date)}</span>
+                      <p className="text-[#111111]/85 dark:text-[#f3eee3]/85 mt-1">{rec.note || "Professional fee disbursement"}</p>
+                      <span className="text-[10px] text-[#111111]/65 dark:text-[#f3eee3]/60">Issued on {formatDate(rec.date)}</span>
                     </div>
 
                     <div className="text-right">
-                      <span className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                      <span className="text-base font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                         ₹{rec.amount.toLocaleString("en-IN")}
                       </span>
                       <button
                         onClick={() => addToast(`Downloaded receipt slip: ${rec.receiptNo || "Receipt"}`, "info")}
-                        className="block text-[11px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] hover:underline mt-1"
+                        className="block text-[11px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:underline mt-1"
                       >
                         Receipt Slip →
                       </button>
@@ -662,47 +662,47 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       {/* 5. Parties & Vakalatnama */}
       {activeTab === "parties" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 space-y-4 shadow-xs">
-            <h3 className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-4 shadow-xs">
+            <h3 className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
               Client on Record (Vakalatnama)
             </h3>
             {client ? (
               <div className="space-y-1.5 font-serif">
-                <p className="text-base font-bold text-[#0b0f14] dark:text-[#3df2e0] font-sans">{client.name}</p>
-                <p className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 italic">{client.designation || "Litigant"}</p>
-                <p className="text-xs font-mono text-[#0b0f14]/65 dark:text-[#3df2e0]/60 pt-1">{client.email}</p>
-                {client.phone && <p className="text-xs font-mono text-[#0b0f14]/65 dark:text-[#3df2e0]/60">{client.phone}</p>}
+                <p className="text-base font-bold text-[#111111] dark:text-[#f3eee3] font-sans">{client.name}</p>
+                <p className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 italic">{client.designation || "Litigant"}</p>
+                <p className="text-xs font-mono text-[#111111]/65 dark:text-[#f3eee3]/60 pt-1">{client.email}</p>
+                {client.phone && <p className="text-xs font-mono text-[#111111]/65 dark:text-[#f3eee3]/60">{client.phone}</p>}
               </div>
             ) : (
-              <p className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-serif italic">No client mapped.</p>
+              <p className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">No client mapped.</p>
             )}
 
             {leadCounsel && (
-              <div className="pt-4 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
-                <span className="text-[10px] uppercase font-cinzel tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60 block">
+              <div className="pt-4 border-t border-[#111111]/15 dark:border-[#f3eee3]/20">
+                <span className="text-[10px] uppercase font-cinzel tracking-wider text-[#111111]/65 dark:text-[#f3eee3]/60 block">
                   Lead Arguing Counsel
                 </span>
-                <p className="text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1">{leadCounsel.name}</p>
-                <p className="text-[11px] font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">{leadCounsel.designation}</p>
+                <p className="text-xs font-bold text-[#111111] dark:text-[#f3eee3] mt-1">{leadCounsel.name}</p>
+                <p className="text-[11px] font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">{leadCounsel.designation}</p>
               </div>
             )}
           </div>
 
-          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 space-y-4 shadow-xs">
-            <h3 className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-4 shadow-xs">
+            <h3 className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
               Assigned Chamber Associates
             </h3>
             {assignedAssociates.length === 0 ? (
-              <p className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-serif italic">No junior associates assigned.</p>
+              <p className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">No junior associates assigned.</p>
             ) : (
               <div className="space-y-2.5">
                 {assignedAssociates.map((a: any) => (
-                  <div key={a.id} className="p-4 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-between text-xs">
+                  <div key={a.id} className="p-4 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-between text-xs">
                     <div>
-                      <p className="font-bold text-[#0b0f14] dark:text-[#3df2e0] font-sans">{a.name}</p>
-                      <p className="text-[11px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-serif italic">{a.designation}</p>
+                      <p className="font-bold text-[#111111] dark:text-[#f3eee3] font-sans">{a.name}</p>
+                      <p className="text-[11px] text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">{a.designation}</p>
                     </div>
-                    <span className="text-[9.5px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] px-2.5 py-0.5 rounded-full bg-[#3df2e0]/25 dark:bg-[#3df2e0]/15 border border-[#0b0f14]/50 dark:border-[#3df2e0]/40">Briefed</span>
+                    <span className="text-[9.5px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] px-2.5 py-0.5 rounded-full bg-[#f3eee3]/25 dark:bg-[#f3eee3]/15 border border-[#111111]/50 dark:border-[#f3eee3]/40">Briefed</span>
                   </div>
                 ))}
               </div>
@@ -713,11 +713,11 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
 
       {/* 6. Notes */}
       {activeTab === "notes" && (
-        <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 space-y-4 shadow-xs">
-          <h3 className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+        <div className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-4 shadow-xs">
+          <h3 className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
             Confidential Chamber Notes &amp; Safe Custody
           </h3>
-          <p className="text-xs text-[#0b0f14]/85 dark:text-[#3df2e0]/85 leading-relaxed font-serif whitespace-pre-wrap">
+          <p className="text-xs text-[#111111]/85 dark:text-[#f3eee3]/85 leading-relaxed font-serif whitespace-pre-wrap">
             {c.notes || "No internal chamber notes filed."}
           </p>
         </div>

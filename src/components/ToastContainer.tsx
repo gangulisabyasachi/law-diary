@@ -19,18 +19,18 @@ export function ToastContainer() {
             exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
             className={`pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-2xl text-xs font-medium border backdrop-blur-md ${
               t.type === "success"
-                ? "bg-white/95 dark:bg-[#0f151c]/95 text-[#0b0f14] dark:text-[#3df2e0] border-[#0b0f14]/20 dark:border-[#3df2e0]/40 shadow-[0_10px_40px_rgba(11,15,20,0.1)] dark:shadow-[0_10px_40px_rgba(61,242,224,0.15)]"
+                ? "bg-white/95 dark:bg-[#181818]/95 text-[#111111] dark:text-[#f3eee3] border-[#111111]/20 dark:border-[#f3eee3]/40 shadow-[0_10px_40px_rgba(17,17,17,0.1)] dark:shadow-[0_10px_40px_rgba(243,238,227,0.15)]"
                 : t.type === "error"
-                ? "bg-white/95 dark:bg-[#0f151c]/95 text-[#0b0f14] dark:text-[#3df2e0] border-rose-500/40 shadow-[0_10px_40px_rgba(11,15,20,0.1)] dark:shadow-[0_10px_40px_rgba(244,63,94,0.2)]"
-                : "bg-white/95 dark:bg-[#0f151c]/95 text-[#0b0f14] dark:text-[#3df2e0] border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-[0_10px_40px_rgba(11,15,20,0.1)] dark:shadow-[0_10px_40px_rgba(61,242,224,0.15)]"
+                ? "bg-white/95 dark:bg-[#181818]/95 text-[#111111] dark:text-[#f3eee3] border-rose-500/40 shadow-[0_10px_40px_rgba(17,17,17,0.1)] dark:shadow-[0_10px_40px_rgba(244,63,94,0.2)]"
+                : "bg-white/95 dark:bg-[#181818]/95 text-[#111111] dark:text-[#f3eee3] border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_10px_40px_rgba(17,17,17,0.1)] dark:shadow-[0_10px_40px_rgba(243,238,227,0.15)]"
             }`}
           >
             {t.type === "success" && (
-              <CheckCircle2 className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0" />
             )}
             {t.type === "error" && <AlertCircle className="w-4 h-4 text-rose-500 flex-shrink-0" />}
             {t.type === "info" && (
-              <Info className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
+              <Info className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0" />
             )}
             <span className="leading-snug font-sans">{t.message}</span>
           </motion.div>

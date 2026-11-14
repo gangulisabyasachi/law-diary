@@ -23,57 +23,57 @@
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
   
-  /* Light Theme: Background Neon Cyan (#3df2e0), Foreground Void Black (#0b0f14) */
-  --bg-canvas: #3df2e0;
+  /* Light Theme: Background Linen Cream (#f3eee3), Foreground Deep Obsidian (#111111) */
+  --bg-canvas: #f3eee3;
   --bg-card: #ffffff;
   --bg-subtle: rgba(255, 255, 255, 0.85);
   --bg-hover: rgba(255, 255, 255, 0.95);
-  --border-paper: rgba(11, 15, 20, 0.15);
-  --border-paper-strong: rgba(11, 15, 20, 0.3);
-  --ink-primary: #0b0f14;
-  --ink-secondary: #141c26;
-  --ink-muted: #2d3846;
-  --court-blue: #0b0f14;
-  --court-blue-bright: #0b0f14;
-  --court-blue-bg: rgba(11, 15, 20, 0.08);
-  --court-blue-border: rgba(11, 15, 20, 0.25);
-  --brand-navy: #0b0f14;
-  --brand-navy-dark: #07090c;
-  --accent-primary: #0b0f14;
-  --accent-contrast: #3df2e0;
-  --accent-glow: rgba(11, 15, 20, 0.3);
+  --border-paper: rgba(17, 17, 17, 0.12);
+  --border-paper-strong: rgba(17, 17, 17, 0.25);
+  --ink-primary: #111111;
+  --ink-secondary: #2c2825;
+  --ink-muted: #6f685e;
+  --court-blue: #111111;
+  --court-blue-bright: #111111;
+  --court-blue-bg: rgba(217, 84, 30, 0.08);
+  --court-blue-border: rgba(217, 84, 30, 0.25);
+  --brand-navy: #111111;
+  --brand-navy-dark: #000000;
+  --accent-primary: #d9541e;
+  --accent-contrast: #ffffff;
+  --accent-glow: rgba(217, 84, 30, 0.35);
 
-  /* Primary Action Button Colors: Nebula Indigo (#1b1d3a) & Champagne Glow (#e8d5b5) */
-  --cta-bg: #1b1d3a;
-  --cta-fg: #e8d5b5;
-  --cta-hover: #25284e;
+  /* Highlighted Action Button Colors: Vibrant Terracotta (#d9541e) */
+  --cta-bg: #d9541e;
+  --cta-fg: #ffffff;
+  --cta-hover: #bf4513;
 }
 
 .dark, [data-theme="dark"] {
-  /* Dark Theme: Background Void Black (#0b0f14), Foreground Neon Cyan (#3df2e0) */
-  --bg-canvas: #0b0f14;
-  --bg-card: #0f151c;
-  --bg-subtle: #141d27;
-  --bg-hover: #1b2633;
-  --border-paper: rgba(61, 242, 224, 0.18);
-  --border-paper-strong: rgba(61, 242, 224, 0.35);
-  --ink-primary: #3df2e0;
-  --ink-secondary: rgba(61, 242, 224, 0.85);
-  --ink-muted: rgba(61, 242, 224, 0.6);
-  --court-blue: #3df2e0;
-  --court-blue-bright: #67f6e7;
-  --court-blue-bg: rgba(61, 242, 224, 0.12);
-  --court-blue-border: rgba(61, 242, 224, 0.4);
-  --brand-navy: #3df2e0;
-  --brand-navy-dark: #29c7b7;
-  --accent-primary: #3df2e0;
-  --accent-contrast: #0b0f14;
-  --accent-glow: rgba(61, 242, 224, 0.4);
+  /* Dark Theme: Background Deep Obsidian (#111111), Foreground Linen Cream (#f3eee3) */
+  --bg-canvas: #111111;
+  --bg-card: #181818;
+  --bg-subtle: #202020;
+  --bg-hover: #262626;
+  --border-paper: rgba(243, 238, 227, 0.15);
+  --border-paper-strong: rgba(243, 238, 227, 0.3);
+  --ink-primary: #f3eee3;
+  --ink-secondary: rgba(243, 238, 227, 0.85);
+  --ink-muted: rgba(243, 238, 227, 0.65);
+  --court-blue: #f3eee3;
+  --court-blue-bright: #ffffff;
+  --court-blue-bg: rgba(217, 84, 30, 0.15);
+  --court-blue-border: rgba(217, 84, 30, 0.4);
+  --brand-navy: #f3eee3;
+  --brand-navy-dark: #e6e0d3;
+  --accent-primary: #d9541e;
+  --accent-contrast: #ffffff;
+  --accent-glow: rgba(217, 84, 30, 0.45);
 
-  /* Primary Action Button Colors (Inverted): Champagne Glow (#e8d5b5) & Nebula Indigo (#1b1d3a) */
-  --cta-bg: #e8d5b5;
-  --cta-fg: #1b1d3a;
-  --cta-hover: #dfc8a2;
+  /* Highlighted Action Button Colors: Vibrant Terracotta (#d9541e) */
+  --cta-bg: #d9541e;
+  --cta-fg: #ffffff;
+  --cta-hover: #ea6026;
 }
 
 body {
@@ -106,17 +106,17 @@ h1, h2, h3, h4, .font-display {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(11, 15, 20, 0.2);
+  background: rgba(17, 17, 17, 0.2);
   border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(61, 242, 224, 0.25);
+  background: rgba(243, 238, 227, 0.25);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #0b0f14;
+  background: #111111;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #3df2e0;
+  background: #f3eee3;
 }
 
 /* Luxury card surfaces */
@@ -124,12 +124,12 @@ h1, h2, h3, h4, .font-display {
   background-color: var(--bg-card);
   border: 1px solid var(--border-paper);
   border-radius: 1.5rem;
-  box-shadow: 0 4px 24px -2px rgba(11, 15, 20, 0.06);
+  box-shadow: 0 4px 24px -2px rgba(17, 17, 17, 0.06);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark .court-card, .dark .luxury-card {
-  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(61, 242, 224, 0.1);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(243, 238, 227, 0.1);
 }
 
 .court-card:hover, .luxury-card:hover {
@@ -159,13 +159,13 @@ h1, h2, h3, h4, .font-display {
 
 /* Typography gradient styles */
 .blue-gradient-text, .gold-gradient-text, .accent-gradient-text {
-  background: linear-gradient(135deg, #0b0f14 0%, #172430 60%, #0b0f14 100%);
+  background: linear-gradient(135deg, #111111 0%, #172430 60%, #111111 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dark .blue-gradient-text, .dark .gold-gradient-text, .dark .accent-gradient-text {
-  background: linear-gradient(135deg, #3df2e0 0%, #7ef7ec 50%, #29c7b7 100%);
+  background: linear-gradient(135deg, #f3eee3 0%, #7ef7ec 50%, #e6e0d3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -175,29 +175,29 @@ h1, h2, h3, h4, .font-display {
   outline: none;
 }
 .focus-gold:focus, .focus-cyan:focus {
-  border-color: #3df2e0;
-  box-shadow: 0 0 0 3px rgba(61, 242, 224, 0.25);
+  border-color: #f3eee3;
+  box-shadow: 0 0 0 3px rgba(243, 238, 227, 0.25);
 }
 
-/* Primary Action Buttons: Nebula Indigo (#1b1d3a) & Champagne Glow (#e8d5b5) */
+/* Highlighted Action Buttons: Vibrant Terracotta Vermilion (#d9541e) */
 .btn-cta, .btn-primary-action {
-  background-color: #1b1d3a;
-  color: #e8d5b5;
+  background-color: #d9541e;
+  color: #ffffff;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(27, 29, 58, 0.25);
+  box-shadow: 0 4px 14px rgba(217, 84, 30, 0.3);
 }
 .btn-cta:hover, .btn-primary-action:hover {
-  background-color: #25284e;
+  background-color: #bf4513;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(27, 29, 58, 0.35);
+  box-shadow: 0 6px 20px rgba(217, 84, 30, 0.45);
 }
 .dark .btn-cta, .dark .btn-primary-action {
-  background-color: #e8d5b5;
-  color: #1b1d3a;
-  box-shadow: 0 4px 16px rgba(232, 213, 181, 0.2);
+  background-color: #d9541e;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(217, 84, 30, 0.35);
 }
 .dark .btn-cta:hover, .dark .btn-primary-action:hover {
-  background-color: #dfc8a2;
+  background-color: #ea6026;
   transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(232, 213, 181, 0.3);
+  box-shadow: 0 6px 22px rgba(217, 84, 30, 0.5);
 }

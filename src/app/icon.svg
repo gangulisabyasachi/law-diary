@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
   <defs>
     <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#67f6e7"/>
-      <stop offset="100%" stop-color="#3df2e0"/>
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f3eee3"/>
     </linearGradient>
   </defs>
-  <!-- Background: Void Black (#0b0f14) -->
-  <rect width="120" height="120" rx="28" fill="#0b0f14"/>
+  <!-- Background: Void Black (#111111) -->
+  <rect width="120" height="120" rx="28" fill="#111111"/>
   <rect x="5" y="5" width="110" height="110" rx="23" fill="none" stroke="url(#cyanGrad)" stroke-width="2.5" stroke-opacity="0.5"/>
   
-  <!-- Central Scales of Justice & Law Diary Emblem in Neon Cyan (#3df2e0) -->
+  <!-- Central Scales of Justice & Law Diary Emblem in Neon Cyan (#f3eee3) -->
   <!-- Pillar -->
   <line x1="60" y1="26" x2="60" y2="82" stroke="url(#cyanGrad)" stroke-width="4.5" stroke-linecap="round"/>
   <!-- Finial -->
-  <circle cx="60" cy="24" r="5" fill="url(#cyanGrad)"/>
+  <circle cx="60" cy="24" r="5" fill="#d9541e"/>
   
   <!-- Balance Beam -->
   <path d="M 28 38 Q 60 33 92 38" fill="none" stroke="url(#cyanGrad)" stroke-width="4" stroke-linecap="round"/>
@@ -30,5 +30,5 @@
   
   <!-- Open Law Diary Base -->
   <path d="M 28 88 Q 60 80 60 92 Q 60 80 92 88 L 92 77 Q 60 69 60 81 Q 60 69 28 77 Z" fill="url(#cyanGrad)"/>
-  <line x1="60" y1="81" x2="60" y2="92" stroke="#0b0f14" stroke-width="2.5"/>
+  <line x1="60" y1="81" x2="60" y2="92" stroke="#111111" stroke-width="2.5"/>
 </svg>
