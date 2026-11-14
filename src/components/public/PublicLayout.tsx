@@ -5,6 +5,7 @@ import { PublicNavbar } from "./PublicNavbar";
 import { PublicFooter } from "./PublicFooter";
 import { AuthModals } from "@/components/AuthModals";
 import { ToastContainer } from "@/components/ToastContainer";
+import { ScrollToTop } from "@/components/ui/scroll-to-top";
 
 interface PublicLayoutProps {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ export function PublicLayout({ children, hideNavbar = false }: PublicLayoutProps
         {children}
       </main>
       <PublicFooter />
+      <ScrollToTop />
       <AuthModals />
       <ToastContainer />
     </div>

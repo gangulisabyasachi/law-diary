@@ -107,6 +107,13 @@ const config: Config = {
         },
       },
       fontFamily: {
+        mogina: ["Mogina", "var(--font-serif)", "Georgia", "serif"],
+        zaslia: ["Zaslia", "var(--font-serif)", "Georgia", "serif"],
+        signature: ["'Photograph Signature'", "PhotographSignature", "cursive", "sans-serif"],
+        photograph: ["'Photograph Signature'", "PhotographSignature", "cursive", "sans-serif"],
+        allesya: ["Allesya", "Badoga", "Craos", "Cormorant Garamond", "Georgia", "serif"],
+        badoga: ["Badoga", "Craos", "Cormorant Garamond", "Georgia", "serif"],
+        craos: ["Craos", "Cormorant Garamond", "Georgia", "serif"],
         cinzel: ["Cinzel", "serif"],
         display: ["Cinzel", "Cormorant Garamond", "Georgia", "serif"],
         serif: ["Cormorant Garamond", "Georgia", "Times New Roman", "serif"],

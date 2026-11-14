@@ -1,11 +1,103 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
+@font-face {
+  font-family: 'Mogina';
+  src: url('/fonts/Mogina.otf') format('opentype'),
+       url('/fonts/Mogina-Regular.otf') format('opentype'),
+       url('/fonts/mogina.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Zaslia';
+  src: url('/fonts/Zaslia.otf') format('opentype'),
+       url('/fonts/Zaslia-Regular.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Photograph Signature';
+  src: url('/fonts/PhotographSignature.ttf') format('truetype'),
+       url('/fonts/Photograph-Signature.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PhotographSignature';
+  src: url('/fonts/PhotographSignature.ttf') format('truetype'),
+       url('/fonts/Photograph-Signature.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Allesya';
+  src: url('/fonts/Allesya.otf') format('opentype'),
+       url('/fonts/Allesya.otf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Badoga';
+  src: url('/fonts/Badoga.otf') format('opentype'),
+       url('/fonts/Badoga.otf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Craos';
+  src: url('/fonts/Craos.otf') format('opentype'),
+       url('/fonts/Craos.otf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
   scroll-behavior: smooth;
+}
+
+.font-mogina {
+  font-family: 'Mogina', var(--font-serif), Georgia, serif;
+}
+
+.font-zaslia {
+  font-family: 'Zaslia', var(--font-serif), Georgia, serif;
+}
+
+.font-signature {
+  font-family: 'Photograph Signature', 'PhotographSignature', cursive, sans-serif;
+}
+
+.font-photograph {
+  font-family: 'Photograph Signature', 'PhotographSignature', cursive, sans-serif;
+}
+
+.font-allesya {
+  font-family: 'Allesya', 'Badoga', 'Craos', var(--font-serif), Georgia, serif;
+}
+
+.font-badoga {
+  font-family: 'Badoga', 'Craos', var(--font-serif), Georgia, serif;
+}
+
+.font-craos {
+  font-family: 'Craos', var(--font-serif), Georgia, serif;
 }
 
 /* Liquid Ink Spill - View Transitions */

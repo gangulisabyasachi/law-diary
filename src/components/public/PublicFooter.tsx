@@ -6,10 +6,8 @@ import LogoIcon from "@/assets/logo-icon";
 import {
   Scale,
   ArrowUpRight,
-  ArrowUp,
   ShieldCheck,
   CheckCircle2,
-  Lock,
   Mail,
   Phone,
   MapPin,
@@ -32,12 +30,6 @@ export function PublicFooter() {
     }
     setGazetteSubscribed(true);
     addToast("Chamber enrolled in Statutory Limitation Gazette.", "success");
-  };
-
-  const scrollToTop = () => {
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
   };
 
   return (
@@ -104,7 +96,10 @@ export function PublicFooter() {
               <div className="w-9 h-9 rounded-xl bg-[#d9541e] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
                 <LogoIcon className="size-5 text-white" />
               </div>
-              <span className="text-xl sm:text-2xl font-cinzel font-black tracking-wider text-[#111111] dark:text-[#f3eee3]">
+              <span 
+                className="text-2xl sm:text-3xl font-signature tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block pl-0.5"
+                style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
+              >
                 Updated Law Diary
               </span>
             </Link>
@@ -354,43 +349,38 @@ export function PublicFooter() {
         </div>
       </div>
 
-      {/* ─── 3. True End-of-Screen Spilling Typography (Spills off both ends) ─── */}
-      <div className="w-full overflow-hidden select-none pointer-events-none py-6 sm:py-10 my-4">
-        <div className="w-[106vw] relative left-1/2 -translate-x-1/2 flex justify-center">
-          <svg
-            viewBox="0 0 1600 120"
-            className="w-full h-auto select-none pointer-events-none"
-            preserveAspectRatio="none"
-            aria-label="Updated Law Diary"
-          >
+      {/* ─── 3. Full-Bleed End-to-End Watermark Background at Bottom of Footer ─── */}
+      <div 
+        className="w-full overflow-hidden select-none pointer-events-none pt-4 sm:pt-8 pb-0 mt-2 mb-0"
+        aria-hidden="true"
+      >
+        <svg
+          viewBox="0 0 918 116"
+          className="w-full h-auto select-none pointer-events-none block"
+          aria-label="Updated Law Diary"
+        >
+          <g transform="scale(1, 1.48)">
             <text
-              x="50%"
-              y="68%"
-              dominantBaseline="middle"
+              x="459"
+              y="75"
               textAnchor="middle"
-              textLength="1600"
-              lengthAdjust="spacing"
-              className="font-cinzel font-black uppercase tracking-tight fill-[#111111]/15 dark:fill-[#f3eee3]/15 transition-colors"
-              fontSize="96"
+              className="font-mogina uppercase fill-[#111111]/[0.045] dark:fill-[#f3eee3]/[0.045] transition-colors"
+              fontSize="100"
+              style={{
+                fontFamily: "'Mogina', var(--font-serif), Georgia, serif",
+              }}
             >
               UPDATED LAW DIARY
             </text>
-          </svg>
-        </div>
+          </g>
+        </svg>
       </div>
 
       {/* ─── 4. Bottom Legal Strip & Back to Top ─── */}
       <div className="w-full px-6 md:px-10 lg:px-16 xl:px-20 relative z-10">
         <div className="pt-8 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-            <span className="flex items-center gap-1.5 text-[#d9541e] font-semibold">
-              <Lock className="w-3 h-3" />
-              <span>BCI Rule 36 Sovereign Encrypted</span>
-            </span>
-            <span className="hidden sm:inline opacity-40">·</span>
-            <span>© 2026 Updated Law Diary Technologies</span>
-            <span className="hidden sm:inline opacity-40">·</span>
-            <span>v2.4 Judicial Production</span>
+            <span>© 2026 Updated Law Diary</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-6">
@@ -403,16 +393,6 @@ export function PublicFooter() {
             <Link href="/contact" className="hover:text-[#d9541e] transition-colors">
               Registrar Desk
             </Link>
-
-            {/* Smooth Back to Top Button */}
-            <button
-              onClick={scrollToTop}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#d9541e] dark:hover:border-[#d9541e] hover:text-[#d9541e] transition-all group"
-              aria-label="Scroll back to top"
-            >
-              <span>Back to Top</span>
-              <ArrowUp className="w-3 h-3 group-hover:-translate-y-0.5 transition-transform text-[#d9541e]" />
-            </button>
           </div>
         </div>
       </div>

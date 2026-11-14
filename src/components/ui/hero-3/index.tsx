@@ -134,7 +134,10 @@ export default function Hero3({
                         <div className="w-8 h-8 rounded-xl bg-[#d9541e] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
                             <LogoIcon className="size-5 text-white" />
                         </div>
-                        <span className="text-[#111111] dark:text-[#f3eee3] text-xl font-cinzel font-bold tracking-tight group-hover:tracking-wide transition-all duration-300">
+                        <span 
+                            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[30px] font-signature tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block pl-0.5"
+                            style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
+                        >
                             {brandName}
                         </span>
                     </Link>

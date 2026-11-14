@@ -134,7 +134,10 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
           {/* Pure Textual Logo: Updated Law Diary */}
           <a href="#" className="group focus:outline-none select-none inline-flex items-center">
-            <span className="font-cinzel text-xl sm:text-2xl font-bold tracking-[0.16em] uppercase text-[#111111] dark:text-[#f3eee3] group-hover:opacity-85 transition-opacity">
+            <span 
+              className="font-signature text-2xl sm:text-[30px] tracking-normal text-[#111111] dark:text-[#f3eee3] group-hover:opacity-85 transition-opacity select-none inline-block pl-0.5"
+              style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
+            >
               Updated Law Diary
             </span>
           </a>
@@ -1221,7 +1224,10 @@ export function LandingPage() {
                 <div className="w-8 h-8 rounded-xl bg-[#111111] flex items-center justify-center text-[#111111] dark:text-[#f3eee3]">
                   <Scale className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-cinzel font-bold tracking-wider text-[#111111] dark:text-[#f3eee3]">
+                <span 
+                  className="text-lg font-signature tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block pl-0.5"
+                  style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
+                >
                   Updated Law Diary
                 </span>
               </div>
@@ -1265,7 +1271,7 @@ export function LandingPage() {
           </div>
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono">
-            <span>© 2026 Updated Law Diary Technologies. All rights reserved.</span>
+            <span>© 2026 Updated Law Diary. All rights reserved.</span>
             <span>Chamber Operating System</span>
           </div>
         </div>
