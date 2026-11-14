@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import Hero3 from "@/components/ui/hero-3";
 import {
   Check,
   X,
@@ -125,56 +126,68 @@ export default function PricingPage() {
   ];
 
   return (
-    <PublicLayout>
-      {/* Header Banner */}
-      <section className="py-20 md:py-28 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-[#f3eee3]/20 to-transparent dark:from-[#f3eee3]/10 dark:via-transparent blur-3xl rounded-full pointer-events-none" />
+    <PublicLayout hideNavbar={true}>
+      {/* Cinematic Judicial Hero */}
+      <Hero3
+        brandName="Updated Law Diary"
+        badgeText="✦  Transparent Chamber Retainers"
+        headingLine1="Transparent chamber retainers,"
+        headingLine2="sovereign peace of mind."
+        description="Choose the subscription tier tailored to your chamber size. No per-case fees, no hidden surcharges, and total data sovereignty across all High Court benches."
+        primaryCtaLabel="Compare Retainer Tiers"
+        primaryCtaHref="#pricing-tiers"
+        secondaryCtaLabel="Read Frequently Answered Questions"
+        secondaryCtaHref="#pricing-faqs"
+        bottomTagline={"Solo Advocate Free Forever\nChamber Pro for Teams\nDedicated Enterprise Private Deployments"}
+        scrollText="Compare Tiers"
+        scrollHref="#pricing-tiers"
+        bgImageSrc="/hero-pricing.jpg"
+      />
 
-        <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-cinzel font-bold tracking-widest bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
-            <span>CHAMBER RETAINER TIERS</span>
+      {/* 3 Pricing Cards - Wide End of Screen */}
+      <section id="pricing-tiers" className="w-full py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-8 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+          <div className="space-y-3 max-w-2xl">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#d9541e]">
+              CHAMBER PACKAGES
+            </span>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+              Sovereign Subscription Tiers
+            </h2>
           </div>
-
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] tracking-tight leading-[1.2]">
-            Transparent Retainers, Sovereign Peace of Mind.
-          </h1>
-
-          <p className="text-base sm:text-lg text-[#111111]/75 dark:text-[#f3eee3]/70 font-serif italic max-w-2xl mx-auto leading-relaxed">
-            Choose the subscription tier tailored to your chamber size. No per-case fees, no hidden surcharges, and total data sovereignty.
+          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
+            All tiers include 16-character National CNR tracking, cause list generation, and BCI Rule 36 encryption.
           </p>
         </div>
-      </section>
 
-      {/* 3 Pricing Cards */}
-      <section className="py-20 md:py-28 max-w-7xl mx-auto px-5 sm:px-8 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
           {plans.map((p, idx) => (
             <div
               key={idx}
-              className={`p-8 sm:p-9 rounded-3xl flex flex-col justify-between transition-all relative ${
+              className={`p-8 sm:p-10 md:p-12 rounded-3xl flex flex-col justify-between transition-all relative ${
                 p.highlight
-                  ? "bg-white dark:bg-[#181818] border-2 border-[#111111] dark:border-[#f3eee3] shadow-xl shadow-black/5 dark:shadow-[#f3eee3]/5"
-                  : "bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
+                  ? "bg-white dark:bg-[#181818] border-2 border-[#d9541e] shadow-xl shadow-[#d9541e]/5"
+                  : "bg-white/70 dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs hover:border-[#111111] dark:hover:border-[#f3eee3]/40"
               }`}
             >
               {p.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-cinzel font-bold uppercase tracking-widest bg-[#d9541e] text-white dark:bg-[#d9541e] dark:text-white shadow-xs">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-cinzel font-bold uppercase tracking-widest bg-[#d9541e] text-white shadow-xs">
                   {p.badge}
                 </div>
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <div>
-                  <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+                  <h3 className="text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                     {p.name}
                   </h3>
-                  <p className="text-xs font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1">
+                  <p className="text-xs font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1.5">
                     {p.tagline}
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-1.5 pb-6 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
-                  <span className="text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+                <div className="flex items-baseline gap-2 pb-6 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+                  <span className="text-4xl sm:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                     {p.price}
                   </span>
                   <span className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif">
@@ -182,22 +195,22 @@ export default function PricingPage() {
                   </span>
                 </div>
 
-                <div className="space-y-3">
-                  <span className="text-[10px] font-cinzel font-bold uppercase tracking-wider text-[#111111]/60 dark:text-[#f3eee3]/60 block">
+                <div className="space-y-4">
+                  <span className="text-[10px] font-cinzel font-bold uppercase tracking-wider text-[#d9541e] block">
                     Included Capabilities
                   </span>
-                  <ul className="space-y-2.5 text-xs font-serif text-[#111111]/85 dark:text-[#f3eee3]/85">
+                  <ul className="space-y-3 text-xs sm:text-sm font-serif text-[#111111]/85 dark:text-[#f3eee3]/85">
                     {p.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2.5">
-                        <Check className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0 mt-0.5" />
+                      <li key={i} className="flex items-start gap-3">
+                        <Check className="w-4 h-4 text-[#d9541e] flex-shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </li>
                     ))}
                   </ul>
 
                   {p.notIncluded.length > 0 && (
-                    <div className="pt-3 opacity-60">
-                      <ul className="space-y-2 text-xs font-serif text-[#111111]/60 dark:text-[#f3eee3]/50 line-through">
+                    <div className="pt-4 border-t border-[#111111]/5 dark:border-[#f3eee3]/10 opacity-50">
+                      <ul className="space-y-2.5 text-xs font-serif text-[#111111]/60 dark:text-[#f3eee3]/50 line-through">
                         {p.notIncluded.map((f, i) => (
                           <li key={i} className="flex items-center gap-2.5">
                             <X className="w-3.5 h-3.5 flex-shrink-0" />
@@ -210,11 +223,11 @@ export default function PricingPage() {
                 </div>
               </div>
 
-              <div className="pt-8 mt-6 border-t border-[#111111]/10 dark:border-[#f3eee3]/15">
+              <div className="pt-8 mt-8 border-t border-[#111111]/10 dark:border-[#f3eee3]/15">
                 {p.isCustom ? (
                   <Link
                     href="/contact"
-                    className="w-full py-3 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-bold text-xs tracking-wider text-[#111111] dark:text-[#f3eee3] hover:bg-[#f3efe6] dark:hover:bg-[#1a232f] transition-all flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-full bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-bold text-xs tracking-wider text-[#111111] dark:text-[#f3eee3] hover:bg-[#f3efe6] dark:hover:bg-[#1a232f] transition-all flex items-center justify-center gap-2"
                   >
                     <span>{p.cta}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -228,10 +241,10 @@ export default function PricingPage() {
                         setAuthModal("signup");
                       }
                     }}
-                    className={`w-full py-3 rounded-2xl font-cinzel font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${
+                    className={`w-full py-3.5 rounded-full font-cinzel font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${
                       p.highlight
                         ? "bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm"
-                        : "bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] hover:bg-[#f3efe6]"
+                        : "bg-[#111111] text-[#f3eee3] dark:bg-[#f3eee3] dark:text-[#111111] hover:opacity-90"
                     }`}
                   >
                     <span>{currentUser ? "Open Dashboard" : p.cta}</span>
@@ -244,52 +257,54 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Feature Comparison Matrix */}
-      <section className="py-20 md:py-28 max-w-6xl mx-auto px-5 sm:px-8 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
-            DETAILED SPECIFICATIONS
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-            Compare Chamber Capabilities
-          </h2>
-          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60">
+      {/* Feature Comparison Matrix - Wide End of Screen */}
+      <section className="w-full py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-8 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+          <div className="space-y-3 max-w-2xl">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#d9541e]">
+              DETAILED SPECIFICATIONS
+            </span>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+              Compare Chamber Capabilities
+            </h2>
+          </div>
+          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
             A granular comparison of capabilities across practice tiers.
           </p>
         </div>
 
         <div className="rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] overflow-hidden shadow-xs">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-serif">
+            <table className="w-full text-left text-sm font-serif">
               <thead>
                 <tr className="border-b border-[#111111]/15 dark:border-[#f3eee3]/20 bg-[#111111]/5 dark:bg-[#111111]">
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Feature</th>
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Solo</th>
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] bg-[#f3eee3]/10 dark:bg-[#f3eee3]/10">Chamber Pro</th>
-                  <th className="p-4 sm:p-5 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Enterprise</th>
+                  <th className="p-5 sm:p-6 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Feature</th>
+                  <th className="p-5 sm:p-6 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Solo</th>
+                  <th className="p-5 sm:p-6 font-cinzel font-bold text-[#d9541e] bg-[#d9541e]/5">Chamber Pro</th>
+                  <th className="p-5 sm:p-6 font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Enterprise</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#111111]/10 dark:divide-[#f3eee3]/15">
                 {comparisonRows.map((row, idx) => (
                   <tr key={idx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
-                    <td className="p-4 sm:p-5 font-semibold text-[#111111] dark:text-[#f3eee3]">{row.feature}</td>
-                    <td className="p-4 sm:p-5 text-[#111111]/80 dark:text-[#f3eee3]/80">
+                    <td className="p-5 sm:p-6 font-semibold text-[#111111] dark:text-[#f3eee3]">{row.feature}</td>
+                    <td className="p-5 sm:p-6 text-[#111111]/80 dark:text-[#f3eee3]/80">
                       {typeof row.solo === "boolean" ? (
-                        row.solo ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <X className="w-4 h-4 opacity-30" />
+                        row.solo ? <Check className="w-4 h-4 text-[#d9541e]" /> : <X className="w-4 h-4 opacity-30" />
                       ) : (
                         row.solo
                       )}
                     </td>
-                    <td className="p-4 sm:p-5 font-semibold text-[#111111] dark:text-[#f3eee3] bg-[#f3eee3]/10 dark:bg-[#f3eee3]/10">
+                    <td className="p-5 sm:p-6 font-semibold text-[#111111] dark:text-[#f3eee3] bg-[#d9541e]/5">
                       {typeof row.pro === "boolean" ? (
-                        row.pro ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <X className="w-4 h-4 opacity-30" />
+                        row.pro ? <Check className="w-4 h-4 text-[#d9541e]" /> : <X className="w-4 h-4 opacity-30" />
                       ) : (
                         row.pro
                       )}
                     </td>
-                    <td className="p-4 sm:p-5 text-[#111111]/80 dark:text-[#f3eee3]/80">
+                    <td className="p-5 sm:p-6 text-[#111111]/80 dark:text-[#f3eee3]/80">
                       {typeof row.enterprise === "boolean" ? (
-                        row.enterprise ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <X className="w-4 h-4 opacity-30" />
+                        row.enterprise ? <Check className="w-4 h-4 text-[#d9541e]" /> : <X className="w-4 h-4 opacity-30" />
                       ) : (
                         row.enterprise
                       )}
@@ -302,37 +317,42 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 md:py-28 max-w-4xl mx-auto px-5 sm:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
-            TRANSPARENCY &amp; TRUST
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-            Frequently Answered Questions
-          </h2>
+      {/* FAQ Section - Wide End of Screen */}
+      <section id="pricing-faqs" className="w-full py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 bg-white/40 dark:bg-[#141414]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-8 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+          <div className="space-y-3 max-w-2xl">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#d9541e]">
+              TRANSPARENCY &amp; TRUST
+            </span>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+              Frequently Answered Questions
+            </h2>
+          </div>
+          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
+            Everything counsels ask about confidentiality, migrations, and billing.
+          </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="rounded-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] overflow-hidden"
+              className="rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] overflow-hidden p-2"
             >
               <button
                 type="button"
                 onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                className="w-full p-5 text-left flex items-center justify-between text-xs sm:text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3]"
+                className="w-full p-6 text-left flex items-center justify-between text-base sm:text-lg font-serif font-bold text-[#111111] dark:text-[#f3eee3]"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-[#111111]/65 dark:text-[#f3eee3]/60 transition-transform ${
+                  className={`w-5 h-5 text-[#d9541e] transition-transform flex-shrink-0 ml-4 ${
                     activeFaq === i ? "rotate-180" : ""
                   }`}
                 />
               </button>
               {activeFaq === i && (
-                <div className="px-5 pb-5 pt-1 text-xs font-serif leading-relaxed text-[#111111]/75 dark:text-[#f3eee3]/70 border-t border-[#111111]/15 dark:border-[#f3eee3]/20">
+                <div className="px-6 pb-6 pt-2 text-sm font-serif leading-relaxed text-[#111111]/75 dark:text-[#f3eee3]/70 border-t border-[#111111]/10 dark:border-[#f3eee3]/15">
                   {faq.a}
                 </div>
               )}

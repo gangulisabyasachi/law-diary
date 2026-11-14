@@ -9,9 +9,9 @@ export function PublicFooter() {
   const { setAuthModal } = useChamber();
 
   return (
-    <footer className="bg-white/80 dark:bg-[#070a0e] text-[#111111] dark:text-[#f3eee3] border-t border-[#111111]/15 dark:border-[#f3eee3]/20 pt-16 pb-12 transition-colors">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 space-y-12">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
+    <footer className="relative w-full bg-[#f3eee3] dark:bg-[#0c0d12] text-[#111111] dark:text-[#f3eee3] border-t border-[#111111]/15 dark:border-[#f3eee3]/20 py-20 md:py-24 transition-colors">
+      <div className="w-full px-6 md:px-10 lg:px-16 xl:px-20 space-y-16">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 xl:gap-14">
           {/* Brand Column */}
           <div className="md:col-span-2 space-y-4">
             <Link href="/" className="inline-block">

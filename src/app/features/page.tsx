@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import Hero3 from "@/components/ui/hero-3";
 import {
   Calendar,
   Scale,
@@ -123,63 +124,37 @@ export default function FeaturesPage() {
   ];
 
   return (
-    <PublicLayout>
-      {/* Header Banner */}
-      <section className="py-20 md:py-28 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-[#f3eee3]/20 to-transparent dark:from-[#f3eee3]/10 dark:via-transparent blur-3xl rounded-full pointer-events-none" />
+    <PublicLayout hideNavbar={true}>
+      {/* Cinematic Judicial Hero */}
+      <Hero3
+        brandName="Updated Law Diary"
+        badgeText="✦  Chamber Practice Architecture"
+        headingLine1="Engineered for litigation,"
+        headingLine2="crafted with classical dignity."
+        description="Every module in Updated Law Diary is purpose-built to address the demanding daily realities of practicing advocates, arguing seniors, and courtroom clerks across all Indian jurisdictions."
+        primaryCtaLabel="Explore Practice Pillars"
+        primaryCtaHref="#features-grid"
+        secondaryCtaLabel="View Retainer Tiers"
+        secondaryCtaHref="/pricing"
+        bottomTagline={"16-Character National CNR Tracking\nAutomated Daily Cause List Generation\nTwo-Man Senior Verification Protocol"}
+        scrollText="Explore Pillars"
+        scrollHref="#features-grid"
+        bgImageSrc="/hero-features.jpg"
+      />
 
-        <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-cinzel font-bold tracking-widest bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
-            <span>CHAMBER OPERATING SYSTEM</span>
+      {/* Main 6 Features Grid - Wide End of Screen */}
+      <section id="features-grid" className="w-full py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-8 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+          <div className="space-y-3 max-w-2xl">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#d9541e]">
+              PRACTICE PILLARS
+            </span>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+              Six Pillars of High Court &amp; Tribunal Management
+            </h2>
           </div>
-
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] tracking-tight leading-[1.2]">
-            Engineered for Modern Litigation, Crafted with Classical Dignity.
-          </h1>
-
-          <p className="text-base sm:text-lg text-[#111111]/75 dark:text-[#f3eee3]/70 font-serif italic max-w-2xl mx-auto leading-relaxed">
-            Every feature in Updated Law Diary is purpose-built to address the demanding daily realities of practicing advocates, arguing seniors, and courtroom clerks.
-          </p>
-
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            {currentUser ? (
-              <Link
-                href={dashboardHref}
-                className="px-7 py-3 rounded-2xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider uppercase transition-all shadow-md inline-flex items-center gap-2"
-              >
-                <span>Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            ) : (
-              <button
-                onClick={() => setAuthModal("signup")}
-                className="px-7 py-3 rounded-2xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider uppercase transition-all shadow-md inline-flex items-center gap-2"
-              >
-                <span>Sign Up (Lawyers Only)</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
-            <Link
-              href="/pricing"
-              className="px-6 py-3 rounded-2xl bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-semibold text-xs tracking-wider hover:bg-white/80 dark:hover:bg-[#202020] transition-all shadow-xs"
-            >
-              View Chamber Retainer Tiers
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Main 6 Features Grid */}
-      <section className="py-20 md:py-28 max-w-7xl mx-auto px-5 sm:px-8 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
-            PRACTICE PILLARS
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-            Six Pillars of High Court &amp; Tribunal Management
-          </h2>
-          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60">
-            A comprehensive overview of our sovereign courtroom management capabilities.
+          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
+            A comprehensive overview of our sovereign courtroom management capabilities engineered exclusively for Indian litigation.
           </p>
         </div>
 
@@ -189,29 +164,29 @@ export default function FeaturesPage() {
             return (
               <div
                 key={idx}
-                className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs hover:border-[#111111] dark:hover:border-[#f3eee3]/50 transition-all flex flex-col justify-between space-y-5"
+                className="p-8 md:p-10 rounded-3xl bg-white/70 dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs hover:border-[#d9541e] dark:hover:border-[#d9541e]/70 transition-all flex flex-col justify-between space-y-6 group"
               >
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#111111] dark:bg-[#f3eee3]/15 text-[#f3eee3] flex items-center justify-center shadow-xs">
+                <div className="space-y-5">
+                  <div className="w-14 h-14 rounded-2xl bg-[#111111] dark:bg-[#f3eee3]/15 text-[#f3eee3] flex items-center justify-center shadow-xs group-hover:bg-[#d9541e] transition-colors">
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+                    <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                       {feat.title}
                     </h3>
-                    <p className="text-xs font-serif italic text-[#111111]/75 dark:text-[#f3eee3]/70 mt-1">
+                    <p className="text-xs font-serif italic text-[#d9541e] mt-1 font-medium">
                       {feat.tagline}
                     </p>
                   </div>
-                  <p className="text-xs font-serif leading-relaxed text-[#111111]/80 dark:text-[#f3eee3]/80">
+                  <p className="text-sm font-serif leading-relaxed text-[#111111]/80 dark:text-[#f3eee3]/80">
                     {feat.description}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 space-y-2">
+                <div className="pt-6 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 space-y-2.5">
                   {feat.bullets.map((bullet, i) => (
-                    <div key={i} className="flex items-start gap-2 text-xs font-serif text-[#111111]/80 dark:text-[#f3eee3]/80">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3] flex-shrink-0 mt-0.5" />
+                    <div key={i} className="flex items-start gap-2.5 text-xs font-serif text-[#111111]/80 dark:text-[#f3eee3]/80">
+                      <CheckCircle2 className="w-4 h-4 text-[#d9541e] flex-shrink-0 mt-0.5" />
                       <span>{bullet}</span>
                     </div>
                   ))}
@@ -222,31 +197,33 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      {/* 4-Step Chamber Operating Protocol */}
-      <section className="py-20 md:py-28 bg-white/60 dark:bg-[#181818] border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 space-y-16">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
-              WORKFLOW INTEGRATION
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-              The Four-Step Chamber Protocol
-            </h2>
-            <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60">
+      {/* 4-Step Chamber Operating Protocol - Wide End of Screen */}
+      <section className="w-full py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 bg-white/40 dark:bg-[#141414] border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
+        <div className="w-full space-y-16">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+            <div className="space-y-3 max-w-2xl">
+              <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#d9541e]">
+                WORKFLOW INTEGRATION
+              </span>
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+                The Four-Step Chamber Protocol
+              </h2>
+            </div>
+            <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
               How distinguished counsels transition from disorganized paper registers to a sovereign digital chamber.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {protocolSteps.map((step, i) => (
               <div
                 key={i}
-                className="p-6 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-3 relative group hover:border-[#111111] dark:hover:border-[#f3eee3]/40 transition-all shadow-xs"
+                className="p-8 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-4 relative group hover:border-[#d9541e] dark:hover:border-[#d9541e]/60 transition-all shadow-xs"
               >
-                <span className="w-9 h-9 rounded-xl bg-[#111111] text-[#f3eee3] flex items-center justify-center font-mono font-bold text-xs">
+                <span className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-[#f3eee3]/15 text-[#f3eee3] flex items-center justify-center font-mono font-bold text-xs group-hover:bg-[#d9541e] group-hover:text-white transition-colors">
                   {step.step}
                 </span>
-                <h4 className="text-base font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+                <h4 className="text-lg font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                   {step.title}
                 </h4>
                 <p className="text-xs font-serif leading-relaxed text-[#111111]/75 dark:text-[#f3eee3]/70">
@@ -256,18 +233,18 @@ export default function FeaturesPage() {
             ))}
           </div>
 
-          <div className="p-8 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-            <div className="space-y-1">
-              <h3 className="text-lg font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+          <div className="p-10 md:p-14 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
+            <div className="space-y-2 max-w-2xl">
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                 Ready to modernize your chamber records?
               </h3>
-              <p className="text-xs font-serif text-[#111111]/70 dark:text-[#f3eee3]/60">
+              <p className="text-sm font-serif text-[#111111]/70 dark:text-[#f3eee3]/60">
                 Commission your chamber workspace in under two minutes with your Bar Council enrolment.
               </p>
             </div>
             <button
               onClick={() => setAuthModal("signup")}
-              className="px-6 py-3 rounded-2xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md flex-shrink-0"
+              className="px-8 py-3.5 rounded-full bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md flex-shrink-0"
             >
               Sign Up (Lawyers Only)
             </button>

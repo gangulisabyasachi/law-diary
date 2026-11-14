@@ -29,7 +29,7 @@ export function PublicNavbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-[#f3eee3]/90 dark:bg-[#111111]/90 backdrop-blur-xl border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+      <div className="w-full px-6 md:px-10 lg:px-16 xl:px-20 py-4 flex items-center justify-between gap-4">
         {/* Brand Text Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <span className="text-lg sm:text-xl font-cinzel font-black tracking-wider text-[#111111] dark:text-[#f3eee3] group-hover:opacity-90 transition-opacity">
@@ -38,14 +38,14 @@ export function PublicNavbar() {
         </Link>
 
         {/* Center Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-2xl bg-white/60 dark:bg-[#181818]/80 border border-[#111111]/10 dark:border-[#f3eee3]/20 shadow-xs">
+        <nav className="hidden lg:flex items-center gap-1.5 p-1 rounded-full bg-white/60 dark:bg-[#181818]/80 border border-[#111111]/10 dark:border-[#f3eee3]/20 shadow-xs">
           {navLinks.map((link) => {
             const active = isActive(link.href);
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-cinzel font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-xs font-cinzel font-semibold transition-all ${
                   active
                     ? "bg-[#d9541e] text-white shadow-xs"
                     : "text-[#111111]/75 dark:text-[#f3eee3]/70 hover:text-[#111111] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
@@ -66,7 +66,7 @@ export function PublicNavbar() {
           {currentUser ? (
             <Link
               href={dashboardHref}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md group"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md group"
             >
               <span>Dashboard</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -75,13 +75,13 @@ export function PublicNavbar() {
             <>
               <button
                 onClick={() => setAuthModal("signin")}
-                className="px-4 py-2 rounded-xl bg-white dark:bg-[#181818] hover:bg-white/80 dark:hover:bg-[#181b22] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-semibold text-xs tracking-wider transition-all shadow-xs"
+                className="px-5 py-2 rounded-full bg-white dark:bg-[#181818] hover:bg-white/80 dark:hover:bg-[#181b22] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-semibold text-xs tracking-wider transition-all shadow-xs"
               >
                 Sign In
               </button>
               <button
                 onClick={() => setAuthModal("signup")}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
               >
                 <span>Sign Up</span>
               </button>

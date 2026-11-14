@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { PublicLayout } from "@/components/public/PublicLayout";
+import Hero3 from "@/components/ui/hero-3";
 import {
   ShieldCheck,
   Lock,
@@ -67,64 +68,37 @@ export default function SecurityPage() {
   ];
 
   return (
-    <PublicLayout>
-      {/* Hero Banner */}
-      <section className="py-20 md:py-28 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-[#f3eee3]/20 to-transparent dark:from-[#f3eee3]/10 dark:via-transparent blur-3xl rounded-full pointer-events-none" />
+    <PublicLayout hideNavbar={true}>
+      {/* Cinematic Judicial Hero */}
+      <Hero3
+        brandName="Updated Law Diary"
+        badgeText="✦  Evidentiary & Ethical Architecture"
+        headingLine1="Sovereign safe custody,"
+        headingLine2="uncompromising legal privilege."
+        description="Designed from inception to honor the highest ethical traditions of the Indian Legal Profession, statutory attorney-client privilege, and Bar Council of India Rule 36 standards."
+        primaryCtaLabel="Review Security Standards"
+        primaryCtaHref="#security-pillars"
+        secondaryCtaLabel="Inquire with Registrar"
+        secondaryCtaHref="/contact"
+        bottomTagline={"Strict BCI Rule 36 Compliance\n256-Bit Cryptographic Vault\nSections 126 & 129 Evidence Act / BSA 2023"}
+        scrollText="Review Standards"
+        scrollHref="#security-pillars"
+        bgImageSrc="/hero-security.jpg"
+      />
 
-        <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-cinzel font-bold tracking-widest bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
-            <Award className="w-3.5 h-3.5" />
-            <span>ETHICS &amp; REGULATORY INTEGRITY</span>
+      {/* Security Deep Dive Grid - Wide End of Screen */}
+      <section id="security-pillars" className="w-full py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-8 border-b border-[#111111]/10 dark:border-[#f3eee3]/15">
+          <div className="space-y-3 max-w-2xl">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#d9541e]">
+              REGULATORY STANDARDS
+            </span>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+              The Security &amp; Compliance Architecture
+            </h2>
           </div>
-
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] tracking-tight leading-[1.2]">
-            Sovereign Safe Custody, Uncompromising Legal Privilege.
-          </h1>
-
-          <p className="text-base sm:text-lg text-[#111111]/75 dark:text-[#f3eee3]/70 font-serif italic max-w-2xl mx-auto leading-relaxed">
-            Designed from inception to honor the highest ethical traditions of the Indian Legal Profession and statutory standards of confidentiality.
-          </p>
-
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            {currentUser ? (
-              <Link
-                href={dashboardHref}
-                className="px-7 py-3 rounded-2xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider uppercase transition-all shadow-md inline-flex items-center gap-2"
-              >
-                <span>Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            ) : (
-              <button
-                onClick={() => setAuthModal("signup")}
-                className="px-7 py-3 rounded-2xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider uppercase transition-all shadow-md inline-flex items-center gap-2"
-              >
-                <span>Sign Up (Lawyers Only)</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
-            <Link
-              href="/contact"
-              className="px-6 py-3 rounded-2xl bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 font-cinzel font-semibold text-xs tracking-wider hover:bg-white/80 dark:hover:bg-[#202020] transition-all shadow-xs"
-            >
-              Inquire with Chamber Registrar
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Security Deep Dive Grid */}
-      <section className="py-20 md:py-28 max-w-7xl mx-auto px-5 sm:px-8 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
-            REGULATORY STANDARDS
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-            The Security &amp; Compliance Architecture
-          </h2>
-          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60">
-            How we protect chamber sovereignty, professional ethics, and attorney-client privilege.
+          <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
+            How we protect chamber sovereignty, professional ethics, and attorney-client privilege across all Indian jurisdictions.
           </p>
         </div>
 
@@ -134,20 +108,20 @@ export default function SecurityPage() {
             return (
               <div
                 key={idx}
-                className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs space-y-4 hover:border-[#111111] dark:hover:border-[#f3eee3]/50 transition-all"
+                className="p-8 md:p-10 rounded-3xl bg-white/70 dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs space-y-5 hover:border-[#d9541e] dark:hover:border-[#d9541e]/70 transition-all group"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#111111] dark:bg-[#f3eee3]/15 text-[#f3eee3] flex items-center justify-center shadow-xs">
+                <div className="w-14 h-14 rounded-2xl bg-[#111111] dark:bg-[#f3eee3]/15 text-[#f3eee3] flex items-center justify-center shadow-xs group-hover:bg-[#d9541e] transition-colors">
                   <Icon className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
+                  <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
                     {p.title}
                   </h3>
-                  <p className="text-xs font-serif italic text-[#111111]/75 dark:text-[#f3eee3]/70 mt-1">
+                  <p className="text-xs font-serif italic text-[#d9541e] mt-1 font-medium">
                     {p.summary}
                   </p>
                 </div>
-                <p className="text-xs font-serif leading-relaxed text-[#111111]/80 dark:text-[#f3eee3]/80 pt-2 border-t border-[#111111]/10 dark:border-[#f3eee3]/15">
+                <p className="text-sm font-serif leading-relaxed text-[#111111]/80 dark:text-[#f3eee3]/80 pt-4 border-t border-[#111111]/10 dark:border-[#f3eee3]/15">
                   {p.details}
                 </p>
               </div>
@@ -156,32 +130,43 @@ export default function SecurityPage() {
         </div>
       </section>
 
-      {/* Statutory Disclaimer & Legal Declaration */}
-      <section className="py-20 md:py-28 bg-white/60 dark:bg-[#181818] border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
-        <div className="max-w-4xl mx-auto px-5 sm:px-8 space-y-8">
-          <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-6 shadow-sm">
+      {/* Statutory Disclaimer & Legal Declaration - Wide End of Screen */}
+      <section className="w-full py-24 md:py-32 px-6 md:px-10 lg:px-16 xl:px-20 bg-white/40 dark:bg-[#141414] border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
+        <div className="w-full">
+          <div className="p-10 md:p-14 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-8 shadow-sm">
             <div className="flex items-center gap-3">
-              <Scale className="w-6 h-6 text-[#111111] dark:text-[#f3eee3]" />
-              <h3 className="text-lg font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">
+              <div className="w-10 h-10 rounded-xl bg-[#d9541e]/10 text-[#d9541e] flex items-center justify-center">
+                <Scale className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">
                 Official Declaration: Bar Council of India Compliance
               </h3>
             </div>
 
-            <div className="space-y-4 text-xs font-serif leading-relaxed text-[#111111]/85 dark:text-[#f3eee3]/85">
-              <p>
-                In strict compliance with the rules established by the Bar Council of India under the Advocates Act, 1961, Updated Law Diary does not engage in any form of advertising, publicity, or solicitation of legal work.
-              </p>
-              <p>
-                The platform is provisioned solely as an administrative diary, litigation record organizer, and cause list tracker for practicing advocates who have registered voluntarily using their official State Bar Council enrolment credentials.
-              </p>
-              <p>
-                Litigants and corporate clients cannot search for or retain advocates through this platform. Client access is granted exclusively by the retained counsel of record under a duly executed Vakalatnama.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm font-serif leading-relaxed text-[#111111]/85 dark:text-[#f3eee3]/85">
+              <div className="p-6 rounded-2xl bg-[#f3eee3]/30 dark:bg-[#111111]/40 border border-[#111111]/10 dark:border-[#f3eee3]/10">
+                <h4 className="font-cinzel font-bold text-xs uppercase tracking-wider text-[#d9541e] mb-2">Zero Solicitation</h4>
+                <p>
+                  In strict compliance with the rules established by the Bar Council of India under the Advocates Act, 1961, Updated Law Diary does not engage in any form of advertising, publicity, or solicitation of legal work.
+                </p>
+              </div>
+              <div className="p-6 rounded-2xl bg-[#f3eee3]/30 dark:bg-[#111111]/40 border border-[#111111]/10 dark:border-[#f3eee3]/10">
+                <h4 className="font-cinzel font-bold text-xs uppercase tracking-wider text-[#d9541e] mb-2">Verified Enrollment</h4>
+                <p>
+                  The platform is provisioned solely as an administrative diary, litigation record organizer, and cause list tracker for practicing advocates who have registered voluntarily using their official State Bar Council enrolment credentials.
+                </p>
+              </div>
+              <div className="p-6 rounded-2xl bg-[#f3eee3]/30 dark:bg-[#111111]/40 border border-[#111111]/10 dark:border-[#f3eee3]/10">
+                <h4 className="font-cinzel font-bold text-xs uppercase tracking-wider text-[#d9541e] mb-2">Vakalatnama Custody</h4>
+                <p>
+                  Litigants and corporate clients cannot search for or retain advocates through this platform. Client access is granted exclusively by the retained counsel of record under a duly executed Vakalatnama.
+                </p>
+              </div>
             </div>
 
-            <div className="pt-4 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 flex items-center justify-between text-xs font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">
-              <span>Rule 36, Standards of Professional Conduct</span>
-              <span>Bar Council of India</span>
+            <div className="pt-6 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">
+              <span className="text-[#d9541e] font-semibold">Rule 36, Standards of Professional Conduct</span>
+              <span>Bar Council of India · Sovereign Encrypted</span>
             </div>
           </div>
         </div>
