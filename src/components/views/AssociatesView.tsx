@@ -26,12 +26,13 @@ export function AssociatesView() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#0b0f14]/10 dark:border-[#3df2e0]/10">
         <div>
-          <h3 className="text-base font-bold font-cinzel text-slate-900 dark:text-white">
-            Chamber Associate Roster &amp; Briefing Counsel
+          <h3 className="text-lg font-bold font-cinzel text-[#0b0f14] dark:text-[#3df2e0] flex items-center gap-2">
+            <Briefcase className="w-5 h-5 text-[#0b0f14] dark:text-[#3df2e0]" />
+            <span>Chamber Associate Roster &amp; Briefing Counsel</span>
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-serif italic mt-0.5">
+          <p className="text-xs text-[#0b0f14]/60 dark:text-[#3df2e0]/50 font-serif italic mt-0.5">
             Junior and Senior Associates assigned to High Court, District Court &amp; Tribunal dockets.
           </p>
         </div>
@@ -39,10 +40,10 @@ export function AssociatesView() {
         {(currentUser.role === "lawyer" || currentUser.role === "admin") && (
           <button
             onClick={() => openModal("add-associate")}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-xs font-semibold tracking-wider transition-all shadow-md shadow-blue-500/20"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] text-xs font-bold font-sans tracking-wide transition-all shadow-md hover:scale-[1.01]"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>+ Induct Associate Counsel</span>
+            <Plus className="w-4 h-4" />
+            <span>Induct Associate Counsel</span>
           </button>
         )}
       </div>
@@ -55,11 +56,11 @@ export function AssociatesView() {
           return (
             <div
               key={assoc.id}
-              className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:border-blue-500 dark:hover:border-blue-600 transition-all"
+              className="p-6 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#0b0f14] dark:hover:border-[#3df2e0]/50 transition-all group"
             >
               <div>
-                <div className="flex items-center justify-between mb-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center font-mono">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-11 h-11 rounded-2xl bg-[#0b0f14]/5 dark:bg-white/5 border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] font-bold text-xs flex items-center justify-center font-mono">
                     {assoc.name
                       .replace(/^(Adv\.|Mr\.|Ms\.)\s*/i, "")
                       .split(" ")
@@ -68,56 +69,59 @@ export function AssociatesView() {
                       .join("")
                       .toUpperCase()}
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     {pendingDrafts > 0 && (
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950/60 text-blue-900 dark:text-blue-200 border border-blue-300 dark:border-blue-800/40">
+                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#3df2e0]/20 text-[#0b0f14] dark:bg-[#3df2e0]/20 dark:text-[#3df2e0] border border-[#0b0f14]/40 dark:border-[#3df2e0]/30">
                         {pendingDrafts} in Review
                       </span>
                     )}
-                    <span className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                    <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-[#0b0f14]/5 dark:bg-white/5 text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
                       {assignedCases.length} Matters
                     </span>
                   </div>
                 </div>
 
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white font-sans">{assoc.name}</h4>
-                <p className="text-[11px] text-blue-600 dark:text-blue-400 font-medium font-serif italic mt-0.5">{assoc.designation || "Associate Advocate"}</p>
+                <h4 className="text-base font-bold text-[#0b0f14] dark:text-[#3df2e0] font-cinzel">{assoc.name}</h4>
+                <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0] font-medium font-serif italic mt-0.5">
+                  {assoc.designation || "Associate Advocate"}
+                </p>
 
-                <div className="mt-4 space-y-2 text-xs text-slate-500 dark:text-slate-400">
+                <div className="mt-4 space-y-2 text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/70">
                   <p className="flex items-center gap-2 truncate font-mono text-[11px]">
-                    <Mail className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <Mail className="w-3.5 h-3.5 text-[#0b0f14]/60 dark:text-[#3df2e0] flex-shrink-0" />
                     <span>{assoc.email}</span>
                   </p>
                   <p className="flex items-center gap-2 font-mono text-[11px]">
-                    <Phone className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <Phone className="w-3.5 h-3.5 text-[#0b0f14]/60 dark:text-[#3df2e0] flex-shrink-0" />
                     <span>{assoc.phone || "—"}</span>
                   </p>
                 </div>
               </div>
 
               {/* Assigned Matters */}
-              <div className="mt-5 pt-3.5 border-t border-slate-200 dark:border-slate-800">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2">
+              <div className="mt-6 pt-4 border-t border-[#0b0f14]/10 dark:border-[#3df2e0]/10">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#0b0f14]/50 dark:text-[#3df2e0]/40 mb-2.5 font-cinzel">
                   Assigned Dockets ({assignedCases.length})
                 </p>
                 {assignedCases.length === 0 ? (
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 italic font-serif">No court matters assigned yet.</p>
+                  <p className="text-xs text-[#0b0f14]/40 dark:text-[#3df2e0]/40 italic font-serif">No court matters assigned yet.</p>
                 ) : (
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {assignedCases.slice(0, 3).map((c) => (
                       <button
                         key={c.id}
                         onClick={() => openCase(c.id)}
-                        className="w-full text-left text-[11px] font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 truncate flex items-center justify-between group py-1 font-sans"
+                        className="w-full text-left text-xs font-medium text-[#0b0f14]/80 dark:text-[#3df2e0]/80 hover:text-[#0b0f14] dark:hover:text-[#3df2e0] truncate flex items-center justify-between group/link py-1 font-sans transition-colors"
                       >
                         <span className="truncate">
-                          <strong className="font-mono text-blue-600 dark:text-blue-400">{c.caseNo}</strong> — {c.title}
+                          <strong className="font-mono text-[#0b0f14] dark:text-[#3df2e0] mr-1.5">{c.caseNo}</strong>
+                          <span className="font-serif italic text-[#0b0f14]/70 dark:text-[#3df2e0]/60">{c.title}</span>
                         </span>
-                        <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 flex-shrink-0 ml-1" />
+                        <ArrowRight className="w-3.5 h-3.5 text-[#0b0f14]/40 dark:text-[#3df2e0]/40 group-hover/link:text-[#0b0f14] dark:group-hover/link:text-[#3df2e0] flex-shrink-0 ml-1 group-hover/link:translate-x-0.5 transition-all" />
                       </button>
                     ))}
                     {assignedCases.length > 3 && (
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 font-serif italic">
+                      <p className="text-[10px] text-[#0b0f14]/50 dark:text-[#3df2e0]/40 font-serif italic pt-1">
                         +{assignedCases.length - 3} additional briefs
                       </p>
                     )}
@@ -127,6 +131,14 @@ export function AssociatesView() {
             </div>
           );
         })}
+
+        {associates.length === 0 && (
+          <div className="col-span-full p-16 text-center bg-white dark:bg-[#0f151c] rounded-3xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
+            <Briefcase className="w-10 h-10 mx-auto mb-3 text-[#0b0f14]/40 dark:text-[#3df2e0]/60" />
+            <p className="text-sm font-semibold font-cinzel text-[#0b0f14] dark:text-[#3df2e0]">No junior or briefing counsel rostered.</p>
+            <p className="text-xs text-[#0b0f14]/50 dark:text-[#3df2e0]/50 font-serif italic mt-1">Induct chamber associates to delegate research, drafting, and cause list appearances.</p>
+          </div>
+        )}
       </div>
     </div>
   );

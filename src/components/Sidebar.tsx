@@ -72,31 +72,31 @@ export function Sidebar() {
     currentUser.role === "lawyer"
       ? (currentUser.name.toLowerCase().startsWith("adv") ? `Chambers of ${currentUser.name}` : `Chambers of Adv. ${currentUser.name}`)
       : currentUser.role === "admin"
-      ? "CounselBook Registrar Desk"
+      ? "Updated Law Diary Registrar Desk"
       : (() => {
           const supLawyer = state?.users?.find(
             (u) => u.role === "lawyer" && (u.id === currentUser.lawyerId || state.cases.some((c) => c.lawyerId === u.id))
           );
-          return supLawyer ? `Chambers of ${supLawyer.name}` : `CounselBook Chambers`;
+          return supLawyer ? `Chambers of ${supLawyer.name}` : `Updated Law Diary Chambers`;
         })();
 
   return (
-    <aside className="w-64 bg-white dark:bg-[#0b0f19] text-slate-600 dark:text-slate-400 flex flex-col h-screen sticky top-0 border-r border-slate-200 dark:border-slate-800 select-none transition-colors duration-200 shadow-xs">
+    <aside className="w-64 bg-white dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex flex-col h-screen sticky top-0 border-r border-[#0b0f14]/15 dark:border-[#3df2e0]/20 select-none transition-colors duration-200 shadow-xs">
       {/* Sophisticated Chamber Crest Header */}
-      <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-slate-50/80 dark:bg-[#0f172a]/80 backdrop-blur-md">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#1e3a8a] border border-blue-500/40 flex items-center justify-center text-blue-400 shadow-md flex-shrink-0 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-blue-500/10 opacity-60" />
-          <Scale className="w-5 h-5 text-blue-400 relative z-10 transition-transform group-hover:scale-110" />
+      <div className="p-4 sm:p-5 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center gap-3 bg-[#3df2e0]/10 dark:bg-[#0f151c] backdrop-blur-md">
+        <div className="w-10 h-10 rounded-2xl bg-[#0b0f14] border border-[#3df2e0]/50 flex items-center justify-center text-[#3df2e0] shadow-md flex-shrink-0 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-[#3df2e0]/10 opacity-60" />
+          <Scale className="w-5 h-5 text-[#3df2e0] relative z-10 transition-transform group-hover:scale-110" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-xs font-semibold font-cinzel text-slate-900 dark:text-white tracking-wider leading-tight truncate">
+          <h2 className="text-xs font-semibold font-cinzel text-[#0b0f14] dark:text-[#3df2e0] tracking-wider leading-tight truncate">
             {chamberTitle}
           </h2>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[9.5px] uppercase font-cinzel tracking-widest text-[#1d4ed8] dark:text-[#60a5fa] font-semibold truncate">
-              {currentUser.role === "admin" ? "Master Register" : "High Court Diary"}
+            <span className="text-[9.5px] uppercase font-cinzel tracking-widest text-[#0b0f14]/80 dark:text-[#3df2e0]/90 font-bold truncate">
+              {currentUser.role === "admin" ? "Master Register" : "Chamber Diary"}
             </span>
-            <span className="text-[9px] font-mono text-slate-500 dark:text-slate-500">· MMXII</span>
+            <span className="text-[9px] font-mono text-[#0b0f14]/60 dark:text-[#3df2e0]/60">· MMXII</span>
           </div>
         </div>
       </div>
@@ -112,23 +112,23 @@ export function Sidebar() {
           return (
             <React.Fragment key={item.id}>
               {item.section && (
-                <p className={`px-3 text-[9.5px] font-cinzel font-semibold uppercase tracking-[0.16em] text-[#1e3a8a] dark:text-[#60a5fa] ${idx > 0 ? "pt-5" : "pt-1"} pb-1.5 opacity-90`}>
+                <p className={`px-3 text-[9.5px] font-cinzel font-bold uppercase tracking-[0.16em] text-[#0b0f14] dark:text-[#3df2e0] ${idx > 0 ? "pt-5" : "pt-1"} pb-1.5 opacity-90`}>
                   {item.section}
                 </p>
               )}
 
               <Link
                 href={item.href}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 group ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 group ${
                   isActive
-                    ? "bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200 border-l-[3px] border-[#1e3a8a] dark:border-[#3b82f6] font-semibold shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60"
+                    ? "bg-[#0b0f14]/10 dark:bg-[#3df2e0]/15 text-[#0b0f14] dark:text-[#3df2e0] border-l-[3px] border-[#0b0f14] dark:border-[#3df2e0] font-bold shadow-xs"
+                    : "text-[#0b0f14]/70 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-[#3df2e0] hover:bg-[#0b0f14]/5 dark:hover:bg-[#141d27]"
                 }`}
               >
                 <div className="flex items-center gap-3 truncate">
                   <Icon
                     className={`w-4 h-4 flex-shrink-0 transition-colors ${
-                      isActive ? "text-[#1d4ed8] dark:text-[#60a5fa]" : "text-slate-400 group-hover:text-[#1d4ed8] dark:group-hover:text-[#60a5fa]"
+                      isActive ? "text-[#0b0f14] dark:text-[#3df2e0]" : "text-[#0b0f14]/50 dark:text-[#3df2e0]/50 group-hover:text-[#0b0f14] dark:group-hover:text-[#3df2e0]"
                     }`}
                   />
                   <span className="truncate tracking-wide">{item.label}</span>
@@ -136,12 +136,12 @@ export function Sidebar() {
 
                 <div className="flex items-center gap-1.5 flex-shrink-0">
                   {item.badge !== undefined && item.badge > 0 && (
-                    <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-blue-100 dark:bg-blue-950/60 text-[#1e3a8a] dark:text-[#93c5fd] border border-blue-200 dark:border-blue-800/50">
+                    <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold font-mono bg-[#0b0f14] text-[#3df2e0] dark:bg-[#3df2e0] dark:text-[#0b0f14] border border-[#0b0f14] dark:border-[#3df2e0]">
                       {item.badge}
                     </span>
                   )}
                   {isActive && (
-                    <ChevronRight className="w-3.5 h-3.5 text-[#1d4ed8] dark:text-[#60a5fa]" />
+                    <ChevronRight className="w-3.5 h-3.5 text-[#0b0f14] dark:text-[#3df2e0]" />
                   )}
                 </div>
               </Link>
@@ -151,19 +151,19 @@ export function Sidebar() {
       </nav>
 
       {/* User Status / Chamber Clerk Desk */}
-      <div className="p-3.5 m-3 rounded-xl bg-slate-50 dark:bg-[#111827] border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
+      <div className="p-3.5 m-3 rounded-2xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs shadow-xs">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[9.5px] font-cinzel uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          <span className="text-[9.5px] font-cinzel uppercase tracking-widest text-[#0b0f14]/60 dark:text-[#3df2e0]/60">
             Credentialed User
           </span>
-          <span className="text-[9px] font-cinzel px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#1d4ed8] dark:text-[#60a5fa] font-semibold border border-blue-200 dark:border-blue-800/50">
+          <span className="text-[9px] font-cinzel px-2 py-0.5 rounded-full bg-[#0b0f14] text-[#3df2e0] dark:bg-[#3df2e0]/20 dark:text-[#3df2e0] font-bold border border-[#0b0f14] dark:border-[#3df2e0]/40">
             {role.toUpperCase()}
           </span>
         </div>
-        <p className="font-semibold text-slate-900 dark:text-white truncate font-sans text-xs">
+        <p className="font-bold text-[#0b0f14] dark:text-[#3df2e0] truncate font-sans text-xs">
           {currentUser.name}
         </p>
-        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate font-serif italic">
+        <p className="text-[11px] text-[#0b0f14]/70 dark:text-[#3df2e0]/60 truncate font-serif italic">
           {currentUser.designation || "Counsel"}
         </p>
       </div>

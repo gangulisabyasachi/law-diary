@@ -29,19 +29,19 @@ export default function DashboardLayout({
 
   if (loading || !currentUser) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] flex flex-col items-center justify-center text-[#0f172a] dark:text-[#f8fafc]">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#1e3a8a] border border-blue-500/40 flex items-center justify-center shadow-lg">
-          <Scale className="w-6 h-6 text-blue-400" />
+      <div className="min-h-screen bg-[#3df2e0] dark:bg-[#0b0f14] flex flex-col items-center justify-center text-[#0b0f14] dark:text-[#3df2e0]">
+        <div className="w-12 h-12 rounded-2xl bg-[#0b0f14] border border-[#3df2e0]/60 flex items-center justify-center shadow-lg">
+          <Scale className="w-6 h-6 text-[#3df2e0]" />
         </div>
-        <p className="mt-4 text-xs font-cinzel font-bold tracking-widest uppercase text-[#1e3a8a] dark:text-[#60a5fa]">
-          CounselBook Sovereign Practice Console
+        <p className="mt-4 text-xs font-cinzel font-bold tracking-widest uppercase text-[#0b0f14] dark:text-[#3df2e0]">
+          UPDATED LAW DIARY
         </p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex bg-[#f8fafc] dark:bg-[#0b0f19] text-[#0f172a] dark:text-[#f8fafc] font-sans selection:bg-blue-500/20 selection:text-blue-900 dark:selection:text-blue-200 transition-colors duration-200">
+    <div className="min-h-screen flex bg-[#3df2e0] dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] font-sans selection:bg-[#0b0f14] selection:text-[#3df2e0] dark:selection:bg-[#3df2e0] dark:selection:text-[#0b0f14]">
       {/* Chamber Sidebar */}
       <Sidebar />
 
@@ -60,4 +60,3 @@ export default function DashboardLayout({
     </div>
   );
 }
-

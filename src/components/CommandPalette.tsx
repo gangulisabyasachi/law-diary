@@ -1,24 +1,30 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, Scale, Calendar, Users, CheckCircle2, FileText, Plus, X, ArrowRight, CornerDownLeft } from "lucide-react";
+import { Search, Scale, Calendar, Users, Plus, CheckCircle2, ArrowRight, CornerDownLeft } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
-export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const { state, openCase, setActivePage, openModal, currentUser } = useChamber();
+interface CommandPaletteProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
+  const { state, currentUser, openCase, setActivePage, openModal } = useChamber();
   const [query, setQuery] = useState("");
 
+  // Keyboard shortcut listener for Cmd+K / Ctrl+K & Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        if (isOpen) onClose();
-        else setQuery("");
+        onClose();
       }
       if (e.key === "Escape" && isOpen) {
         onClose();
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
@@ -53,30 +59,30 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
   ].filter((a) => !q || a.label.toLowerCase().includes(q));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-slate-950/70 backdrop-blur-sm">
-      <div className="relative w-full max-w-xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl text-slate-900 dark:text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 p-4 bg-[#0b0f14]/80 backdrop-blur-md transition-all">
+      <div className="relative w-full max-w-xl overflow-hidden bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/30 rounded-3xl shadow-2xl text-[#0b0f14] dark:text-[#3df2e0] animate-in fade-in-0 zoom-in-95 duration-150">
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850">
-          <Search className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+        <div className="flex items-center gap-3.5 px-5 py-4 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-[#3df2e0]/10 dark:bg-[#0b0f14]">
+          <Search className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
           <input
             type="text"
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type CNR number, case title, court, judge, or command..."
-            className="w-full bg-transparent text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none font-sans"
+            placeholder="Search by CNR, Case Number, Court, Bench or Client..."
+            className="w-full bg-transparent text-sm text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 dark:placeholder:text-[#3df2e0]/40 focus:outline-none font-sans"
           />
-          <kbd className="px-1.5 py-0.5 text-[9.5px] bg-slate-200/60 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded text-slate-500 dark:text-slate-400 font-mono">
+          <kbd className="px-2 py-0.5 text-[9.5px] bg-[#0b0f14]/10 dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/30 rounded-md text-[#0b0f14] dark:text-[#3df2e0] font-mono">
             ESC
           </kbd>
         </div>
 
         {/* Results Body */}
-        <div className="p-3 max-h-96 overflow-y-auto space-y-4 text-xs">
+        <div className="p-3.5 max-h-96 overflow-y-auto space-y-4 text-xs">
           {/* Quick Actions */}
           {actions.length > 0 && (
             <div>
-              <p className="px-2 text-[9.5px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5">
+              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mb-1.5">
                 Chamber Shortcuts
               </p>
               <div className="space-y-1">
@@ -86,13 +92,15 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
                     <button
                       key={i}
                       onClick={act.action}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-left"
+                      className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#3df2e0]/15 dark:hover:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] transition-colors text-left group"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <Icon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <div className="flex items-center gap-3">
+                        <div className="w-7 h-7 rounded-xl bg-[#0b0f14] dark:bg-[#3df2e0]/15 flex items-center justify-center text-[#3df2e0]">
+                          <Icon className="w-3.5 h-3.5" />
+                        </div>
                         <span className="font-sans font-medium">{act.label}</span>
                       </div>
-                      <CornerDownLeft className="w-3.5 h-3.5 opacity-40" />
+                      <CornerDownLeft className="w-3.5 h-3.5 opacity-30 group-hover:opacity-100 transition-opacity" />
                     </button>
                   );
                 })}
@@ -103,25 +111,25 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
           {/* Matching Cases */}
           {matchingCases.length > 0 && (
             <div>
-              <p className="px-2 text-[9.5px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5">
-                Matching Court Matters ({matchingCases.length})
+              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mb-1.5">
+                Matching Matters ({matchingCases.length})
               </p>
               <div className="space-y-1">
                 {matchingCases.map((c) => (
                   <button
                     key={c.id}
                     onClick={() => { openCase(c.id); onClose(); }}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-colors group"
+                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#3df2e0]/15 dark:hover:bg-[#141d27] text-left transition-colors group"
                   >
                     <div className="min-w-0 flex-1 pr-3">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-blue-600 dark:text-blue-400">{c.caseNo}</span>
-                        {c.cnr && <span className="font-mono text-[10px] text-slate-400 dark:text-slate-500">({c.cnr})</span>}
+                        <span className="font-mono font-bold text-[#0b0f14] dark:text-[#3df2e0]">{c.caseNo}</span>
+                        {c.cnr && <span className="font-mono text-[10px] text-[#0b0f14]/60 dark:text-[#3df2e0]/60">({c.cnr})</span>}
                       </div>
-                      <p className="text-xs text-slate-900 dark:text-white truncate mt-0.5 font-sans">{c.title}</p>
-                      <p className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate font-serif italic">{c.court}</p>
+                      <p className="text-xs text-[#0b0f14] dark:text-[#3df2e0] font-medium truncate mt-0.5 font-sans">{c.title}</p>
+                      <p className="text-[10.5px] text-[#0b0f14]/60 dark:text-[#3df2e0]/60 truncate font-serif italic">{c.court}</p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#0b0f14]/50 dark:text-[#3df2e0]/50 group-hover:text-[#0b0f14] dark:group-hover:text-[#3df2e0] group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </button>
                 ))}
               </div>
@@ -131,7 +139,7 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
           {/* Matching Clients */}
           {matchingClients.length > 0 && (
             <div>
-              <p className="px-2 text-[9.5px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5">
+              <p className="px-2 text-[9.5px] font-cinzel font-bold uppercase tracking-widest text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mb-1.5">
                 Registered Clients ({matchingClients.length})
               </p>
               <div className="space-y-1">
@@ -139,16 +147,18 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
                   <button
                     key={u.id}
                     onClick={() => { setActivePage("clients"); onClose(); }}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-colors"
+                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl hover:bg-[#3df2e0]/15 dark:hover:bg-[#141d27] text-left transition-colors group"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-7 h-7 rounded-xl bg-[#0b0f14] dark:bg-[#3df2e0]/15 flex items-center justify-center text-[#3df2e0]">
+                        <Users className="w-3.5 h-3.5" />
+                      </div>
                       <div>
-                        <span className="font-bold text-slate-900 dark:text-white block font-sans">{u.name}</span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">{u.email}</span>
+                        <span className="font-bold text-[#0b0f14] dark:text-[#3df2e0] block font-sans">{u.name}</span>
+                        <span className="text-[10px] text-[#0b0f14]/60 dark:text-[#3df2e0]/60 font-mono">{u.email}</span>
                       </div>
                     </div>
-                    <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">Inspect Briefs →</span>
+                    <span className="text-[10.5px] font-semibold text-[#0b0f14] dark:text-[#3df2e0] group-hover:underline">Inspect Briefs →</span>
                   </button>
                 ))}
               </div>
@@ -156,8 +166,8 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
           )}
 
           {q && matchingCases.length === 0 && matchingClients.length === 0 && actions.length === 0 && (
-            <div className="p-8 text-center text-slate-400 dark:text-slate-500">
-              <p className="text-xs font-semibold">No records found matching "{query}"</p>
+            <div className="p-8 text-center text-[#0b0f14]/60 dark:text-[#3df2e0]/60">
+              <p className="text-xs font-semibold">No court matters found matching &ldquo;{query}&rdquo;</p>
             </div>
           )}
         </div>

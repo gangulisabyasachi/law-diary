@@ -1,5 +1,5 @@
 {
-  "name": "counselbook",
+  "name": "updated-law-diary",
   "version": "2.0.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,10 @@
     "start": "next start -p 3000"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.5.0",
     "bcryptjs": "^2.4.3",
     "canvas-confetti": "^1.9.3",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.9",
     "jsonwebtoken": "^9.0.2",

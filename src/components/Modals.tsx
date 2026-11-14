@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Plus, Calendar, FileText, CheckCircle2, User, Scale, Edit, Gavel, Building } from "lucide-react";
+import { X, Scale, FileText, CheckCircle2, AlertCircle } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
+import { motion, AnimatePresence } from "framer-motion";
 
-const STATUS_OPTIONS = ["Active", "Listed", "Reserved", "Adjourned", "Disposed"] as const;
+const STATUS_OPTIONS = ["Active", "Disposed", "Stayed", "Quashed", "Adjourned S.D."];
 
 export function Modals() {
   const { activeModal, closeModal, state, currentUser, sendOps, submitApproval, addToast } = useChamber();
@@ -39,13 +39,13 @@ export function Modals() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#090d14]/60 backdrop-blur-xs">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b0f14]/80 backdrop-blur-md">
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: 8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 8 }}
           transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-lg overflow-hidden bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-lg overflow-hidden bg-white dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] rounded-3xl shadow-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex flex-col max-h-[90vh]"
         >
           {name === "add-case" && (
             <AddCaseForm
@@ -235,154 +235,152 @@ function AddCaseForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col h-full">
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
         <div>
-          <h3 className="text-sm font-bold font-cinzel">Register Fresh Court Brief</h3>
-          <p className="text-[10px] text-[#9ca3af] font-mono mt-0.5">High Court / District Courts / Tribunal</p>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Register Fresh Court Brief</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">High Court / District Courts / Tribunal</p>
         </div>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
 
-      <div className="p-5 space-y-3.5 overflow-y-auto max-h-[75vh] text-xs">
+      <div className="p-6 space-y-4 overflow-y-auto max-h-[75vh] text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Cause Title (Parties)</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+            Matter Caption / Case Title *
+          </label>
           <input
             type="text"
             required
+            placeholder="e.g. Anand Sharma v. Union of India & Ors."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. Rahul Verma v. Kapoor Constructions Pvt. Ltd. & Ors."
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Case Number &amp; Year</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              Case Number *
+            </label>
             <input
               type="text"
               required
+              placeholder="e.g. W.P.(C) 4120/2024"
               value={caseNo}
               onChange={(e) => setCaseNo(e.target.value)}
-              placeholder="e.g. CS(OS) 442/2026"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Date of Filing</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              Filing Date
+            </label>
             <input
               type="date"
-              required
               value={filingDate}
               onChange={(e) => setFilingDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
-          <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">16-Digit CNR Number</label>
-            <input
-              type="text"
-              value={cnr}
-              onChange={(e) => setCnr(e.target.value)}
-              placeholder="e.g. DLHC01-004421-2024"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Court Room No.</label>
-            <input
-              type="text"
-              value={courtRoom}
-              onChange={(e) => setCourtRoom(e.target.value)}
-              placeholder="e.g. Court Room 14"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Item No. / Board</label>
-            <input
-              type="text"
-              value={itemNo}
-              onChange={(e) => setItemNo(e.target.value)}
-              placeholder="e.g. Item No. 18"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Court / Forum</label>
+        <div className="grid grid-cols-3 gap-3.5">
+          <div className="col-span-2">
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              Court / Forum *
+            </label>
             <input
               type="text"
               required
+              placeholder="e.g. High Court of Delhi"
               value={court}
               onChange={(e) => setCourt(e.target.value)}
-              placeholder="e.g. High Court of Delhi"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Presiding Judge / Bench</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              Court Room
+            </label>
             <input
               type="text"
-              value={judge}
-              onChange={(e) => setJudge(e.target.value)}
-              placeholder="e.g. Hon'ble Mr. Justice S. Khanna"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              placeholder="e.g. 05"
+              value={courtRoom}
+              onChange={(e) => setCourtRoom(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Statutory Limitation Date</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              Item No. on Board
+            </label>
             <input
-              type="date"
-              value={limitationDate}
-              onChange={(e) => setLimitationDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              type="text"
+              placeholder="e.g. 18"
+              value={itemNo}
+              onChange={(e) => setItemNo(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Limitation Task (Limitation Act)</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              CNR Number (16-char)
+            </label>
             <input
               type="text"
-              value={limitationTask}
-              onChange={(e) => setLimitationTask(e.target.value)}
-              placeholder="e.g. Replication under Order VIII Rule 1 CPC"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              placeholder="e.g. DLHC01-008129-2024"
+              value={cnr}
+              onChange={(e) => setCnr(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+            Presiding Judge / Bench
+          </label>
+          <input
+            type="text"
+            placeholder="e.g. Hon'ble Mr. Justice Manmohan"
+            value={judge}
+            onChange={(e) => setJudge(e.target.value)}
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+            Retaining Litigant Client *
+          </label>
+          <select
+            value={clientId}
+            onChange={(e) => setClientId(e.target.value)}
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
+          >
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name} ({c.email})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Litigant Client (Vakalatnama)</label>
-            <select
-              value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
-              required
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            >
-              {clients.map((cl) => (
-                <option key={cl.id} value={cl.id}>
-                  {cl.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Initial Status</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              Status
+            </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             >
               {STATUS_OPTIONS.map((s) => (
                 <option key={s} value={s}>
@@ -391,62 +389,45 @@ function AddCaseForm({
               ))}
             </select>
           </div>
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+              Current Stage
+            </label>
+            <input
+              type="text"
+              value={stage}
+              onChange={(e) => setStage(e.target.value)}
+              placeholder="e.g. Notice Issued"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
+            />
+          </div>
         </div>
 
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Stage of Proceedings</label>
-          <input
-            type="text"
-            value={stage}
-            onChange={(e) => setStage(e.target.value)}
-            placeholder="e.g. Plaintiff Evidence, Framing of Issues, Notice Motion"
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-          />
-        </div>
-
-        <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">
-            Assigned Chamber Associates
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">
+            Chamber Notes / Brief Background
           </label>
-          <select
-            multiple
-            value={selectedAssociates}
-            onChange={(e) =>
-              setSelectedAssociates(Array.from(e.target.selectedOptions, (opt) => opt.value))
-            }
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 h-20"
-          >
-            {associates.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name} ({a.designation || "Associate"})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Confidential Chamber Notes</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Original agreements in registry safe custody, interim relief strategy..."
             rows={2}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            placeholder="Key arguments, limitation alerts, or interim relief sought..."
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
       </div>
 
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-colors"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-sm"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           Register Case Brief
         </button>
@@ -468,56 +449,59 @@ function AddHearingForm({ caseId, onClose, onSubmit }: any) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
-        <h3 className="text-sm font-bold font-cinzel">Record Next Date of Hearing (NDOH)</h3>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Record Next Date of Hearing (NDOH)</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">Courtroom Listing & Cause Schedule</p>
+        </div>
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className="p-5 space-y-3.5 text-xs">
+      <div className="p-6 space-y-4 text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Listing Date (NDOH)</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Listing Date (NDOH) *</label>
           <input
             type="date"
             required
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Purpose of Listing</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Purpose of Listing *</label>
           <input
             type="text"
             required
             value={purpose}
             onChange={(e) => setPurpose(e.target.value)}
             placeholder="e.g. Cross-examination of PW-1, Hearing on Interim Injunction"
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-[#787f8d] focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Business Recorded / Daily Order (Optional)</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Business Recorded / Daily Order (Optional)</label>
           <textarea
             value={outcome}
             onChange={(e) => setOutcome(e.target.value)}
             placeholder="Leave blank for future date; enter bench directions if hearing concluded..."
             rows={3}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white placeholder:text-[#787f8d] focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] placeholder:text-[#0b0f14]/50 focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
       </div>
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-colors"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           Save Hearing Entry
         </button>
@@ -540,69 +524,72 @@ function AddOrderForm({ caseId, onClose, onSubmit }: any) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
-        <h3 className="text-sm font-bold font-cinzel">Record Certified Court Order</h3>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Record Certified Court Order</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">Judicial Directions & Precedent Citations</p>
+        </div>
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className="p-5 space-y-3.5 text-xs">
+      <div className="p-6 space-y-4 text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Order Title &amp; Description</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Order Title &amp; Description *</label>
           <input
             type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Order on Ad-Interim Status Quo, Notice Issued"
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Date of Order</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Date of Order *</label>
             <input
               type="date"
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Citation (e.g. DHC Neutral)</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Citation (e.g. DHC Neutral)</label>
             <input
               type="text"
               value={citation}
               onChange={(e) => setCitation(e.target.value)}
               placeholder="e.g. 2026:DHC:8412"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Operative Directions / Verbatim Paragraph</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Operative Directions / Verbatim Paragraph *</label>
           <textarea
             required
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Issue notice returnable on... Parties to maintain status quo..."
             rows={4}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white font-serif focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] font-serif focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
       </div>
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           File Order on Record
         </button>
@@ -622,19 +609,22 @@ function SetStatusForm({ caseId, currentStatus, currentStage, onClose, onSubmit 
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
-        <h3 className="text-sm font-bold font-cinzel">Update Court Proceeding Stage</h3>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Update Court Proceeding Stage</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">Judicial Status & Trial Milestone</p>
+        </div>
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className="p-5 space-y-3.5 text-xs">
+      <div className="p-6 space-y-4 text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Status</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Status</label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           >
             {STATUS_OPTIONS.map((s) => (
               <option key={s} value={s}>
@@ -644,27 +634,27 @@ function SetStatusForm({ caseId, currentStatus, currentStage, onClose, onSubmit 
           </select>
         </div>
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Current Judicial Stage</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Current Judicial Stage</label>
           <input
             type="text"
             value={stage}
             onChange={(e) => setStage(e.target.value)}
             placeholder="e.g. Final Arguments, Judgment Reserved, Evidence (PW-1)"
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
       </div>
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           Update Stage
         </button>
@@ -707,114 +697,97 @@ function EditCaseForm({ caseItem, clients, associates, onClose, onSubmit }: any)
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col h-full">
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
-        <h3 className="text-sm font-bold font-cinzel">Edit Case Brief Particulars</h3>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Edit Case Brief Particulars</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">{caseItem.caseNo}</p>
+        </div>
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className="p-5 space-y-3.5 overflow-y-auto max-h-[75vh] text-xs">
+      <div className="p-6 space-y-4 overflow-y-auto max-h-[75vh] text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Case Title</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Case Title *</label>
           <input
             type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Court / Forum</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Court / Forum *</label>
             <input
               type="text"
               required
               value={court}
               onChange={(e) => setCourt(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Presiding Judge</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Presiding Judge</label>
             <input
               type="text"
               value={judge}
               onChange={(e) => setJudge(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">CNR Number</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">CNR Number</label>
             <input
               type="text"
               value={cnr}
               onChange={(e) => setCnr(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Court Room</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Court Room</label>
             <input
               type="text"
               value={courtRoom}
               onChange={(e) => setCourtRoom(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Item No</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Item No</label>
             <input
               type="text"
               value={itemNo}
               onChange={(e) => setItemNo(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Limitation Deadline</label>
-            <input
-              type="date"
-              value={limitationDate}
-              onChange={(e) => setLimitationDate(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Limitation Task</label>
-            <input
-              type="text"
-              value={limitationTask}
-              onChange={(e) => setLimitationTask(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Chamber Notes</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Chamber Notes</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white font-serif focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] font-serif focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
       </div>
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           Save Changes
         </button>
@@ -843,69 +816,72 @@ function AddClientForm({ onClose, onSubmit }: any) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
-        <h3 className="text-sm font-bold font-cinzel">Enroll Litigant Client</h3>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Enroll Litigant Client</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">Confidential Client Dossier & Portal Access</p>
+        </div>
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className="p-5 space-y-3.5 text-xs">
+      <div className="p-6 space-y-4 text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Client Name / Company Entity</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Client Name / Corporate Entity *</label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Rahul Verma or Sunrise Textiles Pvt. Ltd."
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Email (Portal Access)</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Email (Portal Access) *</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="client@chambers.in"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Phone Number</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Phone Number</label>
             <input
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 98110 ..."
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Initial Password</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Initial Password</label>
           <input
             type="text"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
       </div>
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           Enroll Client
         </button>
@@ -936,81 +912,84 @@ function AddAssociateForm({ onClose, onSubmit }: any) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
-        <h3 className="text-sm font-bold font-cinzel">Induct Associate Advocate</h3>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Induct Associate Advocate</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">Chamber Delegation & Verification Access</p>
+        </div>
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className="p-5 space-y-3.5 text-xs">
+      <div className="p-6 space-y-4 text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Associate Full Name</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Associate Full Name *</label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Priya Sharma"
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Chamber Email</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Chamber Email *</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="associate@chambers.in"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Designation</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Designation</label>
             <input
               type="text"
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
               placeholder="e.g. Senior Associate"
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Phone</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Phone</label>
             <input
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 ..."
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Password</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Password</label>
             <input
               type="text"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
         </div>
       </div>
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           Induct Associate
         </button>
@@ -1039,40 +1018,43 @@ function AddUserForm({ onClose, onSubmit }: any) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="p-4 sm:p-5 bg-gradient-to-r from-blue-900 via-blue-950 to-indigo-950 text-white flex items-center justify-between border-b border-blue-800/40">
-        <h3 className="text-sm font-bold font-cinzel">Provision Chamber Account</h3>
-        <button type="button" onClick={onClose} className="text-[#9ca3af] hover:text-white">
+      <div className="p-5 sm:p-6 bg-[#3df2e0]/10 dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-between border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">Provision Chamber Account</h3>
+          <p className="text-[11px] font-serif italic text-[#0b0f14]/60 dark:text-[#3df2e0]/60 mt-0.5">Platform Registrar Administration</p>
+        </div>
+        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#0b0f14]/60 hover:text-[#0b0f14] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <div className="p-5 space-y-3.5 text-xs">
+      <div className="p-6 space-y-4 text-xs font-serif">
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Full Name</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Full Name *</label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Chamber Email</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Chamber Email *</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             />
           </div>
           <div>
-            <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Chamber Role</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Chamber Role *</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
             >
               <option value="lawyer">Lawyer (Senior Counsel)</option>
               <option value="associate">Associate (Junior Counsel)</option>
@@ -1082,27 +1064,27 @@ function AddUserForm({ onClose, onSubmit }: any) {
           </div>
         </div>
         <div>
-          <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Initial Password</label>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#3df2e0]/60 mb-1.5">Initial Password</label>
           <input
             type="text"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#141d27] text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] focus:ring-1 focus:ring-[#0b0f14] dark:focus:ring-[#3df2e0]"
           />
         </div>
       </div>
-      <div className="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+      <div className="p-4 sm:p-5 bg-[#3df2e0]/10 dark:bg-[#0b0f14] border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300"
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14]/60 dark:text-[#3df2e0]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] transition-all shadow-md"
         >
           Provision User
         </button>

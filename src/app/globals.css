@@ -4,47 +4,76 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* Liquid Ink Spill - View Transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 99999;
+}
+
+:root, [data-theme="light"], .light {
   --font-display: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
   --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
   
-  /* Digital Lawyer Diary Professional Theme: Royal Navy, Slate & Crisp White */
-  --bg-canvas: #f8fafc;
+  /* Light Theme: Background Neon Cyan (#3df2e0), Foreground Void Black (#0b0f14) */
+  --bg-canvas: #3df2e0;
   --bg-card: #ffffff;
-  --bg-subtle: #f1f5f9;
-  --bg-hover: #e2e8f0;
-  --border-paper: #e2e8f0;
-  --border-paper-strong: #cbd5e1;
-  --ink-primary: #0f172a;
-  --ink-secondary: #334155;
-  --ink-muted: #64748b;
-  --court-blue: #1e3a8a;
-  --court-blue-bright: #2563eb;
-  --court-blue-bg: rgba(30, 58, 138, 0.08);
-  --court-blue-border: rgba(30, 58, 138, 0.22);
-  --brand-navy: #1e3a8a;
-  --brand-navy-dark: #0f172a;
+  --bg-subtle: rgba(255, 255, 255, 0.85);
+  --bg-hover: rgba(255, 255, 255, 0.95);
+  --border-paper: rgba(11, 15, 20, 0.15);
+  --border-paper-strong: rgba(11, 15, 20, 0.3);
+  --ink-primary: #0b0f14;
+  --ink-secondary: #141c26;
+  --ink-muted: #2d3846;
+  --court-blue: #0b0f14;
+  --court-blue-bright: #0b0f14;
+  --court-blue-bg: rgba(11, 15, 20, 0.08);
+  --court-blue-border: rgba(11, 15, 20, 0.25);
+  --brand-navy: #0b0f14;
+  --brand-navy-dark: #07090c;
+  --accent-primary: #0b0f14;
+  --accent-contrast: #3df2e0;
+  --accent-glow: rgba(11, 15, 20, 0.3);
+
+  /* Primary Action Button Colors: Nebula Indigo (#1b1d3a) & Champagne Glow (#e8d5b5) */
+  --cta-bg: #1b1d3a;
+  --cta-fg: #e8d5b5;
+  --cta-hover: #25284e;
 }
 
-.dark {
-  /* Digital Lawyer Diary Dark Mode: Deep Midnight Navy Slate */
-  --bg-canvas: #0b0f19;
-  --bg-card: #111827;
-  --bg-subtle: #161f30;
-  --bg-hover: #1e293b;
-  --border-paper: #1e293b;
-  --border-paper-strong: #334155;
-  --ink-primary: #f8fafc;
-  --ink-secondary: #cbd5e1;
-  --ink-muted: #94a3b8;
-  --court-blue: #3b82f6;
-  --court-blue-bright: #60a5fa;
-  --court-blue-bg: rgba(59, 130, 246, 0.12);
-  --court-blue-border: rgba(59, 130, 246, 0.32);
-  --brand-navy: #3b82f6;
-  --brand-navy-dark: #1d4ed8;
+.dark, [data-theme="dark"] {
+  /* Dark Theme: Background Void Black (#0b0f14), Foreground Neon Cyan (#3df2e0) */
+  --bg-canvas: #0b0f14;
+  --bg-card: #0f151c;
+  --bg-subtle: #141d27;
+  --bg-hover: #1b2633;
+  --border-paper: rgba(61, 242, 224, 0.18);
+  --border-paper-strong: rgba(61, 242, 224, 0.35);
+  --ink-primary: #3df2e0;
+  --ink-secondary: rgba(61, 242, 224, 0.85);
+  --ink-muted: rgba(61, 242, 224, 0.6);
+  --court-blue: #3df2e0;
+  --court-blue-bright: #67f6e7;
+  --court-blue-bg: rgba(61, 242, 224, 0.12);
+  --court-blue-border: rgba(61, 242, 224, 0.4);
+  --brand-navy: #3df2e0;
+  --brand-navy-dark: #29c7b7;
+  --accent-primary: #3df2e0;
+  --accent-contrast: #0b0f14;
+  --accent-glow: rgba(61, 242, 224, 0.4);
+
+  /* Primary Action Button Colors (Inverted): Champagne Glow (#e8d5b5) & Nebula Indigo (#1b1d3a) */
+  --cta-bg: #e8d5b5;
+  --cta-fg: #1b1d3a;
+  --cta-hover: #dfc8a2;
 }
 
 body {
@@ -68,7 +97,7 @@ h1, h2, h3, h4, .font-display {
   font-family: 'Cinzel', serif;
 }
 
-/* Custom luxury scrollbars in royal navy */
+/* Custom luxury scrollbars */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -77,98 +106,98 @@ h1, h2, h3, h4, .font-display {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: rgba(11, 15, 20, 0.2);
   border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: rgba(61, 242, 224, 0.25);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #1e3a8a;
+  background: #0b0f14;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #3b82f6;
+  background: #3df2e0;
 }
 
 /* Luxury card surfaces */
 .court-card, .luxury-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-paper);
-  border-radius: 0.875rem;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px -2px rgba(11, 15, 20, 0.06);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark .court-card, .dark .luxury-card {
-  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(59, 130, 246, 0.08);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(61, 242, 224, 0.1);
 }
 
 .court-card:hover, .luxury-card:hover {
-  border-color: var(--court-blue-border);
+  border-color: var(--accent-primary);
 }
 
 .court-card-subtle {
   background-color: var(--bg-subtle);
   border: 1px solid var(--border-paper);
-  border-radius: 0.875rem;
+  border-radius: 1.5rem;
 }
 
 .court-input, .luxury-input {
   background-color: var(--bg-card);
   border: 1px solid var(--border-paper);
   color: var(--ink-primary);
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   font-size: 0.8125rem;
   transition: all 0.15s ease;
 }
 
 .court-input:focus, .luxury-input:focus {
   outline: none;
-  border-color: var(--court-blue);
+  border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px var(--court-blue-bg);
 }
 
-/* Metallic & royal navy gradient typography */
-.blue-gradient-text {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%);
+/* Typography gradient styles */
+.blue-gradient-text, .gold-gradient-text, .accent-gradient-text {
+  background: linear-gradient(135deg, #0b0f14 0%, #172430 60%, #0b0f14 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.dark .blue-gradient-text {
-  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
+.dark .blue-gradient-text, .dark .gold-gradient-text, .dark .accent-gradient-text {
+  background: linear-gradient(135deg, #3df2e0 0%, #7ef7ec 50%, #29c7b7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Backward compatibility for previous classname */
-.gold-gradient-text {
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Focus outline helpers */
+.focus-gold, .focus-cyan {
+  outline: none;
 }
-.dark .gold-gradient-text {
-  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 50%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.focus-gold:focus, .focus-cyan:focus {
+  border-color: #3df2e0;
+  box-shadow: 0 0 0 3px rgba(61, 242, 224, 0.25);
 }
 
-/* Luxury seals & badges */
-.luxury-seal {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  background: radial-gradient(circle at 30% 30%, rgba(30, 58, 138, 0.15), rgba(37, 99, 235, 0.05));
-  border: 1px solid var(--court-blue-border);
-  box-shadow: 0 0 16px -2px var(--court-blue-bg);
+/* Primary Action Buttons: Nebula Indigo (#1b1d3a) & Champagne Glow (#e8d5b5) */
+.btn-cta, .btn-primary-action {
+  background-color: #1b1d3a;
+  color: #e8d5b5;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(27, 29, 58, 0.25);
 }
-
-.luxury-badge {
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.14em;
-  font-size: 0.625rem;
-  font-weight: 600;
-  text-transform: uppercase;
+.btn-cta:hover, .btn-primary-action:hover {
+  background-color: #25284e;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(27, 29, 58, 0.35);
+}
+.dark .btn-cta, .dark .btn-primary-action {
+  background-color: #e8d5b5;
+  color: #1b1d3a;
+  box-shadow: 0 4px 16px rgba(232, 213, 181, 0.2);
+}
+.dark .btn-cta:hover, .dark .btn-primary-action:hover {
+  background-color: #dfc8a2;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(232, 213, 181, 0.3);
 }

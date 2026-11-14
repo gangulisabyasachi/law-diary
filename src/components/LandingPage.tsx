@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Scale,
   ShieldCheck,
@@ -21,7 +23,6 @@ import {
   Sparkles,
   Sun,
   Moon,
-  Laptop,
   BookOpen,
   Check,
   X,
@@ -45,7 +46,9 @@ import {
 import { useChamber } from "@/context/ChamberContext";
 
 export function LandingPage() {
-  const { login, signupLawyer, theme, setTheme, addToast } = useChamber();
+  const { currentUser, login, signupLawyer, theme, setTheme, addToast } = useChamber();
+  const router = useRouter();
+  const dashboardHref = currentUser?.role === "admin" ? "/admin" : "/dashboard";
 
   // Modals state: null | "signin" | "signup"
   const [authModal, setAuthModal] = useState<null | "signin" | "signup">(null);
@@ -116,7 +119,7 @@ export function LandingPage() {
     setTimeout(() => {
       setSubmittingContact(false);
       setContactSubmitted(true);
-      addToast("Inquiry recorded. The Registrar Desk will reach out within 2 hours.", "success");
+      addToast("Chamber inquiry received. Registrar will contact you shortly.", "success");
     }, 600);
   };
 
@@ -125,236 +128,239 @@ export function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] text-[#0f172a] dark:text-[#f8fafc] font-sans transition-colors duration-200 selection:bg-[#1e3a8a]/20 selection:text-[#0f172a] dark:selection:text-white">
+    <div className="min-h-screen bg-[#3df2e0] dark:bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] font-sans transition-colors duration-300 selection:bg-[#0b0f14] selection:text-[#3df2e0] dark:selection:bg-[#3df2e0] dark:selection:text-[#0b0f14]">
       {/* 1. Header / Navbar */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/95 dark:bg-[#111827]/95 border-b border-[#e2e8f0] dark:border-[#1e293b] shadow-sm transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-          {/* Logo & Brand Identity (Digital Lawyer Diary / CounselBook) */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] dark:from-[#2563eb] dark:to-[#1e3a8a] border border-[#3b82f6]/30 flex items-center justify-center text-[#f59e0b] shadow-sm flex-shrink-0">
-              <Scale className="w-5 h-5 text-[#f59e0b]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-base sm:text-lg font-bold tracking-tight text-[#0f172a] dark:text-white leading-tight">
-                  CounselBook
-                </span>
-                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-[#eff6ff] dark:bg-[#1e293b] text-[#1d4ed8] dark:text-[#60a5fa] border border-[#dbeafe] dark:border-[#334155]">
-                  Digital Lawyer Diary
-                </span>
-              </div>
-              <span className="text-[10px] text-[#64748b] dark:text-[#94a3b8] block font-medium">
-                Sovereign Advocate Diary &amp; Chamber OS
-              </span>
-            </div>
-          </div>
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-[#3df2e0]/90 dark:bg-[#0b0f14]/90 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 transition-colors">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
+          {/* Pure Textual Logo: Updated Law Diary */}
+          <a href="#" className="group focus:outline-none select-none inline-flex items-center">
+            <span className="font-cinzel text-xl sm:text-2xl font-bold tracking-[0.16em] uppercase text-[#0b0f14] dark:text-[#3df2e0] group-hover:opacity-85 transition-opacity">
+              Updated Law Diary
+            </span>
+          </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold text-[#475569] dark:text-[#94a3b8]">
-            <a href="#features" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] transition-colors">
-              Features
+          <nav className="hidden lg:flex items-center gap-7 text-xs font-medium tracking-wide text-[#0b0f14]/70 dark:text-[#3df2e0]/60">
+            <a href="#features" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors">
+              Chamber Features
             </a>
-            <a href="#causelist" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] transition-colors">
+            <a href="#causelist" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors">
               Daily Cause List
             </a>
-            <a href="#billing" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] transition-colors">
+            <a href="#billing" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors">
               Fee Ledger
             </a>
-            <a href="#howitworks" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] transition-colors">
-              How It Works
+            <a href="#howitworks" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors">
+              Chamber Protocol
             </a>
-            <a href="#pricing" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] transition-colors">
-              Pricing
+            <a href="#pricing" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors">
+              Investment
             </a>
-            <a href="#faq" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] transition-colors">
+            <a href="#faq" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors">
               FAQ
             </a>
-            <a href="#contact" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] transition-colors">
-              Contact
+            <a href="#contact" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] transition-colors">
+              Registrar Desk
             </a>
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Theme Toggle Pill */}
-            <div className="flex items-center p-0.5 rounded-lg bg-[#f1f5f9] dark:bg-[#1e293b] border border-[#e2e8f0] dark:border-[#334155]">
+          <div className="flex items-center gap-2.5 sm:gap-3.5">
+            {/* Theme Toggle: Light Mode & Dark Mode Only */}
+            <div className="flex items-center p-1 rounded-xl bg-white/90 dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
               <button
                 type="button"
                 onClick={() => setTheme("light")}
-                className={`p-1.5 rounded-md text-xs transition-colors ${
-                  theme === "light" ? "bg-white text-[#1e3a8a] font-bold shadow-xs" : "text-[#64748b] hover:text-[#0f172a]"
+                className={`px-3 py-1.5 rounded-lg text-xs font-cinzel font-semibold transition-all flex items-center gap-1.5 ${
+                  theme === "light"
+                    ? "bg-[#0b0f14] text-[#3df2e0] dark:bg-[#3df2e0] dark:text-[#0b0f14] font-bold shadow-sm"
+                    : "text-[#0b0f14]/70 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
                 }`}
                 title="Light Mode"
               >
                 <Sun className="w-3.5 h-3.5" />
+                <span>Light Mode</span>
               </button>
               <button
                 type="button"
                 onClick={() => setTheme("dark")}
-                className={`p-1.5 rounded-md text-xs transition-colors ${
-                  theme === "dark" ? "bg-[#0f172a] text-[#fbbf24] font-bold shadow-xs" : "text-[#64748b] hover:text-white"
+                className={`px-3 py-1.5 rounded-lg text-xs font-cinzel font-semibold transition-all flex items-center gap-1.5 ${
+                  theme === "dark"
+                    ? "bg-[#0b0f14] text-[#3df2e0] dark:bg-[#3df2e0] dark:text-[#0b0f14] font-bold shadow-sm"
+                    : "text-[#0b0f14]/70 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
                 }`}
                 title="Dark Mode"
               >
                 <Moon className="w-3.5 h-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setTheme("system")}
-                className={`p-1.5 rounded-md text-xs transition-colors ${
-                  theme === "system" ? "bg-white dark:bg-[#0f172a] text-[#1e3a8a] dark:text-[#38bdf8] font-bold shadow-xs" : "text-[#64748b]"
-                }`}
-                title="Follow System Setting"
-              >
-                <Laptop className="w-3.5 h-3.5" />
+                <span>Dark Mode</span>
               </button>
             </div>
 
-            {/* Universal Sign In Button (Available for all 4 roles) */}
-            <button
-              onClick={() => setAuthModal("signin")}
-              className="px-3.5 py-2 rounded-lg bg-white dark:bg-[#1e293b] hover:bg-[#f1f5f9] dark:hover:bg-[#334155] text-[#0f172a] dark:text-[#f8fafc] border border-[#cbd5e1] dark:border-[#334155] font-semibold text-xs tracking-wide transition-all shadow-xs"
-            >
-              Sign In
-            </button>
+            {currentUser ? (
+              <Link
+                href={dashboardHref}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider transition-all shadow-md group"
+              >
+                <span>Dashboard</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            ) : (
+              <>
+                {/* Universal Sign In Button */}
+                <button
+                  onClick={() => setAuthModal("signin")}
+                  className="px-4 py-2 rounded-xl bg-white dark:bg-[#0f151c] hover:bg-white/80 dark:hover:bg-[#181b22] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 font-cinzel font-semibold text-xs tracking-wider transition-all shadow-xs"
+                >
+                  Sign In
+                </button>
 
-            {/* Advocate Sign Up Button (Lawyers ONLY) */}
-            <button
-              onClick={() => setAuthModal("signup")}
-              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-lg bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] dark:hover:bg-[#1d4ed8] text-white font-bold text-xs tracking-wide transition-all shadow-sm"
-              title="Registration is strictly restricted to practicing Advocates"
-            >
-              <Scale className="w-3.5 h-3.5 text-[#fbbf24]" />
-              <span>Register as Lawyer <span className="text-[10px] font-normal opacity-90 hidden sm:inline">(Free)</span></span>
-            </button>
+                {/* Advocate Sign Up Button (Lawyers ONLY) */}
+                <button
+                  onClick={() => setAuthModal("signup")}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
+                  title="Registration is strictly restricted to practicing Advocates"
+                >
+                  <span>Sign Up</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
 
       {/* 2. Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 border-b border-[#e2e8f0] dark:border-[#1e293b]">
-        {/* Soft Radial Ambient Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-gradient-to-tr from-[#1e3a8a]/10 via-[#3b82f6]/5 to-transparent blur-3xl rounded-full pointer-events-none" />
+      <section className="relative overflow-hidden pt-16 pb-20 md:pt-28 md:pb-32 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        {/* Soft Ambient Radial Glow */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-[#3df2e0]/20 to-transparent dark:from-[#3df2e0]/15 dark:via-[#0b0f14]/0 blur-3xl rounded-full pointer-events-none" />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center relative z-10">
-          {/* Trust Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#eff6ff] dark:bg-[#1e293b] text-[#1d4ed8] dark:text-[#60a5fa] border border-[#bfdbfe] dark:border-[#334155] mb-6 shadow-xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#f59e0b]" />
-            <span>REPLACING MANUAL PAPER REGISTERS &amp; CHAOTIC CAUSE LISTS</span>
+        <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center relative z-10">
+          {/* Trust Seal Pill */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-cinzel font-semibold tracking-wider bg-[#ffffff] dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 mb-8 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#0b0f14] dark:text-[#3df2e0]" />
+            <span>ESTABLISHED FOR SENIOR ADVOCATES &amp; PRIVATE CHAMBERS</span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#0f172a] dark:text-white tracking-tight leading-[1.15] max-w-4xl mx-auto">
-            The Smart Digital Diary for Modern Lawyers &amp; Chambers.
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-medium text-[#0b0f14] dark:text-[#3df2e0] tracking-tight leading-[1.18] max-w-4xl mx-auto">
+            Serene Chamber Stewardship, Reimagined for Modern Litigation.
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-5 text-sm sm:text-base md:text-lg text-[#475569] dark:text-[#94a3b8] max-w-2xl mx-auto leading-relaxed">
-            Manage your daily court cases, next hearing dates (NDOH), courtroom cause lists, client billing ledgers, and associate delegations in one unified, secure platform.
+          <p className="mt-6 text-base sm:text-lg text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif italic max-w-2xl mx-auto leading-relaxed">
+            Replace fragmented paper diaries and turbulent courtroom mornings with a sovereign, beautifully curated chamber operating system.
           </p>
 
           {/* Call to Actions */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-            <button
-              onClick={() => setAuthModal("signup")}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] dark:hover:bg-[#1d4ed8] text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md group"
-            >
-              <Scale className="w-4 h-4 text-[#fbbf24]" />
-              <span>Register Chamber (Lawyers Only)</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            {currentUser ? (
+              <Link
+                href={dashboardHref}
+                className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2.5 transition-all shadow-lg hover:shadow-xl group"
+              >
+                <span>Dashboard</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <>
+                <button
+                  onClick={() => setAuthModal("signup")}
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-widest uppercase flex items-center justify-center gap-2.5 transition-all shadow-lg hover:shadow-xl group"
+                >
+                  <span>Sign Up</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
 
-            <button
-              onClick={() => setAuthModal("signin")}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white dark:bg-[#1e293b] hover:bg-[#f1f5f9] dark:hover:bg-[#334155] text-[#0f172a] dark:text-white border border-[#cbd5e1] dark:border-[#334155] font-semibold text-xs tracking-wide transition-all shadow-sm"
-            >
-              Universal Sign In (All 4 Personas)
-            </button>
+                <button
+                  onClick={() => setAuthModal("signin")}
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-white dark:bg-[#0f151c] hover:bg-white/80 dark:hover:bg-[#181b22] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 font-cinzel font-semibold text-xs tracking-wider transition-all shadow-xs"
+                >
+                  Sign In
+                </button>
+              </>
+            )}
           </div>
 
-          {/* Feature Highlights Badges */}
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
-            <div className="p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs">
-              <span className="block text-xl md:text-2xl font-bold text-[#1e3a8a] dark:text-[#60a5fa]">
+          {/* Dignified Pillar Stat Tiles */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+              <span className="block text-2xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
                 16-Digit
               </span>
-              <span className="text-[11px] font-medium text-[#64748b] dark:text-[#94a3b8] block mt-0.5">
+              <span className="text-[11px] font-cinzel tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60 block mt-1 uppercase">
                 eCourts CNR Standard
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs">
-              <span className="block text-xl md:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+              <span className="block text-2xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
                 Today &amp; Tomorrow
               </span>
-              <span className="text-[11px] font-medium text-[#64748b] dark:text-[#94a3b8] block mt-0.5">
+              <span className="text-[11px] font-cinzel tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60 block mt-1 uppercase">
                 Cause List Calling Board
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs">
-              <span className="block text-xl md:text-2xl font-bold text-[#f59e0b]">
-                Client Ledger
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+              <span className="block text-2xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                Private Ledger
               </span>
-              <span className="text-[11px] font-medium text-[#64748b] dark:text-[#94a3b8] block mt-0.5">
-                Fee &amp; Invoicing Tracker
+              <span className="text-[11px] font-cinzel tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60 block mt-1 uppercase">
+                Retainer &amp; Fee Dossier
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs">
-              <span className="block text-xl md:text-2xl font-bold text-[#0f172a] dark:text-white">
-                100% Secure
+            <div className="p-5 rounded-2xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+              <span className="block text-2xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                Encrypted Vault
               </span>
-              <span className="text-[11px] font-medium text-[#64748b] dark:text-[#94a3b8] block mt-0.5">
-                Encrypted Chamber Vault
+              <span className="text-[11px] font-cinzel tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60 block mt-1 uppercase">
+                Air-Gapped Confidentiality
               </span>
             </div>
           </div>
 
-          {/* 3. Interactive Live Digital Diary Simulator Widget (The hallmark of digitallawyerdiary.com) */}
-          <div className="mt-14 max-w-4xl mx-auto text-left rounded-2xl bg-white dark:bg-[#111827] border border-[#cbd5e1] dark:border-[#1e293b] shadow-xl overflow-hidden">
+          {/* 3. Interactive Live Digital Diary Simulator Widget */}
+          <div id="causelist" className="mt-16 max-w-4xl mx-auto text-left rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-2xl overflow-hidden">
             {/* Simulator Top Header with Tabs */}
-            <div className="p-3 sm:p-4 bg-[#f1f5f9] dark:bg-[#0f172a] border-b border-[#e2e8f0] dark:border-[#1e293b] flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-amber-400" />
-                <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                <span className="text-xs font-bold text-[#0f172a] dark:text-white ml-2">
-                  CounselBook Live Chamber Docket Preview
+            <div className="p-4 sm:p-5 bg-white/80/80 dark:bg-[#0b0f14]/80 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#0b0f14] dark:bg-[#3df2e0] animate-pulse" />
+                <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+                  Chamber Cause List &amp; Diary Simulator
                 </span>
               </div>
 
               {/* Tabs */}
-              <div className="flex items-center gap-1 bg-white dark:bg-[#1e293b] p-1 rounded-lg border border-[#cbd5e1] dark:border-[#334155] text-xs">
+              <div className="flex items-center gap-1.5 bg-white dark:bg-[#141d27] p-1 rounded-xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs">
                 <button
                   type="button"
                   onClick={() => setSimulatorTab("today")}
-                  className={`px-3 py-1 rounded-md font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-cinzel text-xs font-bold transition-all ${
                     simulatorTab === "today"
-                      ? "bg-[#1e3a8a] text-white shadow-xs"
-                      : "text-[#64748b] dark:text-[#94a3b8] hover:text-[#0f172a]"
+                      ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
+                      : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
                   }`}
                 >
-                  Today's Hearings
+                  Today&apos;s Board
                 </button>
                 <button
                   type="button"
                   onClick={() => setSimulatorTab("tomorrow")}
-                  className={`px-3 py-1 rounded-md font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-cinzel text-xs font-bold transition-all ${
                     simulatorTab === "tomorrow"
-                      ? "bg-[#1e3a8a] text-white shadow-xs"
-                      : "text-[#64748b] dark:text-[#94a3b8] hover:text-[#0f172a]"
+                      ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
+                      : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
                   }`}
                 >
-                  Tomorrow's Board
+                  Tomorrow&apos;s List
                 </button>
                 <button
                   type="button"
                   onClick={() => setSimulatorTab("billing")}
-                  className={`px-3 py-1 rounded-md font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-cinzel text-xs font-bold transition-all ${
                     simulatorTab === "billing"
-                      ? "bg-[#1e3a8a] text-white shadow-xs"
-                      : "text-[#64748b] dark:text-[#94a3b8] hover:text-[#0f172a]"
+                      ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
+                      : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
                   }`}
                 >
                   Fee Ledger
@@ -362,98 +368,97 @@ export function LandingPage() {
                 <button
                   type="button"
                   onClick={() => setSimulatorTab("search")}
-                  className={`px-3 py-1 rounded-md font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-cinzel text-xs font-bold transition-all ${
                     simulatorTab === "search"
-                      ? "bg-[#1e3a8a] text-white shadow-xs"
-                      : "text-[#64748b] dark:text-[#94a3b8] hover:text-[#0f172a]"
+                      ? "bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] shadow-sm"
+                      : "text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
                   }`}
                 >
-                  CNR Search
+                  CNR Radar
                 </button>
               </div>
             </div>
 
             {/* Simulator Content Area */}
-            <div className="p-4 sm:p-6">
+            <div className="p-5 sm:p-7">
               {/* Tab 1: Today's Hearings */}
               {simulatorTab === "today" && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#e2e8f0] dark:border-[#1e293b]">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-[#1e3a8a] dark:text-[#60a5fa]" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#0f172a] dark:text-white">
-                        Today's Court Board (2 Matters Listed)
+                      <Calendar className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" />
+                      <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+                        Delhi High Court Listings (2 Matters Today)
                       </span>
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     </div>
-                    <span className="text-xs text-[#64748b] dark:text-[#94a3b8]">
-                      Delhi High Court &amp; District Courts
+                    <span className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+                      Court Room 05 &amp; 14 · Chief Justice Bench
                     </span>
                   </div>
 
-                  {/* Case 1 Listed Today */}
-                  <div className="p-4 rounded-xl border border-[#cbd5e1] dark:border-[#1e293b] hover:border-[#1e3a8a] transition-all bg-[#f8fafc] dark:bg-[#161f30]">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  {/* Case 1 */}
+                  <div className="p-4.5 rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all bg-white dark:bg-[#141d27]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]">
-                            Item No. 18
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold bg-[#0b0f14]/10 dark:bg-[#3df2e0]/15 text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/20 dark:border-[#3df2e0]/30">
+                            Item 18 · Court 05
                           </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                            Court Room 14
+                          <span className="font-mono text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                            W.P.(C) 4120/2024
                           </span>
-                          <span className="font-mono text-xs font-bold text-[#0f172a] dark:text-white">
-                            CS(OS) 442/2024
+                          <span className="text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-mono">
+                            CNR: DLHC01-008129-2024
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-[#0f172a] dark:text-white mt-1.5">
-                          Rahul Verma v. Kapoor Constructions Pvt. Ltd. &amp; Ors.
+                        <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1.5">
+                          AeroGlide Aviation Ltd. v. Union of India &amp; Ors.
                         </h4>
-                        <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-0.5">
-                          High Court of Delhi · Hon'ble Mr. Justice S. Khanna
+                        <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-0.5">
+                          Bench: Hon&apos;ble Mr. Justice Manmohan &amp; Hon&apos;ble Ms. Justice Mini Pushkarna
                         </p>
                       </div>
 
-                      <div className="text-left sm:text-right">
-                        <span className="inline-block px-2 py-1 rounded text-[11px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                          PW-1 Cross-Examination
+                      <div className="text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center">
+                        <span className="text-xs font-cinzel font-bold px-2.5 py-1 rounded-lg bg-[#ffffff] dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0]">
+                          Arguments Stage
                         </span>
-                        <span className="text-[11px] font-mono text-[#64748b] dark:text-[#94a3b8] block mt-1">
-                          CNR: DLHC01-004421-2024
+                        <span className="text-[10.5px] font-mono text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-1 block">
+                          Adv. R. Mukherjee (Senior)
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Case 2 Listed Today */}
-                  <div className="p-4 rounded-xl border border-[#cbd5e1] dark:border-[#1e293b] hover:border-[#1e3a8a] transition-all bg-[#f8fafc] dark:bg-[#161f30]">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  {/* Case 2 */}
+                  <div className="p-4.5 rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all bg-white dark:bg-[#141d27]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]">
-                            Item No. 07
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold bg-[#ffffff] dark:bg-[#0f151c] text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                            Item 42 · Court 14
                           </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                            Court Room 09
+                          <span className="font-mono text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                            CS (COMM) 890/2023
                           </span>
-                          <span className="font-mono text-xs font-bold text-[#0f172a] dark:text-white">
-                            W.P.(C) 8920/2024
+                          <span className="text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-mono">
+                            CNR: DLHC01-019482-2023
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-[#0f172a] dark:text-white mt-1.5">
-                          Arora &amp; Ors. v. Delhi Development Authority (DDA)
+                        <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1.5">
+                          Titanium Pharma Global v. Zydus Lifesciences Ltd.
                         </h4>
-                        <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-0.5">
-                          High Court of Delhi · Hon'ble Mr. Justice D.K. Sharma
+                        <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-0.5">
+                          Commercial Division Patent Injunction · Written Statement on Record
                         </p>
                       </div>
 
-                      <div className="text-left sm:text-right">
-                        <span className="inline-block px-2 py-1 rounded text-[11px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300">
-                          Interim Stay Motion
+                      <div className="text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center">
+                        <span className="text-xs font-cinzel font-bold px-2.5 py-1 rounded-lg bg-[#ffffff] dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0]">
+                          Framing of Issues
                         </span>
-                        <span className="text-[11px] font-mono text-[#64748b] dark:text-[#94a3b8] block mt-1">
-                          CNR: DLHC01-008920-2024
+                        <span className="text-[10.5px] font-mono text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-1 block">
+                          Assigned: Adv. Ananya Deshmukh
                         </span>
                       </div>
                     </div>
@@ -461,49 +466,43 @@ export function LandingPage() {
                 </div>
               )}
 
-              {/* Tab 2: Tomorrow's Board */}
+              {/* Tab 2: Tomorrow's List */}
               {simulatorTab === "tomorrow" && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#e2e8f0] dark:border-[#1e293b]">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#1e3a8a] dark:text-[#60a5fa]" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#0f172a] dark:text-white">
-                        Advance Board for Tomorrow (1 Matter Listed)
+                      <Clock className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" />
+                      <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+                        Advance Cause List (Tomorrow&apos;s Docket)
                       </span>
                     </div>
-                    <span className="text-xs text-[#64748b] dark:text-[#94a3b8]">
-                      Commercial Division
+                    <span className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+                      Supreme Court of India &amp; NCLAT
                     </span>
                   </div>
 
-                  <div className="p-4 rounded-xl border border-[#cbd5e1] dark:border-[#1e293b] hover:border-[#1e3a8a] transition-all bg-[#f8fafc] dark:bg-[#161f30]">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="p-4.5 rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all bg-white dark:bg-[#141d27]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#eff6ff] text-[#1d4ed8] border border-[#bfdbfe]">
-                            Item No. 04
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold bg-[#0b0f14]/10 dark:bg-[#3df2e0]/15 text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/20 dark:border-[#3df2e0]/30">
+                            Court 02 · Item 08
                           </span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                            Court Room 22
-                          </span>
-                          <span className="font-mono text-xs font-bold text-[#0f172a] dark:text-white">
-                            ARB.P. 118/2025
+                          <span className="font-mono text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                            SLP (C) 18492/2024
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-[#0f172a] dark:text-white mt-1.5">
-                          Sunrise Textiles Pvt. Ltd. v. Meridian Global Exports LLP
+                        <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1.5">
+                          Apex Horizon Infra v. State of Maharashtra &amp; Ors.
                         </h4>
-                        <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-0.5">
-                          Commercial Arbitration · Hon'ble Mr. Justice R. Menon
+                        <p className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-0.5">
+                          Supreme Court of India · Challenge against High Court Division Bench Judgment
                         </p>
                       </div>
 
-                      <div className="text-left sm:text-right">
-                        <span className="inline-block px-2 py-1 rounded text-[11px] font-semibold bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300">
-                          Section 11 Sole Arbitrator
-                        </span>
-                        <span className="text-[11px] font-mono text-[#64748b] dark:text-[#94a3b8] block mt-1">
-                          CNR: DLHC01-001180-2025
+                      <div className="text-right">
+                        <span className="text-xs font-cinzel font-bold px-2.5 py-1 rounded-lg bg-[#ffffff] dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0]">
+                          Notice Returnable
                         </span>
                       </div>
                     </div>
@@ -511,465 +510,379 @@ export function LandingPage() {
                 </div>
               )}
 
-              {/* Tab 3: Client Fee Ledger */}
+              {/* Tab 3: Fee Ledger */}
               {simulatorTab === "billing" && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#e2e8f0] dark:border-[#1e293b]">
+                <div id="billing" className="space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
                     <div className="flex items-center gap-2">
-                      <Receipt className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#0f172a] dark:text-white">
-                        Case-Linked Fee &amp; Invoicing Ledger
+                      <Receipt className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" />
+                      <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+                        Chamber Retainers &amp; Disbursed Fee Notes
                       </span>
                     </div>
-                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                      ₹75,000 Outstanding Dues
+                    <span className="text-xs font-serif italic text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
+                      Instant PDF Receipts with Judicial Letterhead
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="p-3.5 rounded-xl bg-[#eff6ff] dark:bg-[#1e293b] border border-[#bfdbfe] dark:border-[#334155]">
-                      <span className="text-[10px] font-semibold text-[#1e3a8a] dark:text-[#60a5fa] block uppercase">
-                        Agreed Retainer
-                      </span>
-                      <span className="text-xl font-bold text-[#0f172a] dark:text-white mt-0.5 block">
-                        ₹2,50,000
-                      </span>
-                      <span className="text-[10px] text-[#64748b] dark:text-[#94a3b8]">Under Vakalatnama</span>
-                    </div>
-
-                    <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-[#14231b] border border-emerald-200 dark:border-emerald-800/40">
-                      <span className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 block uppercase">
-                        Received to Date
-                      </span>
-                      <span className="text-xl font-bold text-emerald-700 dark:text-emerald-300 mt-0.5 block">
-                        ₹1,75,000
-                      </span>
-                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400">2 Verified Receipts</span>
-                    </div>
-
-                    <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-[#282212] border border-amber-200 dark:border-amber-800/40">
-                      <span className="text-[10px] font-semibold text-amber-800 dark:text-amber-400 block uppercase">
-                        Balance Payable
-                      </span>
-                      <span className="text-xl font-bold text-amber-800 dark:text-amber-300 mt-0.5 block">
-                        ₹75,000
-                      </span>
-                      <span className="text-[10px] text-amber-700 dark:text-amber-400">Due at Evidence Stage</span>
-                    </div>
-                  </div>
-
-                  {/* Sample Receipt Row */}
-                  <div className="p-3 rounded-lg bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#1e293b] flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      <div>
-                        <span className="font-mono font-bold text-[#0f172a] dark:text-white">REC-2026-0042</span>
-                        <span className="text-[#64748b] dark:text-[#94a3b8] ml-2">Retainer upon Vakalatnama</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">AeroGlide Aviation Ltd.</span>
+                        <span className="text-[10px] font-cinzel font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800/40">Paid</span>
                       </div>
+                      <p className="text-[11px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-1 font-serif italic">Final Arguments Appearance Fee</p>
+                      <p className="text-lg font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2">₹2,50,000</p>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold text-[#0f172a] dark:text-white">₹1,00,000</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                        Paid via NEFT
-                      </span>
+
+                    <div className="p-4 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">Titanium Pharma Global</span>
+                        <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] bg-[#0b0f14]/10 dark:bg-[#3df2e0]/15 px-2 py-0.5 rounded-md border border-[#0b0f14]/20 dark:border-[#3df2e0]/30">Advance Received</span>
+                      </div>
+                      <p className="text-[11px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-1 font-serif italic">Interim Injunction Draft &amp; Settlement</p>
+                      <p className="text-lg font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2">₹1,75,000 <span className="text-xs font-normal text-[#0b0f14]/65 dark:text-[#3df2e0]/60">(₹75k pending)</span></p>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Tab 4: CNR Quick Search */}
+              {/* Tab 4: CNR Radar */}
               {simulatorTab === "search" && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#e2e8f0] dark:border-[#1e293b]">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
                     <div className="flex items-center gap-2">
-                      <Search className="w-4 h-4 text-[#1e3a8a] dark:text-[#60a5fa]" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#0f172a] dark:text-white">
-                        Smart 16-Digit CNR Instant Search
+                      <Search className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0]" />
+                      <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+                        16-Digit CNR National Search Engine
                       </span>
                     </div>
-                    <span className="text-xs text-[#64748b] dark:text-[#94a3b8]">
-                      Millisecond Retrieval
-                    </span>
                   </div>
 
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        type="text"
-                        placeholder="Search by 16-Digit CNR (e.g. DLHC01-004421-2024)..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-[#cbd5e1] dark:border-[#334155] bg-[#f8fafc] dark:bg-[#161f30] text-xs font-mono text-[#0f172a] dark:text-white focus:outline-none focus:border-[#1e3a8a]"
-                      />
-                    </div>
-                    <button
-                      onClick={() => setSearchQuery("DLHC01-004421-2024")}
-                      className="px-3 py-2 rounded-xl bg-[#eff6ff] text-[#1d4ed8] text-xs font-semibold border border-[#bfdbfe]"
-                    >
-                      Fill Sample
-                    </button>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Try searching: DLHC01-008129-2024 or AeroGlide..."
+                      className="w-full px-4 py-3 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0] font-mono shadow-xs"
+                    />
+                    <Search className="w-4 h-4 absolute right-4 top-3.5 text-[#0b0f14]/65 dark:text-[#3df2e0]/60" />
                   </div>
-
-                  {searchQuery ? (
-                    <div className="p-4 rounded-xl border border-emerald-300 dark:border-emerald-800/40 bg-emerald-50/50 dark:bg-[#14231b]">
-                      <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 block uppercase">
-                        ✓ Case Record Matched
-                      </span>
-                      <h4 className="text-sm font-bold text-[#0f172a] dark:text-white mt-1">
-                        CS(OS) 442/2024 · Rahul Verma v. Kapoor Constructions Pvt. Ltd.
-                      </h4>
-                      <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-0.5">
-                        Court Room 14 · Next Hearing: Today · Stage: Plaintiff Evidence
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="p-6 text-center text-xs text-[#64748b] dark:text-[#94a3b8] border border-dashed border-[#cbd5e1] dark:border-[#334155] rounded-xl">
-                      Type any CNR, party name, or court number to test instant live search.
-                    </div>
-                  )}
                 </div>
               )}
-            </div>
-
-            {/* Simulator Bottom Bar */}
-            <div className="p-3 bg-[#f8fafc] dark:bg-[#0f172a] border-t border-[#e2e8f0] dark:border-[#1e293b] flex items-center justify-between text-xs">
-              <span className="text-[#64748b] dark:text-[#94a3b8]">
-                Ready to digitize your paper diary?
-              </span>
-              <button
-                onClick={() => setAuthModal("signup")}
-                className="font-bold text-[#1e3a8a] dark:text-[#60a5fa] hover:underline"
-              >
-                Register Your Chamber Free →
-              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. Core Features Section (The 6 Pillars from digitallawyerdiary.com) */}
-      <section id="features" className="py-16 md:py-24 max-w-6xl mx-auto px-4 sm:px-6 border-b border-[#e2e8f0] dark:border-[#1e293b]">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] dark:text-[#60a5fa]">
-            PRACTICE FEATURES
+      {/* 4. Core Features Section */}
+      <section id="features" className="py-20 md:py-28 max-w-6xl mx-auto px-5 sm:px-8 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+            PRACTICE SOVEREIGNTY
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0f172a] dark:text-white mt-2 tracking-tight">
-            Everything Your Law Chamber Needs to Operate Seamlessly.
+          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2.5 tracking-tight">
+            Crafted for Distinguished Advocates &amp; Law Chambers.
           </h2>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] mt-3">
-            Designed specifically to replace physical notebooks, paper cause lists, and scattered Excel sheets.
+          <p className="text-sm font-serif italic text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-3">
+            Designed specifically to replace frayed paper registers, scattered cause list sheets, and manual reminders.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Feature 1 */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs hover:border-[#1e3a8a] dark:hover:border-[#38bdf8] transition-all">
-            <div className="w-10 h-10 rounded-xl bg-[#eff6ff] dark:bg-[#1e293b] text-[#1d4ed8] dark:text-[#60a5fa] flex items-center justify-center font-bold text-xs mb-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all group">
+            <div className="w-11 h-11 rounded-2xl bg-white/80 dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-bold text-xs mb-5 transition-transform group-hover:scale-105">
               <BookOpen className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#0f172a] dark:text-white">
-              Smart Case Diary &amp; Lifecycle History
+            <h3 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+              Chronological Case Dossiers &amp; NDOH
             </h3>
-            <p className="text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-2.5">
-              Record court, judge, stage, client, opposite party, and case number once. Maintain a complete chronological audit trail of all previous orders, adjournments, and procedural stages.
+            <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif leading-relaxed mt-2.5">
+              Record bench, courtroom, stage, opposite party, and case numbers once. Maintain an uninterrupted audit trail of all previous orders, adjournments, and procedural stages.
             </p>
           </div>
 
           {/* Feature 2 */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs hover:border-[#1e3a8a] dark:hover:border-[#38bdf8] transition-all">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-[#14231b] text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-xs mb-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all group">
+            <div className="w-11 h-11 rounded-2xl bg-white/80 dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-bold text-xs mb-5 transition-transform group-hover:scale-105">
               <Calendar className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#0f172a] dark:text-white">
-              Daily Cause Lists &amp; Hearing Reminders
+            <h3 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+              Automated Cause Lists &amp; Calling Board
             </h3>
-            <p className="text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-2.5">
-              Auto-generates your "Today" and "Tomorrow" boards. Track Item Numbers, Court Rooms, and pass-overs across multiple courts so no matter is missed before leaving chambers.
+            <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif leading-relaxed mt-2.5">
+              Auto-generates your Today and Tomorrow calling boards. Track item numbers, courtroom locations, and pass-overs across multiple courts before departing chambers.
             </p>
           </div>
 
           {/* Feature 3 */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs hover:border-[#1e3a8a] dark:hover:border-[#38bdf8] transition-all">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-[#282212] text-amber-800 dark:text-amber-400 flex items-center justify-center font-bold text-xs mb-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all group">
+            <div className="w-11 h-11 rounded-2xl bg-white/80 dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-bold text-xs mb-5 transition-transform group-hover:scale-105">
               <Receipt className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#0f172a] dark:text-white">
-              Client Fee &amp; Invoicing Ledger
+            <h3 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+              Chamber Retainers &amp; Fee Accounting
             </h3>
-            <p className="text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-2.5">
-              Financial accounting built directly into every case file. Log agreed retainers, advance payments, pending balances, and generate instant printable fee receipts.
+            <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif leading-relaxed mt-2.5">
+              Financial accounting built directly into every case dossier. Log retainers, advance payments, pending disbursements, and print professional fee notes.
             </p>
           </div>
 
           {/* Feature 4 */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs hover:border-[#1e3a8a] dark:hover:border-[#38bdf8] transition-all">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-[#20182b] text-purple-700 dark:text-purple-400 flex items-center justify-center font-bold text-xs mb-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all group">
+            <div className="w-11 h-11 rounded-2xl bg-white/80 dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-bold text-xs mb-5 transition-transform group-hover:scale-105">
               <Users className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#0f172a] dark:text-white">
-              Chamber &amp; Junior Collaboration
+            <h3 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+              Senior Verification Desk &amp; Junior Briefs
             </h3>
-            <p className="text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-2.5">
-              Senior Advocates delegate cases to junior associates and clerks. Juniors submit hearing notes for Senior verification before the record is locked.
+            <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif leading-relaxed mt-2.5">
+              Senior Advocates delegate matters to junior associates. Juniors draft hearing notes in the courtroom for senior verification before records are permanently stamped.
             </p>
           </div>
 
           {/* Feature 5 */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs hover:border-[#1e3a8a] dark:hover:border-[#38bdf8] transition-all">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-[#152336] text-blue-700 dark:text-blue-400 flex items-center justify-center font-bold text-xs mb-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all group">
+            <div className="w-11 h-11 rounded-2xl bg-white/80 dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-bold text-xs mb-5 transition-transform group-hover:scale-105">
               <FolderLock className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#0f172a] dark:text-white">
-              Document Locker &amp; Citations
+            <h3 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+              Encrypted Pleadings Vault &amp; Citations
             </h3>
-            <p className="text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-2.5">
-              Store scanned Vakalatnamas, plaints, evidence affidavits, and certified High Court Neutral Citations (e.g. <code>2026:DHC:8412</code>) linked directly to the case.
+            <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif leading-relaxed mt-2.5">
+              Securely store Vakalatnamas, plaints, evidence affidavits, and certified High Court Neutral Citations (e.g. 2026:DHC:8412) tied to each specific case.
             </p>
           </div>
 
           {/* Feature 6 */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs hover:border-[#1e3a8a] dark:hover:border-[#38bdf8] transition-all">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-[#142323] text-teal-700 dark:text-teal-400 flex items-center justify-center font-bold text-xs mb-4">
+          <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs hover:border-[#0b0f14] dark:hover:border-[#3df2e0] transition-all group">
+            <div className="w-11 h-11 rounded-2xl bg-white/80 dark:bg-[#141d27] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-bold text-xs mb-5 transition-transform group-hover:scale-105">
               <Smartphone className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-bold text-[#0f172a] dark:text-white">
-              Courtroom Ready &amp; Multi-Device Sync
+            <h3 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+              Multi-Device Judicial Synchronization
             </h3>
-            <p className="text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed mt-2.5">
-              Access your chamber diary from your phone, iPad, or office desktop. Responsive, lightning-fast, and designed to work smoothly inside court corridors.
+            <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif leading-relaxed mt-2.5">
+              Seamlessly transition between chamber desktop, iPad in conference, and mobile in court corridors without losing a single hearing note.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 5. How It Works Section (4 Steps) */}
-      <section id="howitworks" className="py-16 md:py-24 bg-white dark:bg-[#0f172a] border-b border-[#e2e8f0] dark:border-[#1e293b]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] dark:text-[#60a5fa]">
-              SIMPLE ONBOARDING
+      {/* 5. How It Works Section */}
+      <section id="howitworks" className="py-20 md:py-28 bg-white/80/40 dark:bg-[#0b0f14] border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+              CHAMBER PROTOCOL
             </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0f172a] dark:text-white mt-2 tracking-tight">
-              How Digital Lawyer Diary Works.
+            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2.5 tracking-tight">
+              From Physical Register to Digital Chamber.
             </h2>
-            <p className="text-sm text-[#475569] dark:text-[#94a3b8] mt-3">
-              Transitioning from a traditional paper register to a digital chamber takes less than 2 minutes.
+            <p className="text-sm font-serif italic text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-3">
+              Modernizing your practice workflow takes less than two minutes.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="p-5 rounded-2xl bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] relative">
-              <span className="w-8 h-8 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center font-bold text-xs mb-4">
-                1
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 relative">
+              <span className="w-8 h-8 rounded-full bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-cinzel font-bold text-xs mb-4">
+                I
               </span>
-              <h4 className="text-sm font-bold text-[#0f172a] dark:text-white">
-                Register Chamber
+              <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                Advocate Sign Up
               </h4>
-              <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-2 leading-relaxed">
-                Enter your State Bar Council Enrolment No. (e.g. D/1482/2012) and initialize your encrypted chamber vault.
+              <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif mt-2 leading-relaxed">
+                Provide your State Bar Council Enrolment No. (e.g. D/1482/2012) and initialize your chamber vault.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] relative">
-              <span className="w-8 h-8 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center font-bold text-xs mb-4">
-                2
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 relative">
+              <span className="w-8 h-8 rounded-full bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-cinzel font-bold text-xs mb-4">
+                II
               </span>
-              <h4 className="text-sm font-bold text-[#0f172a] dark:text-white">
-                Log Cases &amp; CNRs
+              <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                File Matters &amp; CNRs
               </h4>
-              <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-2 leading-relaxed">
-                Add your active court matters with 16-digit CNR, bench, court room, judge, and client contact details.
+              <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif mt-2 leading-relaxed">
+                Log active matters with 16-digit CNR, bench, court room, judge, and client contact details.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] relative">
-              <span className="w-8 h-8 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center font-bold text-xs mb-4">
-                3
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 relative">
+              <span className="w-8 h-8 rounded-full bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-cinzel font-bold text-xs mb-4">
+                III
               </span>
-              <h4 className="text-sm font-bold text-[#0f172a] dark:text-white">
-                Track Cause Lists
+              <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                Daily Cause Lists
               </h4>
-              <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-2 leading-relaxed">
-                View automatically grouped "Today" and "Tomorrow" cause lists on your phone before heading to court.
+              <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif mt-2 leading-relaxed">
+                Review automatically organized Today and Tomorrow boards on your phone before departing chambers.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#f8fafc] dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] relative">
-              <span className="w-8 h-8 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center font-bold text-xs mb-4">
-                4
+            <div className="p-6 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 relative">
+              <span className="w-8 h-8 rounded-full bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-cinzel font-bold text-xs mb-4">
+                IV
               </span>
-              <h4 className="text-sm font-bold text-[#0f172a] dark:text-white">
-                Issue Receipts &amp; Fees
+              <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                Receipts &amp; Retainers
               </h4>
-              <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-2 leading-relaxed">
-                Record fee payments, track pending client balances, and generate professional receipts in one click.
+              <p className="text-xs text-[#0b0f14]/70 dark:text-[#3df2e0]/60 font-serif mt-2 leading-relaxed">
+                Log fee notes, track outstanding balances, and generate professional receipts with one tap.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. Transparent Pricing Plans (matching digitallawyerdiary.com structure) */}
-      <section id="pricing" className="py-16 md:py-24 max-w-6xl mx-auto px-4 sm:px-6 border-b border-[#e2e8f0] dark:border-[#1e293b]">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] dark:text-[#60a5fa]">
+      {/* 6. Transparent Pricing Plans */}
+      <section id="pricing" className="py-20 md:py-28 max-w-6xl mx-auto px-5 sm:px-8 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
             TRANSPARENT PLANS
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0f172a] dark:text-white mt-2 tracking-tight">
-            Plans for Solo Advocates and Growing Chambers.
+          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2.5 tracking-tight">
+            Plans for Individual Counsels &amp; Established Chambers.
           </h2>
-          <p className="text-sm text-[#475569] dark:text-[#94a3b8] mt-3">
-            Get started completely free. Upgrade only when you expand your chamber team.
+          <p className="text-sm font-serif italic text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-3">
+            Begin with a full-featured complimentary tier. Upgrade only as your litigation chamber expands.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Plan 1: Solo Advocate */}
-          <div className="p-7 rounded-2xl bg-white dark:bg-[#111827] border border-[#cbd5e1] dark:border-[#1e293b] shadow-xs flex flex-col justify-between">
+          {/* Plan 1 */}
+          <div className="p-8 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs flex flex-col justify-between">
             <div>
-              <span className="text-xs font-bold uppercase text-[#64748b] dark:text-[#94a3b8] tracking-wider block">
+              <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60 block">
                 Solo Practitioner
               </span>
-              <h3 className="text-xl font-bold text-[#0f172a] dark:text-white mt-1">
-                Individual Advocate
+              <h3 className="text-xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1">
+                Individual Counsel
               </h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-3xl font-extrabold text-[#0f172a] dark:text-white">₹0</span>
-                <span className="text-xs text-[#64748b] dark:text-[#94a3b8]">/ free forever</span>
+              <div className="mt-5 flex items-baseline gap-1.5">
+                <span className="text-3xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">₹0</span>
+                <span className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60">/ complimentary</span>
               </div>
-              <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-2">
-                Ideal for individual litigators managing their own daily diary and client docket.
+              <p className="text-xs font-serif text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-2 leading-relaxed">
+                For solo litigators managing their personal court docket, hearings, and client records.
               </p>
 
-              <ul className="mt-6 space-y-3 text-xs text-[#334155] dark:text-[#cbd5e1]">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <ul className="mt-6 space-y-3.5 text-xs text-[#0b0f14]/85 dark:text-[#3df2e0]/85 font-serif">
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
                   <span>1 Advocate Account</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Up to 50 Active Matters</span>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
+                  <span>Up to 50 Active Court Matters</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Daily Cause List (Today &amp; Tomorrow)</span>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
+                  <span>Today &amp; Tomorrow Cause Lists</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
                   <span>Client Fee &amp; Receipt Ledger</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Mobile &amp; Web Synchronization</span>
                 </li>
               </ul>
             </div>
 
             <button
-              onClick={() => setAuthModal("signup")}
-              className="mt-8 w-full py-2.5 rounded-xl border border-[#cbd5e1] dark:border-[#334155] font-bold text-xs text-[#0f172a] dark:text-white hover:bg-[#f1f5f9] dark:hover:bg-[#1e293b] transition-all"
+              onClick={() => currentUser ? router.push(dashboardHref) : setAuthModal("signup")}
+              className="mt-8 w-full py-3 rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 font-cinzel font-bold text-xs tracking-wider text-[#0b0f14] dark:text-[#3df2e0] hover:bg-white/80 dark:hover:bg-[#181b22] transition-all"
             >
-              Get Started Free
+              {currentUser ? "Open Dashboard" : "Sign Up Free"}
             </button>
           </div>
 
           {/* Plan 2: Chamber Pro (Highlighted) */}
-          <div className="p-7 rounded-2xl bg-white dark:bg-[#111827] border-2 border-[#1e3a8a] dark:border-[#3b82f6] shadow-lg flex flex-col justify-between relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold bg-[#1e3a8a] text-white uppercase tracking-wider">
-              Most Popular for Chambers
+          <div className="p-8 rounded-3xl bg-white dark:bg-[#0f151c] border-2 border-[#0b0f14] dark:border-[#3df2e0] shadow-xl flex flex-col justify-between relative">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-[9.5px] font-cinzel font-bold uppercase tracking-widest bg-[#1b1d3a] text-[#e8d5b5] dark:bg-[#e8d5b5] dark:text-[#1b1d3a]">
+              Chamber Standard
             </div>
 
             <div>
-              <span className="text-xs font-bold uppercase text-[#1e3a8a] dark:text-[#60a5fa] tracking-wider block">
-                Multi-User Firm
+              <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0] block">
+                Chamber Practice
               </span>
-              <h3 className="text-xl font-bold text-[#0f172a] dark:text-white mt-1">
+              <h3 className="text-xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1">
                 Chamber Pro
               </h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-3xl font-extrabold text-[#0f172a] dark:text-white">₹1,499</span>
-                <span className="text-xs text-[#64748b] dark:text-[#94a3b8]">/ month per chamber</span>
+              <div className="mt-5 flex items-baseline gap-1.5">
+                <span className="text-3xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">₹1,499</span>
+                <span className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60">/ monthly per chamber</span>
               </div>
-              <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-2">
-                For Senior Advocates working with associates, juniors, and chamber clerks.
+              <p className="text-xs font-serif text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-2 leading-relaxed">
+                For Senior Advocates collaborating with briefing associates, juniors, and clerks.
               </p>
 
-              <ul className="mt-6 space-y-3 text-xs text-[#334155] dark:text-[#cbd5e1]">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <ul className="mt-6 space-y-3.5 text-xs text-[#0b0f14]/85 dark:text-[#3df2e0]/85 font-serif">
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
                   <span><strong>Up to 5 Advocates &amp; Briefing Associates</strong></span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span><strong>Unlimited Active Case Dockets</strong></span>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
+                  <span><strong>Unlimited Active Matters &amp; Dossiers</strong></span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Two-Tier Senior Verification Desk</span>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
+                  <span>Senior Verification Desk</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
                   <span>Limitation Act 1963 Statutory Radar</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Litigant Client Read-Only Portal</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>10 GB Encrypted Document Vault</span>
                 </li>
               </ul>
             </div>
 
             <button
-              onClick={() => setAuthModal("signup")}
-              className="mt-8 w-full py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] dark:hover:bg-[#1d4ed8] text-white font-bold text-xs tracking-wide transition-all shadow-md"
+              onClick={() => currentUser ? router.push(dashboardHref) : setAuthModal("signup")}
+              className="mt-8 w-full py-3 rounded-2xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
             >
-              Start Free Chamber Trial
+              {currentUser ? "Open Dashboard" : "Sign Up"}
             </button>
           </div>
 
-          {/* Plan 3: Law Firm / Senior Counsel */}
-          <div className="p-7 rounded-2xl bg-white dark:bg-[#111827] border border-[#cbd5e1] dark:border-[#1e293b] shadow-xs flex flex-col justify-between">
+          {/* Plan 3 */}
+          <div className="p-8 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs flex flex-col justify-between">
             <div>
-              <span className="text-xs font-bold uppercase text-[#64748b] dark:text-[#94a3b8] tracking-wider block">
-                Enterprise Practice
+              <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#0b0f14]/65 dark:text-[#3df2e0]/60 block">
+                Enterprise Chambers
               </span>
-              <h3 className="text-xl font-bold text-[#0f172a] dark:text-white mt-1">
-                Senior Counsel / Firm
+              <h3 className="text-xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-1">
+                Senior Counsel / Law Firm
               </h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-3xl font-extrabold text-[#0f172a] dark:text-white">Custom</span>
-                <span className="text-xs text-[#64748b] dark:text-[#94a3b8]">/ tailored pricing</span>
+              <div className="mt-5 flex items-baseline gap-1.5">
+                <span className="text-3xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">Custom</span>
+                <span className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60">/ tailored deployment</span>
               </div>
-              <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-2">
-                For designated Senior Advocates and large litigation firms with multiple benches.
+              <p className="text-xs font-serif text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-2 leading-relaxed">
+                For designated Senior Advocates and large litigation practices across multiple high court benches.
               </p>
 
-              <ul className="mt-6 space-y-3 text-xs text-[#334155] dark:text-[#cbd5e1]">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <ul className="mt-6 space-y-3.5 text-xs text-[#0b0f14]/85 dark:text-[#3df2e0]/85 font-serif">
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
                   <span>Unlimited Advocates &amp; Retained Clients</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
                   <span>Dedicated Encrypted Database Partition</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0" />
                   <span>Custom Tribunal &amp; Bench Integrations</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Priority 24/7 Chamber Registrar Desk</span>
                 </li>
               </ul>
             </div>
 
             <a
               href="#contact"
-              className="mt-8 w-full py-2.5 rounded-xl border border-[#cbd5e1] dark:border-[#334155] font-bold text-xs text-center text-[#0f172a] dark:text-white hover:bg-[#f1f5f9] dark:hover:bg-[#1e293b] transition-all block"
+              className="mt-8 w-full py-3 rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 font-cinzel font-bold text-xs text-center text-[#0b0f14] dark:text-[#3df2e0] hover:bg-white/80 dark:hover:bg-[#181b22] transition-all block"
             >
               Contact Registry Desk
             </a>
@@ -978,59 +891,59 @@ export function LandingPage() {
       </section>
 
       {/* 7. Advocate Testimonials */}
-      <section className="py-16 bg-[#f1f5f9] dark:bg-[#0f172a] border-b border-[#e2e8f0] dark:border-[#1e293b]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] dark:text-[#60a5fa]">
-              TESTIMONIALS
+      <section className="py-20 md:py-28 bg-white/80/40 dark:bg-[#0b0f14] border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+              CHAMBER TESTIMONIALS
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] dark:text-white mt-1">
-              Trusted by Advocates Across High Courts &amp; District Courts.
+            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2.5">
+              Endorsed by Practicing Counsels Nationwide.
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs">
-              <p className="text-xs text-[#334155] dark:text-[#cbd5e1] leading-relaxed italic">
-                "For years, my clerk maintained a massive paper diary that tore and went missing before vacations. CounselBook replaced all of that. Having Today and Tomorrow's cause list on my phone in court is invaluable."
+            <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+              <p className="text-xs font-serif leading-relaxed text-[#0b0f14]/85 dark:text-[#3df2e0]/85 italic">
+                &ldquo;For years, our clerk maintained a massive paper diary that tore and was prone to misplacement. Updated Law Diary brought complete serenity to our morning cause list preparation.&rdquo;
               </p>
-              <div className="mt-4 pt-4 border-t border-[#e2e8f0] dark:border-[#1e293b] flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center font-bold text-xs">
+              <div className="mt-5 pt-4 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-cinzel font-bold text-xs">
                   SK
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#0f172a] dark:text-white">Adv. Suresh K. Grover</h4>
-                  <span className="text-[10px] text-[#64748b] dark:text-[#94a3b8]">Delhi High Court (D/892/2004)</span>
+                  <h4 className="text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">Adv. Suresh K. Grover</h4>
+                  <span className="text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-mono">Delhi High Court · D/892/2004</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs">
-              <p className="text-xs text-[#334155] dark:text-[#cbd5e1] leading-relaxed italic">
-                "The two-tier verification desk is revolutionary for my chamber. My juniors draft the hearing outcome right from the courtroom, and I sign off on it with one tap. No more mixed-up dates."
+            <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+              <p className="text-xs font-serif leading-relaxed text-[#0b0f14]/85 dark:text-[#3df2e0]/85 italic">
+                &ldquo;The two-tier verification desk is revolutionary for our chamber. Associates log verbatim courtroom outcomes, and I sign off with one tap. No more miscommunicated dates.&rdquo;
               </p>
-              <div className="mt-4 pt-4 border-t border-[#e2e8f0] dark:border-[#1e293b] flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">
+              <div className="mt-5 pt-4 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-cinzel font-bold text-xs">
                   MN
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#0f172a] dark:text-white">Adv. Manisha Nadkarni</h4>
-                  <span className="text-[10px] text-[#64748b] dark:text-[#94a3b8]">Bombay High Court (MAH/1420/2011)</span>
+                  <h4 className="text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">Adv. Manisha Nadkarni</h4>
+                  <span className="text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-mono">Bombay High Court · MAH/1420/2011</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#e2e8f0] dark:border-[#1e293b] shadow-xs">
-              <p className="text-xs text-[#334155] dark:text-[#cbd5e1] leading-relaxed italic">
-                "The fee ledger alongside the case brief prevents awkward billing disputes. Clients see their advance payments and receipts transparently, which preserves professional trust."
+            <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+              <p className="text-xs font-serif leading-relaxed text-[#0b0f14]/85 dark:text-[#3df2e0]/85 italic">
+                &ldquo;The fee ledger integrated directly into each brief eliminates uncomfortable accounting disputes. Clients inspect advance receipts transparently.&rdquo;
               </p>
-              <div className="mt-4 pt-4 border-t border-[#e2e8f0] dark:border-[#1e293b] flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#d97706] text-white flex items-center justify-center font-bold text-xs">
+              <div className="mt-5 pt-4 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#0b0f14] text-[#0b0f14] dark:text-[#3df2e0] flex items-center justify-center font-cinzel font-bold text-xs">
                   TB
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-[#0f172a] dark:text-white">Adv. Tushar Banerjee</h4>
-                  <span className="text-[10px] text-[#64748b] dark:text-[#94a3b8]">Calcutta High Court (WB/612/2015)</span>
+                  <h4 className="text-xs font-bold text-[#0b0f14] dark:text-[#3df2e0]">Adv. Tushar Banerjee</h4>
+                  <span className="text-[10px] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 font-mono">Calcutta High Court · WB/612/2015</span>
                 </div>
               </div>
             </div>
@@ -1038,58 +951,58 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* 8. Frequently Asked Questions (FAQ) Section */}
-      <section id="faq" className="py-16 md:py-24 max-w-4xl mx-auto px-4 sm:px-6 border-b border-[#e2e8f0] dark:border-[#1e293b]">
-        <div className="text-center mb-12">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] dark:text-[#60a5fa]">
-            FREQUENTLY ASKED QUESTIONS
+      {/* 8. Frequently Asked Questions */}
+      <section id="faq" className="py-20 md:py-28 max-w-4xl mx-auto px-5 sm:px-8 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div className="text-center mb-16">
+          <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+            INQUIRIES &amp; PROTOCOL
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] dark:text-white mt-1">
-            Common Inquiries by Practicing Advocates.
+          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2.5">
+            Common Questions by Practicing Counsels.
           </h2>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {[
             {
-              q: "Is my chamber and client data confidential?",
-              a: "Absolutely. CounselBook uses air-gapped, encrypted database partitioning. Opposing counsels or outside advocates cannot query, search, or view your chamber's active matters, client advice, or fee ledgers.",
+              q: "Is chamber and client data confidential and air-gapped?",
+              a: "Absolutely. Updated Law Diary uses air-gapped, encrypted database partitioning. Opposing counsels or outside advocates cannot query, search, or view your chamber's active matters, client advice, or fee ledgers.",
             },
             {
-              q: "Does CounselBook comply with Bar Council of India (BCI) Rule 36?",
-              a: "Yes, strictly. CounselBook is a practice management and chamber operating system. It does not solicit clients, display advertisements, or rank advocates. Sign-up is restricted to enrolled lawyers.",
+              q: "Does Updated Law Diary comply with Bar Council of India (BCI) Rule 36?",
+              a: "Yes, strictly. Updated Law Diary is a practice management and chamber operating system. It does not solicit clients, display advertisements, or rank advocates. Sign-up is restricted to enrolled lawyers.",
             },
             {
-              q: "Can my junior associates and chamber clerk update hearing dates?",
-              a: "Yes. In the Chamber Pro plan, junior associates can log verbatim court proceedings and propose the Next Date of Hearing (NDOH). These submissions enter the Senior Advocate's Verification Desk for final sign-off.",
+              q: "Can junior associates and chamber clerks submit hearing outcomes?",
+              a: "Yes. In the Chamber Pro plan, junior associates log verbatim court proceedings and propose the Next Date of Hearing (NDOH). These submissions enter the Senior Advocate's Verification Desk for final sign-off.",
             },
             {
-              q: "Does it support the 16-character eCourts CNR number format?",
-              a: "Yes. Every matter features full support for the 16-character Case Natural Record (e.g. DLHC01-004421-2024), enabling unified tracking across High Courts, District Courts, and Tribunals.",
+              q: "Does it support the 16-character eCourts CNR number standard?",
+              a: "Yes. Every matter features full support for the 16-character Case Natural Record (e.g. DLHC01-008129-2024), enabling unified tracking across High Courts, District Courts, and Tribunals.",
             },
             {
-              q: "Can I print or export my Daily Cause List as a PDF?",
-              a: "Yes. CounselBook provides a 1-click printable cause list formatted specifically for chamber boards, court bags, and sharing with briefing counsels.",
+              q: "Can I print or export my Daily Cause List as a clean PDF?",
+              a: "Yes. Updated Law Diary provides a 1-click printable cause list formatted specifically for chamber boards, court bags, and sharing with briefing counsels.",
             },
           ].map((faq, i) => (
             <div
               key={i}
-              className="rounded-xl border border-[#cbd5e1] dark:border-[#1e293b] bg-white dark:bg-[#111827] overflow-hidden"
+              className="rounded-2xl border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-white dark:bg-[#0f151c] overflow-hidden"
             >
               <button
                 type="button"
                 onClick={() => toggleFaq(i)}
-                className="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-[#0f172a] dark:text-white"
+                className="w-full p-5 text-left flex items-center justify-between text-xs sm:text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-[#64748b] transition-transform ${
+                  className={`w-4 h-4 text-[#0b0f14]/65 transition-transform ${
                     activeFaq === i ? "rotate-180" : ""
                   }`}
                 />
               </button>
               {activeFaq === i && (
-                <div className="px-4 pb-4 pt-1 text-xs text-[#475569] dark:text-[#94a3b8] leading-relaxed border-t border-[#e2e8f0] dark:border-[#1e293b]">
+                <div className="px-5 pb-5 pt-1 text-xs font-serif leading-relaxed text-[#0b0f14]/70 dark:text-[#3df2e0]/60 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
                   {faq.a}
                 </div>
               )}
@@ -1099,31 +1012,31 @@ export function LandingPage() {
       </section>
 
       {/* 9. Contact Us & Registry Concierge Desk */}
-      <section id="contact" className="py-16 md:py-24 bg-[#f8fafc] dark:bg-[#0b0f19] border-b border-[#e2e8f0] dark:border-[#1e293b]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] dark:text-[#60a5fa]">
-              COMMUNICATION &amp; SUPPORT
+      <section id="contact" className="py-20 md:py-28 bg-[#3df2e0] dark:bg-[#0b0f14] border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#0b0f14] dark:text-[#3df2e0]">
+              REGISTRAR PROTOCOL
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] dark:text-white mt-1">
+            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mt-2.5">
               Contact the Chamber Registrar Desk.
             </h2>
-            <p className="text-sm text-[#475569] dark:text-[#94a3b8] mt-2">
-              Reach our technical team for custom chamber onboarding or integration inquiries.
+            <p className="text-sm font-serif italic text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-3">
+              Reach our technical registrar for custom chamber onboarding or enterprise integration.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left 5 Cols: Contact Information */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="p-6 rounded-2xl bg-white dark:bg-[#111827] border border-[#cbd5e1] dark:border-[#1e293b] shadow-xs space-y-4">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-[#1e3a8a] dark:text-[#60a5fa] flex-shrink-0 mt-0.5" />
+            {/* Left 5 Cols */}
+            <div className="lg:col-span-5 space-y-5">
+              <div className="p-7 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs space-y-5">
+                <div className="flex items-start gap-3.5">
+                  <MapPin className="w-5 h-5 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-xs font-bold uppercase text-[#0f172a] dark:text-white">
+                    <h4 className="text-xs font-cinzel font-bold uppercase text-[#0b0f14] dark:text-[#3df2e0]">
                       Chamber Registry Headquarters
                     </h4>
-                    <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-1 leading-relaxed">
+                    <p className="text-xs font-serif text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-1.5 leading-relaxed">
                       Chamber Block II, Sher Shah Road / Bhagwan Das Road<br />
                       Opposite Delhi High Court &amp; Supreme Court of India<br />
                       New Delhi 110001
@@ -1131,72 +1044,72 @@ export function LandingPage() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-[#e2e8f0] dark:border-[#1e293b] flex items-start gap-3">
-                  <Mail className="w-5 h-5 text-[#1e3a8a] dark:text-[#60a5fa] flex-shrink-0 mt-0.5" />
+                <div className="pt-4 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-start gap-3.5">
+                  <Mail className="w-5 h-5 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-xs font-bold uppercase text-[#0f172a] dark:text-white">
+                    <h4 className="text-xs font-cinzel font-bold uppercase text-[#0b0f14] dark:text-[#3df2e0]">
                       Registrar Email
                     </h4>
-                    <p className="text-xs font-mono text-[#1e3a8a] dark:text-[#60a5fa] mt-1">
-                      registrar@counselbook.in
+                    <p className="text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] mt-1">
+                      registrar@updatedlawdiary.in
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-[#e2e8f0] dark:border-[#1e293b] flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-[#1e3a8a] dark:text-[#60a5fa] flex-shrink-0 mt-0.5" />
+                <div className="pt-4 border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-start gap-3.5">
+                  <Phone className="w-5 h-5 text-[#0b0f14] dark:text-[#3df2e0] flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-xs font-bold uppercase text-[#0f172a] dark:text-white">
-                      Chamber Helpdesk Line
+                    <h4 className="text-xs font-cinzel font-bold uppercase text-[#0b0f14] dark:text-[#3df2e0]">
+                      Chamber Hotline
                     </h4>
-                    <p className="text-xs font-mono text-[#0f172a] dark:text-white mt-1">
+                    <p className="text-xs font-mono text-[#0b0f14] dark:text-[#3df2e0] mt-1">
                       +91 11 2338 0000
                     </p>
-                    <p className="text-[11px] text-[#64748b] dark:text-[#94a3b8]">
+                    <p className="text-[11px] font-serif text-[#0b0f14]/65 dark:text-[#3df2e0]/60 mt-0.5">
                       Mon – Sat: 08:30 AM to 08:00 PM IST
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-blue-50 dark:bg-[#152336] border border-blue-200 dark:border-blue-800/40">
-                <span className="text-[10px] font-bold text-[#1e3a8a] dark:text-[#60a5fa] uppercase block">
+              <div className="p-5 rounded-2xl bg-[#0b0f14]/10 dark:bg-[#3df2e0]/15 border border-[#0b0f14]/20 dark:border-[#3df2e0]/30">
+                <span className="text-[10px] font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] uppercase block">
                   ADVOCATE ONBOARDING NOTE
                 </span>
-                <p className="text-xs text-[#334155] dark:text-[#cbd5e1] mt-1 leading-relaxed">
-                  Advocates can self-register immediately via the <strong>Register as Lawyer</strong> portal above using their State Bar Council enrolment number.
+                <p className="text-xs font-serif text-[#0b0f14]/85 dark:text-[#3df2e0]/85 mt-1.5 leading-relaxed">
+                  Advocates can self-register immediately via the <strong>Sign Up</strong> portal above using their State Bar Council enrolment number.
                 </p>
               </div>
             </div>
 
             {/* Right 7 Cols: Inquiry Form */}
             <div className="lg:col-span-7">
-              <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#111827] border border-[#cbd5e1] dark:border-[#1e293b] shadow-xs">
-                <h3 className="text-base font-bold text-[#0f172a] dark:text-white mb-4">
-                  Send Inquiry to Registrar Desk
+              <div className="p-7 sm:p-9 rounded-3xl bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 shadow-xs">
+                <h3 className="text-base font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0] mb-5">
+                  Dispatch Communication to Registrar
                 </h3>
 
                 {contactSubmitted ? (
-                  <div className="p-6 text-center rounded-xl bg-emerald-50 dark:bg-[#14231b] border border-emerald-200 dark:border-emerald-800/40">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
-                    <h4 className="text-sm font-bold text-[#0f172a] dark:text-white">
-                      Inquiry Dispatched to Chamber Registrar
+                  <div className="p-8 text-center rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+                    <CheckCircle2 className="w-8 h-8 text-[#0b0f14] dark:text-[#3df2e0] mx-auto mb-2.5" />
+                    <h4 className="text-sm font-serif font-bold text-[#0b0f14] dark:text-[#3df2e0]">
+                      Communication Dispatched to Chamber Registrar
                     </h4>
-                    <p className="text-xs text-[#475569] dark:text-[#94a3b8] mt-1 max-w-md mx-auto">
+                    <p className="text-xs font-serif text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mt-1.5 max-w-md mx-auto">
                       Thank you, {contactName || "Counsel"}. Our technical representative will reach out shortly.
                     </p>
                     <button
                       onClick={() => setContactSubmitted(false)}
-                      className="mt-4 text-xs font-bold text-[#1e3a8a] dark:text-[#60a5fa] underline"
+                      className="mt-5 text-xs font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] underline"
                     >
                       Send Another Message
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-3.5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <form onSubmit={handleContactSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                        <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                           Advocate Name *
                         </label>
                         <input
@@ -1205,11 +1118,11 @@ export function LandingPage() {
                           value={contactName}
                           onChange={(e) => setContactName(e.target.value)}
                           placeholder="Adv. Rohit Singhania"
-                          className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                        <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                           Chamber / Firm Name
                         </label>
                         <input
@@ -1217,14 +1130,14 @@ export function LandingPage() {
                           value={contactChamber}
                           onChange={(e) => setContactChamber(e.target.value)}
                           placeholder="Singhania Law Chambers"
-                          className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                         />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                        <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                           Email Address *
                         </label>
                         <input
@@ -1233,11 +1146,11 @@ export function LandingPage() {
                           value={contactEmail}
                           onChange={(e) => setContactEmail(e.target.value)}
                           placeholder="counsel@singhania.in"
-                          className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                        <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                           Phone Number *
                         </label>
                         <input
@@ -1246,19 +1159,19 @@ export function LandingPage() {
                           value={contactPhone}
                           onChange={(e) => setContactPhone(e.target.value)}
                           placeholder="+91 98110 00000"
-                          className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                      <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                         Primary Court of Practice
                       </label>
                       <select
                         value={contactCourt}
                         onChange={(e) => setContactCourt(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                       >
                         <option value="High Court of Delhi">High Court of Delhi</option>
                         <option value="Supreme Court of India">Supreme Court of India</option>
@@ -1270,7 +1183,7 @@ export function LandingPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                      <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                         Message
                       </label>
                       <textarea
@@ -1279,14 +1192,14 @@ export function LandingPage() {
                         value={contactMessage}
                         onChange={(e) => setContactMessage(e.target.value)}
                         placeholder="Inquire regarding chamber onboarding, team expansion, or custom docket needs..."
-                        className="w-full p-3 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-xs text-[#0f172a] dark:text-white focus:outline-none focus:border-[#1e3a8a]"
+                        className="w-full p-3.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs text-[#0b0f14] dark:text-[#3df2e0] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={submittingContact}
-                      className="w-full py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
+                      className="w-full py-3 rounded-2xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
                     >
                       <Send className="w-3.5 h-3.5" />
                       <span>{submittingContact ? "Dispatching..." : "Send Communication"}</span>
@@ -1300,97 +1213,96 @@ export function LandingPage() {
       </section>
 
       {/* 10. Clean Legal Footer */}
-      <footer className="border-t border-[#e2e8f0] dark:border-[#1e293b] bg-white dark:bg-[#0a0e1a] text-[#64748b] dark:text-[#94a3b8] py-12 text-xs">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-[#e2e8f0] dark:border-[#1e293b]">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#1e3a8a] flex items-center justify-center text-[#fbbf24]">
+      <footer className="border-t border-[#0b0f14]/15 dark:border-[#3df2e0]/20 bg-[#3df2e0] dark:bg-[#0b0f14] text-[#0b0f14]/65 dark:text-[#3df2e0]/60 py-14 text-xs font-serif">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20">
+            <div className="space-y-3.5">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-[#0b0f14] flex items-center justify-center text-[#0b0f14] dark:text-[#3df2e0]">
                   <Scale className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-bold tracking-tight text-[#0f172a] dark:text-white">
-                  CounselBook
+                <span className="text-sm font-cinzel font-bold tracking-wider text-[#0b0f14] dark:text-[#3df2e0]">
+                  Updated Law Diary
                 </span>
               </div>
-              <p className="text-xs leading-relaxed">
-                The smart case management and digital lawyer diary operating system for Indian advocates, chambers, and retained clients.
+              <p className="text-xs leading-relaxed text-[#0b0f14]/70 dark:text-[#3df2e0]/60">
+                Sovereign case management and digital lawyer diary operating system for Indian advocates, chambers, and retained clients.
               </p>
             </div>
 
             <div>
-              <h4 className="font-bold uppercase tracking-wider text-[#0f172a] dark:text-white mb-3">
-                Features
+              <h4 className="font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0] mb-3.5">
+                Practice Pillars
               </h4>
               <ul className="space-y-2">
-                <li><a href="#features" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8]">Smart Case Diary</a></li>
-                <li><a href="#features" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8]">Today &amp; Tomorrow Cause List</a></li>
-                <li><a href="#features" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8]">Client Fee &amp; Billing Ledger</a></li>
-                <li><a href="#features" className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8]">Junior Verification Desk</a></li>
+                <li><a href="#features" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0]">Smart Case Diary</a></li>
+                <li><a href="#features" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0]">Today &amp; Tomorrow Cause List</a></li>
+                <li><a href="#features" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0]">Fee Ledger &amp; Invoicing</a></li>
+                <li><a href="#features" className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0]">Junior Verification Desk</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold uppercase tracking-wider text-[#0f172a] dark:text-white mb-3">
+              <h4 className="font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0] mb-3.5">
                 Chamber Portals
               </h4>
               <ul className="space-y-2">
-                <li><button onClick={() => setAuthModal("signup")} className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] text-left">Advocate Sign Up (Lawyers Only)</button></li>
-                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] text-left">Senior Counsel Sign In</button></li>
-                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] text-left">Associate Briefing Desk</button></li>
-                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#1e3a8a] dark:hover:text-[#38bdf8] text-left">Litigant Client Access</button></li>
+                <li><button onClick={() => setAuthModal("signup")} className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] text-left">Advocate Sign Up (Lawyers Only)</button></li>
+                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] text-left">Senior Counsel Sign In</button></li>
+                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] text-left">Associate Briefing Desk</button></li>
+                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#0b0f14] dark:hover:text-[#3df2e0] text-left">Litigant Client Access</button></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold uppercase tracking-wider text-[#0f172a] dark:text-white mb-3">
+              <h4 className="font-cinzel font-bold uppercase tracking-wider text-[#0b0f14] dark:text-[#3df2e0] mb-3.5">
                 BCI Compliance
               </h4>
-              <p className="text-xs leading-relaxed">
+              <p className="text-xs leading-relaxed text-[#0b0f14]/70 dark:text-[#3df2e0]/60">
                 Adhering strictly to Rule 36 of Bar Council of India Standards of Professional Conduct. Provisioned solely for credentialed legal chambers and their retained clients under Vakalatnama.
               </p>
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
-            <span>© 2026 CounselBook Sovereign Technologies. All rights reserved.</span>
-            <span>Digital Lawyer Diary &amp; Chamber Operating System</span>
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono">
+            <span>© 2026 Updated Law Diary Technologies. All rights reserved.</span>
+            <span>Chamber Operating System</span>
           </div>
         </div>
       </footer>
 
-      {/* 11. Modal A: Universal Sign In (Available for ALL: Lawyer, Associate, Client, Admin) */}
+      {/* 11. Modal A: Universal Sign In */}
       {authModal === "signin" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0f172a]/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl bg-white dark:bg-[#111827] border border-[#cbd5e1] dark:border-[#1e293b] rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b0f14]/60 backdrop-blur-md">
+          <div className="relative w-full max-w-lg bg-white dark:bg-[#0f151c] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
             {/* Header */}
-            <div className="p-4 sm:p-5 bg-[#f8fafc] dark:bg-[#0f172a] border-b border-[#e2e8f0] dark:border-[#1e293b] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#1e3a8a] text-[#fbbf24] flex items-center justify-center">
+            <div className="p-5 sm:p-6 bg-[#3df2e0] dark:bg-[#0b0f14] border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-between">
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-[#0b0f14] text-[#3df2e0] flex items-center justify-center shadow-xs">
                   <Scale className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-[#0f172a] dark:text-white">
+                  <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">
                     Sign In to Chamber Diary
                   </h3>
-                  <span className="text-[11px] text-[#64748b] dark:text-[#94a3b8]">
+                  <span className="text-[11px] font-serif text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
                     Available for all Lawyers, Associates, Clients &amp; Registrars
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setAuthModal(null)}
-                className="p-1 rounded-lg text-[#64748b] hover:text-[#0f172a] dark:hover:text-white"
+                className="p-1 rounded-lg text-[#0b0f14]/65 hover:text-[#0b0f14] dark:hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Body */}
-            <div className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
-              {/* Secure Credentials Sign In Form */}
+            <div className="p-6 sm:p-7 space-y-5 flex-1">
               <form onSubmit={handleSignInSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1.5">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Chamber Registered Email
                   </label>
                   <input
@@ -1399,12 +1311,12 @@ export function LandingPage() {
                     placeholder="name@chambers.in"
                     value={signInEmail}
                     onChange={(e) => setSignInEmail(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-mono placeholder:text-[#8e929f] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1.5">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Chamber Password
                   </label>
                   <input
@@ -1413,29 +1325,28 @@ export function LandingPage() {
                     placeholder="••••••••"
                     value={signInPassword}
                     onChange={(e) => setSignInPassword(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono placeholder:text-slate-400 focus:outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-mono placeholder:text-[#8e929f] focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={signingIn}
-                  className="w-full py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 transition-all shadow-sm disabled:opacity-50"
+                  className="w-full py-3 rounded-2xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
                 >
-                  <span>{signingIn ? "Verifying..." : "Sign In to Chamber Diary"}</span>
+                  <span>{signingIn ? "Verifying..." : "Sign In to Chamber"}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
 
-              {/* Note for Lawyers looking for signup */}
-              <div className="p-3.5 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#e2e8f0] dark:border-[#1e293b] flex items-center justify-between text-xs">
-                <span className="text-[#64748b] dark:text-[#94a3b8]">
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-between text-xs font-serif">
+                <span className="text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
                   Are you an Advocate without a chamber yet?
                 </span>
                 <button
                   type="button"
                   onClick={() => setAuthModal("signup")}
-                  className="font-bold text-[#1e3a8a] dark:text-[#60a5fa] hover:underline ml-2"
+                  className="font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0] hover:underline ml-2"
                 >
                   Advocate Sign Up →
                 </button>
@@ -1447,41 +1358,39 @@ export function LandingPage() {
 
       {/* 12. Modal B: Advocate Sign Up (Strictly LAWYERS ONLY) */}
       {authModal === "signup" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0f172a]/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-xl bg-white dark:bg-[#111827] border border-[#cbd5e1] dark:border-[#1e293b] rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
-            {/* Header with Lawyers Only Pill */}
-            <div className="p-4 sm:p-5 bg-[#eff6ff] dark:bg-[#0f172a] border-b border-[#bfdbfe] dark:border-[#1e293b] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#1e3a8a] text-white flex items-center justify-center shadow-xs">
-                  <Scale className="w-5 h-5 text-[#fbbf24]" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b0f14]/60 backdrop-blur-md">
+          <div className="relative w-full max-w-xl bg-white dark:bg-[#111827] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+            <div className="p-5 sm:p-6 bg-[#3df2e0] dark:bg-[#0b0f14] border-b border-[#0b0f14]/15 dark:border-[#3df2e0]/20 flex items-center justify-between">
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-[#0b0f14] text-[#3df2e0] flex items-center justify-center shadow-xs">
+                  <Scale className="w-4 h-4" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-[#0f172a] dark:text-white">
+                    <h3 className="text-sm font-cinzel font-bold text-[#0b0f14] dark:text-[#3df2e0]">
                       Advocate Chamber Registration
                     </h3>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-[#1e3a8a] text-white">
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-cinzel font-bold uppercase bg-[#0b0f14]/10 dark:bg-[#3df2e0]/15 text-[#0b0f14] dark:text-[#3df2e0] border border-[#0b0f14]/20 dark:border-[#3df2e0]/30">
                       Lawyers Only
                     </span>
                   </div>
-                  <span className="text-[11px] text-[#1d4ed8] dark:text-[#60a5fa]">
+                  <span className="text-[11px] font-serif text-[#0b0f14]/65 dark:text-[#3df2e0]/60">
                     Restricted to Advocates enrolled with Bar Council of India or State Bar Councils
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setAuthModal(null)}
-                className="p-1 rounded-lg text-[#64748b] hover:text-[#0f172a] dark:hover:text-white"
+                className="p-1 rounded-lg text-[#0b0f14]/65 hover:text-[#0b0f14] dark:hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Registration Form */}
-            <form onSubmit={handleSignUpSubmit} className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <form onSubmit={handleSignUpSubmit} className="p-6 sm:p-7 overflow-y-auto space-y-4 flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Advocate Full Name *
                   </label>
                   <input
@@ -1490,12 +1399,12 @@ export function LandingPage() {
                     value={signUpName}
                     onChange={(e) => setSignUpName(e.target.value)}
                     placeholder="Adv. Vikramaditya Sen"
-                    className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Bar Council Enrolment No. *
                   </label>
                   <input
@@ -1504,14 +1413,14 @@ export function LandingPage() {
                     value={signUpBarEnrollment}
                     onChange={(e) => setSignUpBarEnrollment(e.target.value)}
                     placeholder="e.g. D/1482/2012 or MAH/1940/2016"
-                    className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono focus:outline-none focus:border-[#1e3a8a]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-mono focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Chamber / Practice Name
                   </label>
                   <input
@@ -1519,18 +1428,18 @@ export function LandingPage() {
                     value={signUpChamberName}
                     onChange={(e) => setSignUpChamberName(e.target.value)}
                     placeholder="Sen Law Chambers"
-                    className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Primary Court of Practice
                   </label>
                   <select
                     value={signUpCourt}
                     onChange={(e) => setSignUpCourt(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs focus:outline-none focus:border-[#1e3a8a]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   >
                     <option value="High Court of Delhi">High Court of Delhi</option>
                     <option value="Supreme Court of India">Supreme Court of India</option>
@@ -1542,9 +1451,9 @@ export function LandingPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Chamber Email Address *
                   </label>
                   <input
@@ -1553,12 +1462,12 @@ export function LandingPage() {
                     value={signUpEmail}
                     onChange={(e) => setSignUpEmail(e.target.value)}
                     placeholder="sen@chambers.in"
-                    className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono focus:outline-none focus:border-[#1e3a8a]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-mono focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                  <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                     Phone Number
                   </label>
                   <input
@@ -1566,13 +1475,13 @@ export function LandingPage() {
                     value={signUpPhone}
                     onChange={(e) => setSignUpPhone(e.target.value)}
                     placeholder="+91 98110 00000"
-                    className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono focus:outline-none focus:border-[#1e3a8a]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-mono focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#475569] dark:text-[#94a3b8] mb-1">
+                <label className="block text-xs font-cinzel font-semibold text-[#0b0f14]/70 dark:text-[#3df2e0]/60 mb-1.5">
                   Master Password (Min 6 chars) *
                 </label>
                 <input
@@ -1581,34 +1490,33 @@ export function LandingPage() {
                   value={signUpPassword}
                   onChange={(e) => setSignUpPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-3 py-2 rounded-xl bg-[#f8fafc] dark:bg-[#161f30] border border-[#cbd5e1] dark:border-[#334155] text-[#0f172a] dark:text-white text-xs font-mono focus:outline-none focus:border-[#1e3a8a]"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-[#0b0f14] dark:text-[#3df2e0] text-xs font-mono focus:outline-none focus:border-[#0b0f14] dark:focus:border-[#3df2e0]"
                 />
               </div>
 
-              {/* Declaration */}
-              <div className="p-3 rounded-xl bg-[#eff6ff] dark:bg-[#161f30] border border-[#bfdbfe] dark:border-[#334155] text-xs text-[#1e3a8a] dark:text-[#60a5fa] flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-600" />
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-[#141d27] border border-[#0b0f14]/15 dark:border-[#3df2e0]/20 text-xs text-[#0b0f14]/85 dark:text-[#3df2e0]/85 font-serif flex items-start gap-2.5">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#0b0f14] dark:text-[#3df2e0]" />
                 <span>
-                  I declare that I am an Advocate duly enrolled with the Bar Council, and hereby initialize an encrypted chamber workspace on CounselBook.
+                  I declare that I am an Advocate duly enrolled with the Bar Council, and hereby initialize an encrypted chamber workspace on Updated Law Diary.
                 </span>
               </div>
 
               <button
                 type="submit"
                 disabled={signingUp}
-                className="w-full py-2.5 rounded-xl bg-[#1e3a8a] hover:bg-[#172554] dark:bg-[#2563eb] text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
+                className="w-full py-3 rounded-2xl bg-[#1b1d3a] text-[#e8d5b5] hover:bg-[#25284e] dark:bg-[#e8d5b5] dark:text-[#1b1d3a] dark:hover:bg-[#dfc8a2] font-cinzel font-bold text-xs tracking-wider flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
               >
-                <span>{signingUp ? "Enrolling Advocate & Provisioning Chamber..." : "Enroll Chamber as Senior Advocate"}</span>
+                <span>{signingUp ? "Signing Up..." : "Sign Up"}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <div className="text-center pt-1">
+              <div className="text-center pt-1 font-serif">
                 <button
                   type="button"
                   onClick={() => setAuthModal("signin")}
-                  className="text-xs text-[#64748b] dark:text-[#94a3b8] hover:text-[#0f172a] dark:hover:text-white"
+                  className="text-xs text-[#0b0f14]/65 dark:text-[#3df2e0]/60 hover:text-[#0b0f14] dark:hover:text-white"
                 >
-                  Already have an advocate account? <strong className="text-[#1e3a8a] dark:text-[#60a5fa]">Sign In here</strong>
+                  Already have an advocate account? <strong className="font-cinzel text-[#0b0f14] dark:text-[#3df2e0]">Sign In here</strong>
                 </button>
               </div>
             </form>

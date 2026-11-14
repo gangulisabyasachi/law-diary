@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { AppState, User, Case, Approval, Decision } from "@/types";
+import type { InkTheme } from "@/components/ui/ink-spill-theme-switch";
 
 export interface ToastItem {
   id: string;
@@ -23,8 +24,11 @@ interface ChamberContextType {
   activeModal: { name: string; payload?: any } | null;
   toasts: ToastItem[];
   theme: "system" | "light" | "dark";
+  authModal: null | "signin" | "signup";
   // Actions
+  setAuthModal: (modal: null | "signin" | "signup") => void;
   setTheme: (theme: "system" | "light" | "dark") => void;
+  toggleTheme: (from?: Element | null, targetTheme?: "light" | "dark") => void;
   setActivePage: (page: string) => void;
   setSelectedCaseId: (id: string | null) => void;
   setSearchQuery: (q: string) => void;
@@ -68,7 +72,8 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<{ name: string; payload?: any } | null>(null);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const [theme, setThemeState] = useState<"system" | "light" | "dark">("system");
+  const [theme, setThemeState] = useState<"system" | "light" | "dark">("dark");
+  const [authModal, setAuthModal] = useState<null | "signin" | "signup">(null);
 
   // Apply Theme Helper
   const applyTheme = useCallback((targetTheme: "system" | "light" | "dark") => {
@@ -84,15 +89,23 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
 
   // Sync theme on mount & listen to system changes
   useEffect(() => {
-    const saved = (localStorage.getItem("counselbook_theme") as "system" | "light" | "dark") || "system";
-    setThemeState(saved);
-    applyTheme(saved);
+    const saved = localStorage.getItem("counselbook_theme");
+    let initialTheme: "light" | "dark" = "dark";
+    if (saved === "light" || saved === "dark") {
+      initialTheme = saved;
+    } else if (typeof window !== "undefined" && !window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      initialTheme = "light";
+    }
+    setThemeState(initialTheme);
+    applyTheme(initialTheme);
 
     const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => {
-      const current = (localStorage.getItem("counselbook_theme") as "system" | "light" | "dark") || "system";
-      if (current === "system") {
-        applyTheme("system");
+    const handleChange = (e: MediaQueryListEvent) => {
+      const current = localStorage.getItem("counselbook_theme");
+      if (!current || current === "system") {
+        const next = e.matches ? "dark" : "light";
+        setThemeState(next);
+        applyTheme(next);
       }
     };
     media.addEventListener("change", handleChange);
@@ -104,6 +117,53 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("counselbook_theme", t);
     applyTheme(t);
   };
+
+  const toggleTheme = useCallback(
+    (from?: Element | null, targetTheme?: "light" | "dark") => {
+      const next = targetTheme || (theme === "dark" ? "light" : "dark");
+
+      if (
+        typeof document !== "undefined" &&
+        "startViewTransition" in document &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        let x = window.innerWidth - 60;
+        let y = 40;
+        if (from) {
+          const b = from.getBoundingClientRect();
+          x = b.left + b.width / 2;
+          y = b.top + b.height / 2;
+        }
+
+        const right = window.innerWidth - x;
+        const bottom = window.innerHeight - y;
+        const maxRadius = Math.hypot(Math.max(x, right), Math.max(y, bottom));
+
+        const transition = (document as any).startViewTransition(() => {
+          setTheme(next);
+        });
+
+        transition.ready.then(() => {
+          document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${maxRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 700,
+              easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+              pseudoElement: "::view-transition-new(root)",
+            }
+          );
+        });
+      } else {
+        setTheme(next);
+      }
+    },
+    [theme]
+  );
 
   const addToast = useCallback((message: string, type: "success" | "error" | "info" = "success") => {
     const id = "t-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
@@ -218,7 +278,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("counselbook_token", data.token);
       localStorage.setItem("counselbook_user", JSON.stringify(data.user));
       setActivePage("dashboard");
-      addToast(`Chamber created! Welcome to CounselBook, ${data.user.name}.`, "success");
+      addToast(`Chamber created! Welcome to Updated Law Diary, ${data.user.name}.`, "success");
       await refreshState(data.user, data.token);
       router.push("/dashboard");
       return true;
@@ -235,7 +295,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("counselbook_user");
     setActivePage("dashboard");
     setSelectedCaseId(null);
-    addToast("Signed out of CounselBook", "info");
+    addToast("Signed out of Updated Law Diary", "info");
     refreshState(null, null);
     router.push("/");
   };
@@ -397,6 +457,9 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         toasts,
         theme,
         setTheme,
+        toggleTheme,
+        authModal,
+        setAuthModal,
         setActivePage,
         setSelectedCaseId,
         setSearchQuery,
