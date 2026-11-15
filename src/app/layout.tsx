@@ -3,7 +3,7 @@ import "./globals.css";
 import { ChamberProvider } from "@/context/ChamberContext";
 
 export const metadata: Metadata = {
-  title: "Updated Law Diary",
+  title: "LexChron",
   description: "The premier multi-chamber legal practice platform for Senior Advocates, Associate Counsels, Law Firms, and Corporate Litigants. Built for the Indian judicial ecosystem.",
   icons: {
     icon: "/favicon.svg",
@@ -20,6 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

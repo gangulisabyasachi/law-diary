@@ -34,7 +34,7 @@ export default function AdminLayout({
           <ShieldCheck className="w-6 h-6 text-[#f3eee3]" />
         </div>
         <p className="mt-4 text-xs font-cinzel font-bold tracking-widest uppercase text-[#111111] dark:text-[#f3eee3]">
-          UPDATED LAW DIARY
+          LEXCHRON
         </p>
       </div>
     );

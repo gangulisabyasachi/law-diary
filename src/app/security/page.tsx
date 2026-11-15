@@ -28,7 +28,7 @@ export default function SecurityPage() {
       title: "Strict Bar Council Rule 36 Compliance",
       summary: "Zero solicitation, zero public directories, zero commercial ranking.",
       details:
-        "Updated Law Diary is engineered strictly as an internal administrative docket and case diary. It does not solicit clients, display advertisements, publish advocate rankings, or maintain public-facing directories. It strictly adheres to Rule 36 of Chapter II, Part VI of the Bar Council of India Rules.",
+        "LexChron is engineered strictly as an internal administrative docket and case diary. It does not solicit clients, display advertisements, publish advocate rankings, or maintain public-facing directories. It strictly adheres to Rule 36 of Chapter II, Part VI of the Bar Council of India Rules.",
     },
     {
       icon: Lock,
@@ -42,7 +42,7 @@ export default function SecurityPage() {
       title: "Legal Professional Privilege Safeguards",
       summary: "Compliant with Section 126 & 129 of Indian Evidence Act / BSA 2023.",
       details:
-        "The attorney-client relationship demands complete evidentiary safe custody. Updated Law Diary isolates each chamber's Vakalatnamas, litigant communications, and internal legal advice inside dedicated sovereign partitions.",
+        "The attorney-client relationship demands complete evidentiary safe custody. LexChron isolates each chamber's Vakalatnamas, litigant communications, and internal legal advice inside dedicated sovereign partitions.",
     },
     {
       icon: EyeOff,
@@ -56,7 +56,7 @@ export default function SecurityPage() {
       title: "Database Sovereignty & Local Mode",
       summary: "Run seamlessly in local memory or your own dedicated cloud cluster.",
       details:
-        "Chambers are never locked into proprietary infrastructure. Updated Law Diary offers instantaneous local in-memory operation, private on-premise Docker deployment, or dedicated private MongoDB Atlas clusters hosted in Mumbai / Delhi regions.",
+        "Chambers are never locked into proprietary infrastructure. LexChron offers instantaneous local in-memory operation, private on-premise Docker deployment, or dedicated private MongoDB Atlas clusters hosted in Mumbai / Delhi regions.",
     },
     {
       icon: ShieldCheck,
@@ -71,7 +71,7 @@ export default function SecurityPage() {
     <PublicLayout hideNavbar={true}>
       {/* Cinematic Judicial Hero */}
       <Hero3
-        brandName="Updated Law Diary"
+        brandName="LexChron"
         badgeText="✦  Evidentiary & Ethical Architecture"
         headingLine1="Sovereign safe custody,"
         headingLine2="uncompromising legal privilege."
@@ -147,7 +147,7 @@ export default function SecurityPage() {
               <div className="p-6 rounded-2xl bg-[#f3eee3]/30 dark:bg-[#111111]/40 border border-[#111111]/10 dark:border-[#f3eee3]/10">
                 <h4 className="font-cinzel font-bold text-xs uppercase tracking-wider text-[#d9541e] mb-2">Zero Solicitation</h4>
                 <p>
-                  In strict compliance with the rules established by the Bar Council of India under the Advocates Act, 1961, Updated Law Diary does not engage in any form of advertising, publicity, or solicitation of legal work.
+                  In strict compliance with the rules established by the Bar Council of India under the Advocates Act, 1961, LexChron does not engage in any form of advertising, publicity, or solicitation of legal work.
                 </p>
               </div>
               <div className="p-6 rounded-2xl bg-[#f3eee3]/30 dark:bg-[#111111]/40 border border-[#111111]/10 dark:border-[#f3eee3]/10">

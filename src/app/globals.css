@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @font-face {
   font-family: 'Mogina';
   src: url('/fonts/Mogina.otf') format('opentype'),
-       url('/fonts/Mogina-Regular.otf') format('opentype'),
-       url('/fonts/mogina.otf') format('opentype');
+    url('/fonts/Mogina-Regular.otf') format('opentype'),
+    url('/fonts/mogina.otf') format('opentype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -13,7 +13,7 @@
 @font-face {
   font-family: 'Zaslia';
   src: url('/fonts/Zaslia.otf') format('opentype'),
-       url('/fonts/Zaslia-Regular.otf') format('opentype');
+    url('/fonts/Zaslia-Regular.otf') format('opentype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -22,7 +22,7 @@
 @font-face {
   font-family: 'Photograph Signature';
   src: url('/fonts/PhotographSignature.ttf') format('truetype'),
-       url('/fonts/Photograph-Signature.ttf') format('truetype');
+    url('/fonts/Photograph-Signature.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -31,7 +31,7 @@
 @font-face {
   font-family: 'PhotographSignature';
   src: url('/fonts/PhotographSignature.ttf') format('truetype'),
-       url('/fonts/Photograph-Signature.ttf') format('truetype');
+    url('/fonts/Photograph-Signature.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -40,7 +40,7 @@
 @font-face {
   font-family: 'Allesya';
   src: url('/fonts/Allesya.otf') format('opentype'),
-       url('/fonts/Allesya.otf') format('truetype');
+    url('/fonts/Allesya.otf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -49,7 +49,7 @@
 @font-face {
   font-family: 'Badoga';
   src: url('/fonts/Badoga.otf') format('opentype'),
-       url('/fonts/Badoga.otf') format('truetype');
+    url('/fonts/Badoga.otf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -58,7 +58,7 @@
 @font-face {
   font-family: 'Craos';
   src: url('/fonts/Craos.otf') format('opentype'),
-       url('/fonts/Craos.otf') format('truetype');
+    url('/fonts/Craos.otf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -70,6 +70,10 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+.font-alex-brush, .font-alexbrush {
+  font-family: 'Alex Brush', cursive, sans-serif;
 }
 
 .font-mogina {
@@ -106,19 +110,23 @@ html {
   animation: none;
   mix-blend-mode: normal;
 }
+
 ::view-transition-old(root) {
   z-index: 1;
 }
+
 ::view-transition-new(root) {
   z-index: 99999;
 }
 
-:root, [data-theme="light"], .light {
+:root,
+[data-theme="light"],
+.light {
   --font-display: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
   --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
-  
+
   /* Light Theme: Background Linen Cream (#f3eee3), Foreground Deep Obsidian (#111111) */
   --bg-canvas: #f3eee3;
   --bg-card: #ffffff;
@@ -145,7 +153,8 @@ html {
   --cta-hover: #bf4513;
 }
 
-.dark, [data-theme="dark"] {
+.dark,
+[data-theme="dark"] {
   /* Dark Theme: Background Deep Obsidian (#111111), Foreground Linen Cream (#f3eee3) */
   --bg-canvas: #111111;
   --bg-card: #181818;
@@ -181,7 +190,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, .font-display {
+h1,
+h2,
+h3,
+h4,
+.font-display {
   font-family: var(--font-display);
 }
 
@@ -198,25 +211,31 @@ h1, h2, h3, h4, .font-display {
   width: 5px;
   height: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(17, 17, 17, 0.2);
   border-radius: 4px;
 }
+
 .dark ::-webkit-scrollbar-thumb {
   background: rgba(243, 238, 227, 0.25);
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #111111;
 }
+
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #f3eee3;
 }
 
 /* Luxury card surfaces */
-.court-card, .luxury-card {
+.court-card,
+.luxury-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-paper);
   border-radius: 1.5rem;
@@ -224,11 +243,13 @@ h1, h2, h3, h4, .font-display {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dark .court-card, .dark .luxury-card {
+.dark .court-card,
+.dark .luxury-card {
   box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(243, 238, 227, 0.1);
 }
 
-.court-card:hover, .luxury-card:hover {
+.court-card:hover,
+.luxury-card:hover {
   border-color: var(--accent-primary);
 }
 
@@ -238,7 +259,8 @@ h1, h2, h3, h4, .font-display {
   border-radius: 1.5rem;
 }
 
-.court-input, .luxury-input {
+.court-input,
+.luxury-input {
   background-color: var(--bg-card);
   border: 1px solid var(--border-paper);
   color: var(--ink-primary);
@@ -247,52 +269,67 @@ h1, h2, h3, h4, .font-display {
   transition: all 0.15s ease;
 }
 
-.court-input:focus, .luxury-input:focus {
+.court-input:focus,
+.luxury-input:focus {
   outline: none;
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px var(--court-blue-bg);
 }
 
 /* Typography gradient styles */
-.blue-gradient-text, .gold-gradient-text, .accent-gradient-text {
+.blue-gradient-text,
+.gold-gradient-text,
+.accent-gradient-text {
   background: linear-gradient(135deg, #111111 0%, #172430 60%, #111111 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.dark .blue-gradient-text, .dark .gold-gradient-text, .dark .accent-gradient-text {
+.dark .blue-gradient-text,
+.dark .gold-gradient-text,
+.dark .accent-gradient-text {
   background: linear-gradient(135deg, #f3eee3 0%, #7ef7ec 50%, #e6e0d3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Focus outline helpers */
-.focus-gold, .focus-cyan {
+.focus-gold,
+.focus-cyan {
   outline: none;
 }
-.focus-gold:focus, .focus-cyan:focus {
+
+.focus-gold:focus,
+.focus-cyan:focus {
   border-color: #f3eee3;
   box-shadow: 0 0 0 3px rgba(243, 238, 227, 0.25);
 }
 
 /* Highlighted Action Buttons: Vibrant Terracotta Vermilion (#d9541e) */
-.btn-cta, .btn-primary-action {
+.btn-cta,
+.btn-primary-action {
   background-color: #d9541e;
   color: #ffffff;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 14px rgba(217, 84, 30, 0.3);
 }
-.btn-cta:hover, .btn-primary-action:hover {
+
+.btn-cta:hover,
+.btn-primary-action:hover {
   background-color: #bf4513;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(217, 84, 30, 0.45);
 }
-.dark .btn-cta, .dark .btn-primary-action {
+
+.dark .btn-cta,
+.dark .btn-primary-action {
   background-color: #d9541e;
   color: #ffffff;
   box-shadow: 0 4px 16px rgba(217, 84, 30, 0.35);
 }
-.dark .btn-cta:hover, .dark .btn-primary-action:hover {
+
+.dark .btn-cta:hover,
+.dark .btn-primary-action:hover {
   background-color: #ea6026;
   transform: translateY(-1px);
   box-shadow: 0 6px 22px rgba(217, 84, 30, 0.5);

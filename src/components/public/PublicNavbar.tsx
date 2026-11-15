@@ -33,10 +33,10 @@ export function PublicNavbar() {
         {/* Brand Logo & Name */}
         <Link href="/" className="flex items-center shrink-0 group">
           <span 
-            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[30px] font-signature tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
-            style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
+            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[32px] font-alex-brush tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
+            style={{ fontFamily: "'Alex Brush', cursive, sans-serif" }}
           >
-            Updated Law Diary
+            LexChron
           </span>
         </Link>
 

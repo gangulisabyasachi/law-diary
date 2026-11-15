@@ -107,6 +107,7 @@ const config: Config = {
         },
       },
       fontFamily: {
+        alexBrush: ["'Alex Brush'", "cursive", "sans-serif"],
         mogina: ["Mogina", "var(--font-serif)", "Georgia", "serif"],
         zaslia: ["Zaslia", "var(--font-serif)", "Georgia", "serif"],
         signature: ["'Photograph Signature'", "PhotographSignature", "cursive", "sans-serif"],

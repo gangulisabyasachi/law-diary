@@ -127,11 +127,11 @@ export default function FeaturesPage() {
     <PublicLayout hideNavbar={true}>
       {/* Cinematic Judicial Hero */}
       <Hero3
-        brandName="Updated Law Diary"
+        brandName="LexChron"
         badgeText="✦  Chamber Practice Architecture"
         headingLine1="Engineered for litigation,"
         headingLine2="crafted with classical dignity."
-        description="Every module in Updated Law Diary is purpose-built to address the demanding daily realities of practicing advocates, arguing seniors, and courtroom clerks across all Indian jurisdictions."
+        description="Every module in LexChron is purpose-built to address the demanding daily realities of practicing advocates, arguing seniors, and courtroom clerks across all Indian jurisdictions."
         primaryCtaLabel="Explore Practice Pillars"
         primaryCtaHref="#features-grid"
         secondaryCtaLabel="View Retainer Tiers"

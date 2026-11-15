@@ -278,7 +278,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("counselbook_token", data.token);
       localStorage.setItem("counselbook_user", JSON.stringify(data.user));
       setActivePage("dashboard");
-      addToast(`Chamber created! Welcome to Updated Law Diary, ${data.user.name}.`, "success");
+      addToast(`Chamber created! Welcome to LexChron, ${data.user.name}.`, "success");
       await refreshState(data.user, data.token);
       router.push("/dashboard");
       return true;
@@ -295,7 +295,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("counselbook_user");
     setActivePage("dashboard");
     setSelectedCaseId(null);
-    addToast("Signed out of Updated Law Diary", "info");
+    addToast("Signed out of LexChron", "info");
     refreshState(null, null);
     router.push("/");
   };

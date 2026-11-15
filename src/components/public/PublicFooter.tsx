@@ -93,10 +93,10 @@ export function PublicFooter() {
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="inline-flex items-center group">
               <span 
-                className="text-2xl sm:text-3xl font-signature tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
-                style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
+                className="text-3xl sm:text-4xl font-alex-brush tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
+                style={{ fontFamily: "'Alex Brush', cursive, sans-serif" }}
               >
-                Updated Law Diary
+                LexChron
               </span>
             </Link>
 
@@ -351,22 +351,22 @@ export function PublicFooter() {
         aria-hidden="true"
       >
         <svg
-          viewBox="0 0 918 116"
+          viewBox="3.2 0 469 116"
           className="w-full h-auto select-none pointer-events-none block"
-          aria-label="Updated Law Diary"
+          aria-label="LexChron"
         >
           <g transform="scale(1, 1.48)">
             <text
-              x="459"
+              x="0"
               y="75"
-              textAnchor="middle"
+              textAnchor="start"
               className="font-mogina uppercase fill-[#111111]/[0.045] dark:fill-[#f3eee3]/[0.045] transition-colors"
               fontSize="100"
               style={{
                 fontFamily: "'Mogina', var(--font-serif), Georgia, serif",
               }}
             >
-              UPDATED LAW DIARY
+              LEXCHRON
             </text>
           </g>
         </svg>
@@ -376,7 +376,7 @@ export function PublicFooter() {
       <div className="w-full px-6 md:px-10 lg:px-16 xl:px-20 relative z-10">
         <div className="pt-8 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-            <span>© 2026 Updated Law Diary</span>
+            <span>© 2026 LexChron</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-6">

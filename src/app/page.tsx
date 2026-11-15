@@ -55,9 +55,9 @@ export default function HomePage() {
 
   return (
     <PublicLayout hideNavbar={true}>
-      {/* 1. Cinematic Luxury Hero (Hero3) with Law Diary Context */}
+      {/* 1. Cinematic Luxury Hero (Hero3) with LexChron Context */}
       <Hero3
-        brandName="Updated Law Diary"
+        brandName="LexChron"
         navLinks={chamberNavLinks}
         signUpLabel={currentUser ? "Dashboard" : "Sign In"}
         signUpHref={currentUser ? dashboardHref : "#"}
