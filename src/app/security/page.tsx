@@ -84,6 +84,7 @@ export default function SecurityPage() {
         scrollText="Review Standards"
         scrollHref="#security-pillars"
         bgImageSrc="/hero-security.jpg"
+        bgLightImageSrc="/hero-security-light.jpg"
       />
 
       {/* Security Deep Dive Grid - Wide End of Screen */}

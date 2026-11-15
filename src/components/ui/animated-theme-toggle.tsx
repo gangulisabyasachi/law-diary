@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useChamber } from "@/context/ChamberContext";
 
 export interface AnimatedThemeToggleProps {
@@ -32,7 +32,7 @@ export const AnimatedThemeToggle = ({
     setMounted(true);
   }, []);
 
-  const isDark = mounted ? chamber?.theme === "dark" : false;
+  const isDark = mounted ? chamber?.theme === "dark" : true;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (chamber?.toggleTheme) {
@@ -44,10 +44,10 @@ export const AnimatedThemeToggle = ({
     <Button
       type="button"
       onClick={handleClick}
-      aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      aria-label={isDark ? "Switch to Chiaroscuro Diurne (Light Mode)" : "Switch to Chiaroscuro Nocturne (Dark Mode)"}
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
       className={cn(
-        "group relative rounded-full border border-current/25 bg-white/20 dark:bg-black/30 backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer select-none shadow-xs text-inherit focus-visible:ring-1 focus-visible:ring-current",
+        "group relative rounded-full border border-black/15 dark:border-white/20 bg-white/50 dark:bg-black/40 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer select-none shadow-xs text-inherit focus-visible:ring-1 focus-visible:ring-[#d9541e]",
         showLabel
           ? "inline-flex items-center gap-2 px-3 py-1.5 h-auto"
           : "size-9 p-0 inline-flex items-center justify-center",
@@ -56,8 +56,8 @@ export const AnimatedThemeToggle = ({
       style={style}
       variant="outline"
     >
-      <div className="flex size-5 items-center justify-center">
-        <SolarSwitch isDark={isDark} />
+      <div className="flex size-5 items-center justify-center relative">
+        <ChiaroscuroDial isDark={isDark} />
       </div>
 
       {showLabel && (
@@ -76,201 +76,84 @@ export const AnimatedThemeToggle = ({
   );
 };
 
-export const SolarSwitch = ({ isDark }: { isDark: boolean }) => {
-  const duration = 0.7;
-
-  const moonVariants = {
-    checked: {
-      scale: 1,
-    },
-    unchecked: {
-      scale: 0,
-    },
-  };
-
-  const sunVariants = {
-    checked: {
-      scale: 0,
-    },
-    unchecked: {
-      scale: 1,
-    },
-  };
-
-  const scaleMoon = useMotionValue(isDark ? 1 : 0);
-  const scaleSun = useMotionValue(isDark ? 0 : 1);
-  const pathLengthMoon = useTransform(scaleMoon, [0.6, 1], [0, 1]);
-  const pathLengthSun = useTransform(scaleSun, [0.6, 1], [0, 1]);
-
-  useEffect(() => {
-    const controlsMoon = animate(scaleMoon, isDark ? 1 : 0, {
-      duration,
-      ease: [0.25, 1, 0.5, 1],
-    });
-    const controlsSun = animate(scaleSun, isDark ? 0 : 1, {
-      duration,
-      ease: [0.25, 1, 0.5, 1],
-    });
-    return () => {
-      controlsMoon.stop();
-      controlsSun.stop();
-    };
-  }, [isDark, duration, scaleMoon, scaleSun]);
-
+/**
+ * ChiaroscuroDial
+ * Bespoke bicameral dial physically mirroring the 75/25 organic curved split of the Hero.
+ * Rotates on theme toggle with celestial star and solar pip accents.
+ */
+export const ChiaroscuroDial = ({ isDark }: { isDark: boolean }) => {
   return (
     <motion.div
-      animate={isDark ? "checked" : "unchecked"}
-      className="flex items-center justify-center"
+      className="relative w-5 h-5 flex items-center justify-center select-none"
+      animate={{
+        rotate: isDark ? 0 : 180,
+        scale: [1, 0.92, 1],
+      }}
+      transition={{
+        rotate: { type: "spring", stiffness: 220, damping: 20 },
+        scale: { duration: 0.35, ease: "easeInOut" },
+      }}
     >
-      <motion.svg
-        width="20"
-        height="20"
-        viewBox="0 0 25 25"
+      <svg
+        viewBox="0 0 100 100"
+        className="w-full h-full drop-shadow-xs"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="transition-transform duration-500 group-hover:rotate-45"
       >
-        <motion.path
-          d="M12.4058 17.7625C15.1672 17.7625 17.4058 15.5239 17.4058 12.7625C17.4058 10.0011 15.1672 7.76251 12.4058 7.76251C9.64434 7.76251 7.40576 10.0011 7.40576 12.7625C7.40576 15.5239 9.64434 17.7625 12.4058 17.7625Z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
+        <defs>
+          {/* Organic Sculpted Chiaroscuro S-Curve mirroring the Hero curve */}
+          <clipPath id="chiaroscuro-dial-slice">
+            <path d="M 0 0 L 21.5 0 C 31.5 22, 21.0 52, 38.5 100 L 0 100 Z" />
+          </clipPath>
+          <linearGradient id="dial-seam-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#d9541e" stopOpacity="0.4" />
+            <stop offset="50%" stopColor="#e5a93c" stopOpacity="1" />
+            <stop offset="100%" stopColor="#d9541e" stopOpacity="0.5" />
+          </linearGradient>
+        </defs>
+
+        {/* Outer Circular Boundary with subtle border */}
+        <circle
+          cx="50"
+          cy="50"
+          r="48"
+          className="fill-[#111111] dark:fill-[#151618] stroke-black/20 dark:stroke-white/25"
+          strokeWidth="3"
         />
-        <motion.path
-          d="M12.4058 1.76251V3.76251"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
+
+        {/* Minority Slice (organic crescent on left) */}
+        <g clipPath="url(#chiaroscuro-dial-slice)">
+          <circle
+            cx="50"
+            cy="50"
+            r="48"
+            className="fill-[#f3eee3]"
+          />
+        </g>
+
+        {/* Gilded Organic Seam Filament */}
+        <path
+          d="M 21.5 0 C 31.5 22, 21.0 52, 38.5 100"
+          fill="none"
+          stroke="url(#dial-seam-gradient)"
+          strokeWidth="2.8"
         />
-        <motion.path
-          d="M12.4058 21.7625V23.7625"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
+
+        {/* Celestial Star in the dominant dark hemisphere */}
+        <circle
+          cx="68"
+          cy="48"
+          r="4"
+          className="fill-[#d9541e]"
         />
-        <motion.path
-          d="M4.62598 4.98248L6.04598 6.40248"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
+        <circle
+          cx="68"
+          cy="48"
+          r="6.5"
+          className="stroke-[#d9541e]/40 fill-none"
+          strokeWidth="1.2"
         />
-        <motion.path
-          d="M18.7656 19.1225L20.1856 20.5425"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
-        />
-        <motion.path
-          d="M1.40576 12.7625H3.40576"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
-        />
-        <motion.path
-          d="M21.4058 12.7625H23.4058"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
-        />
-        <motion.path
-          d="M4.62598 20.5425L6.04598 19.1225"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
-        />
-        <motion.path
-          d="M18.7656 6.40248L20.1856 4.98248"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          variants={sunVariants}
-          custom={isDark}
-          transition={{ duration }}
-          style={{
-            pathLength: pathLengthSun,
-            scale: scaleSun,
-          }}
-        />
-        <motion.path
-          d="M21.1918 13.2013C21.0345 14.9035 20.3957 16.5257 19.35 17.8781C18.3044 19.2305 16.8953 20.2571 15.2875 20.8379C13.6797 21.4186 11.9398 21.5294 10.2713 21.1574C8.60281 20.7854 7.07479 19.9459 5.86602 18.7371C4.65725 17.5283 3.81774 16.0003 3.4457 14.3318C3.07367 12.6633 3.18451 10.9234 3.76526 9.31561C4.346 7.70783 5.37263 6.29868 6.72501 5.25307C8.07739 4.20746 9.69959 3.56862 11.4018 3.41132C10.4052 4.75958 9.92564 6.42077 10.0503 8.09273C10.175 9.76469 10.8957 11.3364 12.0812 12.5219C13.2667 13.7075 14.8384 14.4281 16.5104 14.5528C18.1823 14.6775 19.8435 14.1979 21.1918 13.2013Z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          transition={{ duration }}
-          variants={moonVariants}
-          custom={isDark}
-          style={{
-            pathLength: pathLengthMoon,
-            scale: scaleMoon,
-          }}
-        />
-      </motion.svg>
+      </svg>
     </motion.div>
   );
 };

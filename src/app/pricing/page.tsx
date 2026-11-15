@@ -142,6 +142,7 @@ export default function PricingPage() {
         scrollText="Compare Tiers"
         scrollHref="#pricing-tiers"
         bgImageSrc="/hero-pricing.jpg"
+        bgLightImageSrc="/hero-pricing-light.jpg"
       />
 
       {/* 3 Pricing Cards - Wide End of Screen */}

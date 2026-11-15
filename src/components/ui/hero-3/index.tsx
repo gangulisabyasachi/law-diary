@@ -36,6 +36,7 @@ export interface Hero3Props {
     scrollText?: string;
     scrollHref?: string;
     bgImageSrc?: string;
+    bgLightImageSrc?: string;
 }
 
 export default function Hero3({
@@ -64,6 +65,7 @@ export default function Hero3({
     scrollText = 'Scroll to Discover',
     scrollHref = '#features-section',
     bgImageSrc = '/hero-judicial.jpg',
+    bgLightImageSrc = '/hero-judicial-light.jpg',
 }: Hero3Props) {
     const { currentUser, setAuthModal } = useChamber();
     const pathname = usePathname();
@@ -75,132 +77,125 @@ export default function Hero3({
     const defaultPrimaryCtaLabel = currentUser ? 'Enter Dashboard' : 'Sign Up';
     const resolvedPrimaryCtaLabel = primaryCtaLabel || defaultPrimaryCtaLabel;
 
-    const line1Words = headingLine1.split(' ');
-    const line2Words = headingLine2.split(' ');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    return (
-        <section className="relative w-full h-screen min-h-[720px] overflow-hidden bg-[#f3eee3] dark:bg-[#111111] transition-colors duration-500">
+    /**
+     * Unified Layout Renderer:
+     * Guarantees that Layer 1 (Base Dominant) and Layer 2 (Clipped Slice Overlay)
+     * share 100% identical structural geometry, padding, font metrics, line-heights,
+     * and element dimensions, ensuring mathematically zero vertical offset (0px discrepancy).
+     */
+    const renderHeroLayer = (isSlice: boolean) => {
+        const textBase = isSlice ? "text-[#f3eee3] dark:text-[#111111]" : "text-[#111111] dark:text-[#f3eee3]";
+        const textMuted = isSlice ? "text-[#f3eee3]/75 dark:text-[#111111]/75" : "text-[#111111]/75 dark:text-[#f3eee3]/75";
+        const textSubtle = isSlice ? "text-[#f3eee3]/60 dark:text-[#111111]/60" : "text-[#111111]/60 dark:text-[#f3eee3]/60";
+        const pillBorder = isSlice ? "border-[#f3eee3]/20 dark:border-[#111111]/25 bg-[#181818]/60 dark:bg-white/60" : "border-[#111111]/20 dark:border-[#f3eee3]/25 bg-white/60 dark:bg-[#181818]/60";
+        const navLinkColor = isSlice ? "text-[#f3eee3]/80 hover:text-[#f3eee3] dark:text-[#111111]/80 dark:hover:text-[#111111]" : "text-[#111111]/80 hover:text-[#111111] dark:text-[#f3eee3]/80 dark:hover:text-[#f3eee3]";
+        const btnBorder = isSlice ? "border-[#f3eee3]/30 dark:border-[#111111]/30" : "border-[#111111]/30 dark:border-[#f3eee3]/30";
+        const hrColor = isSlice ? "via-[#f3eee3]/20 dark:via-[#111111]/20" : "via-[#111111]/20 dark:via-[#f3eee3]/20";
 
-            {/* Background Image — cinematic zoom */}
-            <motion.div
-                className="absolute inset-0"
-                initial={{ scale: 1.15 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 2.8, ease: [0.25, 0.1, 0.25, 1] }}
+        return (
+            <div 
+                className={`relative flex flex-col h-full w-full ${isSlice ? "pointer-events-none select-none" : ""}`}
+                aria-hidden={isSlice ? "true" : undefined}
             >
-                <img
-                    src={bgImageSrc}
-                    alt="Neoclassical Judicial Colonnade"
-                    className="absolute inset-0 h-full w-full object-cover object-center"
-                    onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        if (!target.src.endsWith('/hero-judicial.jpg')) {
-                            target.src = '/hero-judicial.jpg';
-                        }
-                    }}
-                />
-            </motion.div>
-
-            {/* Inverted Gradient overlays for depth in Light vs Dark mode */}
-            {/* Top-to-bottom atmospheric gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#f3eee3]/85 via-[#f3eee3]/50 to-[#f3eee3]/95 dark:from-[#111111]/85 dark:via-[#111111]/55 dark:to-[#111111]/95 transition-colors duration-500" />
-            {/* Left-to-right reading focus gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f3eee3]/80 via-transparent to-transparent dark:from-[#111111]/85 dark:via-transparent dark:to-transparent transition-colors duration-500" />
-
-            {/* Noise texture overlay for premium tactile feel */}
-            <div
-                className="absolute inset-0 opacity-[0.035] dark:opacity-[0.04] mix-blend-overlay pointer-events-none"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'repeat',
-                    backgroundSize: '128px 128px',
-                }}
-            />
-
-            {/* Content Layer */}
-            <div className="relative z-10 flex flex-col h-full w-full">
-
                 {/* ─── Navbar ─── */}
-                <motion.nav
-                    className="w-full px-6 md:px-10 lg:px-16 py-5 md:py-6 flex items-center justify-between"
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-                >
+                <nav className="w-full px-6 md:px-10 lg:px-16 py-5 md:py-6 flex items-center justify-between">
                     {/* Brand Logo & Name */}
-                    <Link href="/" className="flex items-center shrink-0 group">
-                        <span 
-                            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
-                            style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
-                        >
-                            {brandName}
-                        </span>
-                    </Link>
+                    {isSlice ? (
+                        <div className="flex items-center shrink-0">
+                            <span 
+                                className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal select-none inline-block`}
+                                style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
+                            >
+                                {brandName}
+                            </span>
+                        </div>
+                    ) : (
+                        <Link href="/" className="flex items-center shrink-0 group">
+                            <span 
+                                className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block`}
+                                style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
+                            >
+                                {brandName}
+                            </span>
+                        </Link>
+                    )}
 
                     {/* Center Nav Links with Animated Expandable Underline */}
                     <div className="hidden lg:flex items-center gap-8 xl:gap-10">
                         {navLinks.map((link, idx) => {
                             const active = pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href));
                             return (
-                                <motion.div
-                                    key={idx}
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: 0.3 + idx * 0.08 }}
-                                >
-                                    <Link
-                                        href={link.href}
-                                        className={`text-[15px] font-cinzel font-semibold transition-colors duration-200 relative group ${
-                                            active
-                                                ? "text-[#d9541e] font-bold"
-                                                : "text-[#111111]/80 hover:text-[#111111] dark:text-[#f3eee3]/80 dark:hover:text-[#f3eee3]"
-                                        }`}
-                                    >
-                                        {link.label}
-                                        <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#d9541e] transition-all duration-300 ${
-                                            active ? "w-full" : "w-0 group-hover:w-full"
-                                        }`} />
-                                    </Link>
-                                </motion.div>
+                                <div key={idx}>
+                                    {isSlice ? (
+                                        <span className={`text-[15px] font-cinzel font-semibold relative ${active ? "text-[#d9541e] font-bold" : navLinkColor}`}>
+                                            {link.label}
+                                            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#d9541e] ${active ? "w-full" : "w-0"}`} />
+                                        </span>
+                                    ) : (
+                                        <Link
+                                            href={link.href}
+                                            className={`text-[15px] font-cinzel font-semibold transition-colors duration-200 relative group ${
+                                                active ? "text-[#d9541e] font-bold" : navLinkColor
+                                            }`}
+                                        >
+                                            {link.label}
+                                            <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#d9541e] transition-all duration-300 ${active ? "w-full" : "w-0 group-hover:w-full"}`} />
+                                        </Link>
+                                    )}
+                                </div>
                             );
                         })}
                     </div>
 
                     {/* Right Controls: Theme Toggle & Slide-Up Auth Button */}
                     <div className="flex items-center gap-3 md:gap-5">
-                        {/* Animated Theme Toggle (SolarSwitch with View Transition wave) */}
-                        <div className="p-0.5 rounded-full bg-white/60 dark:bg-[#181818]/60 backdrop-blur-md border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
-                            <AnimatedThemeToggle />
+                        {/* Animated Theme Toggle Housing */}
+                        <div className={`p-0.5 rounded-full ${isSlice ? "bg-[#181818]/60 dark:bg-white/60 border-[#f3eee3]/20 dark:border-[#111111]/15" : "bg-white/60 dark:bg-[#181818]/60 border-[#111111]/15 dark:border-[#f3eee3]/20"} backdrop-blur-md border shadow-xs`}>
+                            {isSlice ? (
+                                <div className="size-9" />
+                            ) : (
+                                <AnimatedThemeToggle />
+                            )}
                         </div>
 
-                        {/* Sign in / Dashboard pill button with slide-up invert hover */}
-                        <motion.a
-                            href={signUpHref || (currentUser ? dashboardHref : '#')}
-                            onClick={(e) => {
-                                if (onSignUpClick) {
-                                    e.preventDefault();
-                                    onSignUpClick();
-                                } else if (!currentUser) {
-                                    e.preventDefault();
-                                    setAuthModal('signin');
-                                }
-                            }}
-                            className="border border-[#111111]/30 dark:border-[#f3eee3]/30 text-[#111111] dark:text-[#f3eee3] rounded-full px-6 py-2 text-[14px] font-cinzel font-semibold relative overflow-hidden group cursor-pointer shadow-xs"
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.97 }}
-                        >
-                            <span className="absolute inset-0 bg-[#111111] dark:bg-[#f3eee3] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                            <span className="relative z-10 group-hover:text-[#f3eee3] dark:group-hover:text-[#111111] transition-colors duration-300">
-                                {resolvedSignUpLabel}
-                            </span>
-                        </motion.a>
+                        {/* Sign in / Dashboard pill button */}
+                        {isSlice ? (
+                            <div className={`border ${btnBorder} ${textBase} rounded-full px-6 py-2 text-[14px] font-cinzel font-semibold relative overflow-hidden shadow-xs pointer-events-none`}>
+                                <span className="relative z-10">
+                                    {resolvedSignUpLabel}
+                                </span>
+                            </div>
+                        ) : (
+                            <motion.a
+                                href={signUpHref || (currentUser ? dashboardHref : '#')}
+                                onClick={(e) => {
+                                    if (onSignUpClick) {
+                                        e.preventDefault();
+                                        onSignUpClick();
+                                    } else if (!currentUser) {
+                                        e.preventDefault();
+                                        setAuthModal('signin');
+                                    }
+                                }}
+                                className={`border ${btnBorder} ${textBase} rounded-full px-6 py-2 text-[14px] font-cinzel font-semibold relative overflow-hidden group cursor-pointer shadow-xs`}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                            >
+                                <span className="absolute inset-0 bg-[#111111] dark:bg-[#f3eee3] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                                <span className="relative z-10 group-hover:text-[#f3eee3] dark:group-hover:text-[#111111] transition-colors duration-300">
+                                    {resolvedSignUpLabel}
+                                </span>
+                            </motion.a>
+                        )}
 
                         {/* Mobile Menu Hamburger */}
                         <button
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="lg:hidden text-[#111111] dark:text-[#f3eee3] p-1.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20"
+                            onClick={!isSlice ? () => setMobileMenuOpen(!mobileMenuOpen) : undefined}
+                            className={`lg:hidden ${textBase} p-1.5 rounded-xl border ${btnBorder} ${isSlice ? "pointer-events-none" : "cursor-pointer"}`}
                             aria-label="Toggle navigation menu"
+                            tabIndex={isSlice ? -1 : undefined}
                         >
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <line x1="3" y1="6" x2="21" y2="6" />
@@ -209,105 +204,71 @@ export default function Hero3({
                             </svg>
                         </button>
                     </div>
-                </motion.nav>
+                </nav>
 
                 {/* Mobile Menu Dropdown */}
                 {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="lg:hidden px-6 py-4 mx-4 rounded-2xl bg-[#f3eee3]/95 dark:bg-[#181818]/95 backdrop-blur-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xl flex flex-col gap-3 z-30"
-                    >
+                    <div className={`lg:hidden px-6 py-4 mx-4 rounded-2xl ${isSlice ? "bg-[#181818]/95 dark:bg-[#f3eee3]/95" : "bg-[#f3eee3]/95 dark:bg-[#181818]/95"} backdrop-blur-xl border ${btnBorder} shadow-xl flex flex-col gap-3 z-30`}>
                         {navLinks.map((link, idx) => (
-                            <Link
-                                key={idx}
-                                href={link.href}
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="text-[#111111] dark:text-[#f3eee3] text-sm font-cinzel font-semibold py-1 hover:text-[#d9541e]"
-                            >
-                                {link.label}
-                            </Link>
+                            <div key={idx}>
+                                {isSlice ? (
+                                    <span className={`${textBase} text-sm font-cinzel font-semibold py-1`}>{link.label}</span>
+                                ) : (
+                                    <Link
+                                        href={link.href}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className={`${textBase} text-sm font-cinzel font-semibold py-1 hover:text-[#d9541e]`}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                )}
+                            </div>
                         ))}
-                    </motion.div>
+                    </div>
                 )}
 
                 {/* ─── Main Content Area ─── */}
                 <div className="flex-1 flex flex-col justify-center px-6 md:px-10 lg:px-16 pb-16 md:pb-24">
                     <div className="max-w-2xl">
 
-                            {/* Badge pill with shimmering light sweep */}
-                            <motion.div
-                                className="inline-flex items-center gap-2 mb-8 md:mb-10"
-                                initial={{ opacity: 0, y: 15 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.7, delay: 0.5 }}
-                            >
-                                <span className="relative inline-flex items-center px-4 py-1.5 rounded-full text-[12px] md:text-[13px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] border border-[#111111]/20 dark:border-[#f3eee3]/25 bg-white/60 dark:bg-[#181818]/60 backdrop-blur-md overflow-hidden shadow-xs">
-                                    {/* Shimmer sweep */}
+                        {/* Badge pill with shimmering light sweep */}
+                        <div className="inline-flex items-center gap-2 mb-8 md:mb-10">
+                            <span className={`relative inline-flex items-center px-4 py-1.5 rounded-full text-[12px] md:text-[13px] font-cinzel font-bold ${textBase} border ${pillBorder} backdrop-blur-md overflow-hidden shadow-xs`}>
+                                {!isSlice && (
                                     <span className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-[#d9541e]/25 to-transparent" />
-                                    <span className="relative">{badgeText}</span>
-                                </span>
-                            </motion.div>
+                                )}
+                                <span className="relative">{badgeText}</span>
+                            </span>
+                        </div>
 
-                            {/* Heading — word-by-word staggered kinetic reveal */}
-                            <h1 className="text-[#111111] dark:text-[#f3eee3] text-[38px] sm:text-[50px] md:text-[58px] lg:text-[66px] font-serif font-normal leading-[1.06] tracking-tight mb-6 md:mb-8">
-                                <span className="block overflow-hidden">
-                                    {line1Words.map((word, i) => (
-                                        <motion.span
-                                            key={i}
-                                            className="inline-block mr-[0.3em]"
-                                            initial={{ y: '110%', opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{
-                                                duration: 0.8,
-                                                delay: 0.7 + i * 0.1,
-                                                ease: [0.33, 1, 0.68, 1],
-                                            }}
-                                        >
-                                            {word}
-                                        </motion.span>
-                                    ))}
-                                </span>
-                                <em className="block overflow-hidden italic font-serif font-light pb-1 text-[#d9541e]">
-                                    {line2Words.map((word, i) => (
-                                        <motion.span
-                                            key={i}
-                                            className="inline-block mr-[0.3em]"
-                                            initial={{ y: '110%', opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{
-                                                duration: 0.8,
-                                                delay: 1.0 + i * 0.1,
-                                                ease: [0.33, 1, 0.68, 1],
-                                            }}
-                                        >
-                                            {word}
-                                        </motion.span>
-                                    ))}
-                                </em>
-                            </h1>
+                        {/* Heading — Perfectly matched native text rendering with ZERO baseline drift */}
+                        <h1 className={`${textBase} text-[38px] sm:text-[50px] md:text-[58px] lg:text-[66px] font-serif font-normal leading-[1.06] tracking-tight mb-6 md:mb-8`}>
+                            <span className="block">
+                                {headingLine1}
+                            </span>
+                            <em className="block italic font-serif font-light pb-1 text-[#d9541e]">
+                                {headingLine2}
+                            </em>
+                        </h1>
 
-                            {/* Animated horizontal gradient rule */}
-                            <motion.div
-                                className="h-px bg-gradient-to-r from-[#d9541e]/60 via-[#111111]/20 dark:via-[#f3eee3]/20 to-transparent mb-6 md:mb-8 max-w-md"
-                                initial={{ scaleX: 0, originX: 0 }}
-                                animate={{ scaleX: 1 }}
-                                transition={{ duration: 1.2, delay: 1.3, ease: [0.33, 1, 0.68, 1] }}
-                            />
+                        {/* Horizontal gradient rule */}
+                        <div className={`h-px bg-gradient-to-r from-[#d9541e]/60 ${hrColor} to-transparent mb-6 md:mb-8 max-w-md`} />
 
-                            {/* Description */}
-                            <motion.p
-                                className="text-[#111111]/75 dark:text-[#f3eee3]/75 font-serif italic text-sm md:text-base leading-relaxed max-w-md mb-10 md:mb-12"
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.9, delay: 1.4, ease: 'easeOut' }}
-                            >
-                                {description}
-                            </motion.p>
+                        {/* Description */}
+                        <p className={`${textMuted} font-serif italic text-sm md:text-base leading-relaxed max-w-md mb-10 md:mb-12`}>
+                            {description}
+                        </p>
 
-                            {/* CTA Buttons */}
-                            <div className="flex flex-wrap items-center gap-5 sm:gap-7">
-                                {/* Primary CTA — animated shifting gradient border pill in Terracotta (#d9541e) */}
+                        {/* CTA Buttons */}
+                        <div className="flex flex-wrap items-center gap-5 sm:gap-7">
+                            {/* Primary CTA */}
+                            {isSlice ? (
+                                <div className="relative rounded-full p-px overflow-hidden shadow-md pointer-events-none">
+                                    <span className="relative z-10 block px-8 py-3.5 rounded-full bg-[#d9541e] text-white font-cinzel font-bold text-xs tracking-widest uppercase">
+                                        {resolvedPrimaryCtaLabel}
+                                    </span>
+                                </div>
+                            ) : (
                                 <motion.a
                                     href={primaryCtaHref}
                                     onClick={(e) => {
@@ -330,20 +291,23 @@ export default function Hero3({
                                         }
                                     }}
                                     className="relative rounded-full p-px overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-shadow"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.7, delay: 1.6 }}
                                     whileHover={{ scale: 1.04 }}
                                     whileTap={{ scale: 0.96 }}
                                 >
-                                    {/* Animated gradient border */}
                                     <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#d9541e] via-amber-400 to-[#d9541e] [background-size:200%_100%] animate-[gradientShift_3s_linear_infinite]" />
                                     <span className="relative z-10 block px-8 py-3.5 rounded-full bg-[#d9541e] text-white font-cinzel font-bold text-xs tracking-widest uppercase group-hover:bg-[#bf4513] transition-all duration-300">
                                         {resolvedPrimaryCtaLabel}
                                     </span>
                                 </motion.a>
+                            )}
 
-                                {/* Secondary CTA with translating arrow on hover */}
+                            {/* Secondary CTA */}
+                            {isSlice ? (
+                                <div className={`flex items-center gap-2 ${textBase} text-xs font-cinzel font-bold tracking-wider uppercase pointer-events-none`}>
+                                    <span>{secondaryCtaLabel}</span>
+                                    <ArrowRight size={16} strokeWidth={2.5} className="text-[#d9541e]" />
+                                </div>
+                            ) : (
                                 <motion.a
                                     href={secondaryCtaHref}
                                     onClick={(e) => {
@@ -360,70 +324,260 @@ export default function Hero3({
                                             }
                                         }
                                     }}
-                                    className="flex items-center gap-2 text-[#111111] dark:text-[#f3eee3] hover:text-[#d9541e] dark:hover:text-[#d9541e] text-xs font-cinzel font-bold tracking-wider uppercase transition-colors group cursor-pointer"
-                                    initial={{ opacity: 0, x: -15 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.7, delay: 1.8 }}
+                                    className={`flex items-center gap-2 ${textBase} hover:text-[#d9541e] dark:hover:text-[#d9541e] text-xs font-cinzel font-bold tracking-wider uppercase transition-colors group cursor-pointer`}
+                                    whileHover={{ x: 2 }}
                                 >
                                     <span>{secondaryCtaLabel}</span>
                                     <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-1.5 transition-transform duration-300 text-[#d9541e]" />
                                 </motion.a>
-                            </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* ─── Bottom Bar ─── */}
                 <div className="w-full px-6 md:px-10 lg:px-16 pb-8 md:pb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
-
-                    <motion.p
-                        className="text-[#111111]/60 dark:text-[#f3eee3]/60 font-serif italic text-[12px] md:text-[13px] leading-relaxed whitespace-pre-line"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 2 }}
-                    >
+                    <p className={`${textSubtle} font-serif italic text-[12px] md:text-[13px] leading-relaxed whitespace-pre-line`}>
                         {bottomTagline}
-                    </motion.p>
+                    </p>
 
-                    <motion.a
-                        href={scrollHref || "#features-section"}
-                        onClick={(e) => {
-                            const target = scrollHref || "#features-section";
-                            if (target.startsWith("#")) {
-                                e.preventDefault();
-                                const id = target.slice(1);
-                                const el = document.getElementById(id);
-                                if (el) {
-                                    el.scrollIntoView({ behavior: "smooth", block: "start" });
-                                    window.history.pushState(null, "", target);
-                                } else {
-                                    window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+                    {isSlice ? (
+                        <div className={`flex items-center gap-2.5 ${textSubtle} text-[12px] md:text-[13px] font-cinzel font-bold tracking-wider uppercase shrink-0 pointer-events-none`}>
+                            <span className={`hidden sm:block w-8 h-px ${isSlice ? "bg-[#f3eee3]/30 dark:bg-[#111111]/30" : "bg-[#111111]/30 dark:bg-[#f3eee3]/30"}`} />
+                            <span>{scrollText}</span>
+                            <span className="text-[#d9541e]">
+                                <ArrowDown size={16} strokeWidth={2} />
+                            </span>
+                        </div>
+                    ) : (
+                        <a
+                            href={scrollHref || "#features-section"}
+                            onClick={(e) => {
+                                const target = scrollHref || "#features-section";
+                                if (target.startsWith("#")) {
+                                    e.preventDefault();
+                                    const id = target.slice(1);
+                                    const el = document.getElementById(id);
+                                    if (el) {
+                                        el.scrollIntoView({ behavior: "smooth", block: "start" });
+                                        window.history.pushState(null, "", target);
+                                    } else {
+                                        window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
+                                    }
                                 }
-                            }
-                        }}
-                        className="flex items-center gap-2.5 text-[#111111]/60 hover:text-[#111111] dark:text-[#f3eee3]/60 dark:hover:text-[#f3eee3] text-[12px] md:text-[13px] font-cinzel font-bold tracking-wider uppercase transition-colors shrink-0 group cursor-pointer"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 2.2 }}
-                    >
-                        {/* Animated expanding line before text */}
-                        <motion.span
-                            className="hidden sm:block w-8 h-px bg-[#111111]/30 dark:bg-[#f3eee3]/30 group-hover:w-12 group-hover:bg-[#d9541e] transition-all duration-300 origin-left"
-                        />
-                        <span>{scrollText}</span>
-                        <motion.span
-                            animate={{ y: [0, 5, 0] }}
-                            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-                            className="text-[#d9541e]"
+                            }}
+                            className={`flex items-center gap-2.5 ${textSubtle} hover:text-[#111111] dark:hover:text-[#f3eee3] text-[12px] md:text-[13px] font-cinzel font-bold tracking-wider uppercase transition-colors shrink-0 group cursor-pointer`}
                         >
-                            <ArrowDown size={16} strokeWidth={2} />
-                        </motion.span>
-                    </motion.a>
+                            <span className="hidden sm:block w-8 h-px bg-[#111111]/30 dark:bg-[#f3eee3]/30 group-hover:w-12 group-hover:bg-[#d9541e] transition-all duration-300 origin-left" />
+                            <span>{scrollText}</span>
+                            <span className="text-[#d9541e]">
+                                <ArrowDown size={16} strokeWidth={2} />
+                            </span>
+                        </a>
+                    )}
                 </div>
+            </div>
+        );
+    };
 
+    return (
+        <section className="relative w-full h-screen min-h-[720px] overflow-hidden bg-[#f3eee3] dark:bg-[#111111] transition-colors duration-500 group/hero">
+
+            {/* ─── SVG ClipPath & Gradient Definitions for Responsive Chiaroscuro Curve ─── */}
+            <svg className="absolute w-0 h-0 overflow-hidden" aria-hidden="true" focusable="false">
+                <defs>
+                    {/* Sculpted Golden-Ratio Desktop Curve: elegant S-curve passing cleanly through headline */}
+                    <clipPath id="chiaroscuro-curve-desktop" clipPathUnits="objectBoundingBox">
+                        <path d="M 0 0 L 0.215 0 C 0.315 0.22, 0.210 0.52, 0.385 1.0 L 0 1.0 Z" />
+                    </clipPath>
+                    {/* Sculpted Mobile & Tablet Curve: slightly wider to comfortably frame branding */}
+                    <clipPath id="chiaroscuro-curve-mobile" clipPathUnits="objectBoundingBox">
+                        <path d="M 0 0 L 0.380 0 C 0.480 0.22, 0.350 0.52, 0.520 1.0 L 0 1.0 Z" />
+                    </clipPath>
+
+                    {/* Gilded Terracotta Seam Linear Gradient */}
+                    <linearGradient id="chiaroscuro-seam-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#d9541e" stopOpacity="0.4" />
+                        <stop offset="25%" stopColor="#e5a93c" stopOpacity="0.9" />
+                        <stop offset="50%" stopColor="#d9541e" stopOpacity="1" />
+                        <stop offset="75%" stopColor="#e5a93c" stopOpacity="0.85" />
+                        <stop offset="100%" stopColor="#d9541e" stopOpacity="0.45" />
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* ─── BACKGROUND ARCHITECTURE (Dark Nocturne & Light Diurne) ─── */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+
+            {/* Daylight Judicial Background (Light Mode) */}
+            <div className="absolute inset-0 z-0 dark:opacity-0 transition-opacity duration-700 ease-in-out">
+                <img
+                    src={bgLightImageSrc}
+                    alt="Daylight Judicial Architecture"
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        if (!target.src.endsWith('/hero-judicial.jpg')) {
+                            target.src = '/hero-judicial.jpg';
+                        }
+                    }}
+                />
             </div>
 
-            {/* CSS keyframes injected inline */}
-            <style>{`
+            {/* Nocturne Judicial Background (Dark Mode) */}
+            <div className="absolute inset-0 z-0 opacity-0 dark:opacity-100 transition-opacity duration-700 ease-in-out">
+                <img
+                    src={bgImageSrc}
+                    alt="Nocturne Judicial Architecture"
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        if (!target.src.endsWith('/hero-judicial.jpg')) {
+                            target.src = '/hero-judicial.jpg';
+                        }
+                    }}
+                />
+            </div>
+
+            {/* Inverted Gradient overlays for depth in Light vs Dark mode */}
+            {/* Top-to-bottom atmospheric gradient */}
+            <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#f3eee3]/85 via-[#f3eee3]/45 to-[#f3eee3]/95 dark:from-[#111111]/85 dark:via-[#111111]/55 dark:to-[#111111]/95 transition-colors duration-500" />
+            {/* Left-to-right reading focus gradient */}
+            <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#f3eee3]/80 via-transparent to-transparent dark:from-[#111111]/85 dark:via-transparent dark:to-transparent transition-colors duration-500" />
+
+            {/* Noise texture overlay for premium tactile feel */}
+            <div
+                className="absolute inset-0 z-[2] opacity-[0.035] dark:opacity-[0.04] mix-blend-overlay pointer-events-none"
+                style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'repeat',
+                    backgroundSize: '128px 128px',
+                }}
+            />
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* ─── LAYER 1: BASE DOMINANT INTERACTIVE LAYER ─── */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <div className="relative z-10 h-full w-full">
+                {renderHeroLayer(false)}
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* ─── LAYER 2: CHIAROSCURO MINORITY SLICE (CLIPPED OVERLAY) ─── */}
+            {/* Clipped by the exact same sculpted Bézier curve.          */}
+            {/* Because both layers are rendered by the unified renderer, */}
+            {/* their vertical baseline is 100% identical (0px drift).    */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <div 
+                className="chiaroscuro-slice absolute inset-0 z-20 pointer-events-none select-none overflow-hidden drop-shadow-[4px_0_20px_rgba(0,0,0,0.35)] dark:drop-shadow-[8px_0_32px_rgba(0,0,0,0.6)]"
+                aria-hidden="true"
+            >
+                {/* Slice Background: In Dark Mode = Linen Cream; In Light Mode = Obsidian Dark */}
+                <div className="absolute inset-0 bg-[#111111] dark:bg-[#f3eee3] transition-colors duration-500" />
+
+                {/* Slice Content: 100% identical layout with inverted text colors */}
+                {renderHeroLayer(true)}
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* ─── LAYER 3: AESTHETIC GILDED SEAM FILAMENT & CELESTIAL PIPS ─ */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            
+            {/* Desktop Seam Artistry */}
+            <svg 
+                className="absolute inset-0 w-full h-full pointer-events-none z-25 hidden lg:block overflow-visible"
+                preserveAspectRatio="none"
+                viewBox="0 0 1000 1000"
+                aria-hidden="true"
+            >
+                {/* 1. Soft Ambient Terracotta Blur Glow */}
+                <path
+                    d="M 215 0 C 315 220, 210 520, 385 1000"
+                    fill="none"
+                    stroke="#d9541e"
+                    strokeWidth="5"
+                    strokeOpacity="0.32"
+                    className="blur-[3px] group-hover/hero:stroke-opacity-60 transition-all duration-700"
+                />
+
+                {/* 2. Gilded & Terracotta Primary Hairline */}
+                <path
+                    d="M 215 0 C 315 220, 210 520, 385 1000"
+                    fill="none"
+                    stroke="url(#chiaroscuro-seam-gradient)"
+                    strokeWidth="1.8"
+                    className="group-hover/hero:stroke-[2.2] transition-all duration-500"
+                />
+
+                {/* 3. Celestial Astrolabe Diamond Pips at golden-ratio intervals */}
+                <g className="transition-opacity duration-500 opacity-90 group-hover/hero:opacity-100">
+                    <polygon
+                        points="256,152 262,158 256,164 250,158"
+                        fill="#d9541e"
+                        stroke="#f3eee3"
+                        strokeWidth="0.8"
+                        className="drop-shadow-xs"
+                    />
+                    <polygon
+                        points="272,396 278,402 272,408 266,402"
+                        fill="#d9541e"
+                        stroke="#f3eee3"
+                        strokeWidth="0.8"
+                        className="drop-shadow-xs"
+                    />
+                    <polygon
+                        points="305,702 311,708 305,714 299,708"
+                        fill="#d9541e"
+                        stroke="#f3eee3"
+                        strokeWidth="0.8"
+                        className="drop-shadow-xs"
+                    />
+                </g>
+            </svg>
+
+            {/* Mobile Seam Artistry */}
+            <svg 
+                className="absolute inset-0 w-full h-full pointer-events-none z-25 block lg:hidden overflow-visible"
+                preserveAspectRatio="none"
+                viewBox="0 0 1000 1000"
+                aria-hidden="true"
+            >
+                <path
+                    d="M 380 0 C 480 220, 350 520, 520 1000"
+                    fill="none"
+                    stroke="#d9541e"
+                    strokeWidth="4"
+                    strokeOpacity="0.30"
+                    className="blur-[2px]"
+                />
+                <path
+                    d="M 380 0 C 480 220, 350 520, 520 1000"
+                    fill="none"
+                    stroke="url(#chiaroscuro-seam-gradient)"
+                    strokeWidth="1.6"
+                />
+                <g className="opacity-80">
+                    <polygon points="418,152 424,158 418,164 412,158" fill="#d9541e" stroke="#f3eee3" strokeWidth="0.8" />
+                    <polygon points="424,396 430,402 424,408 418,402" fill="#d9541e" stroke="#f3eee3" strokeWidth="0.8" />
+                    <polygon points="446,702 452,708 446,714 440,708" fill="#d9541e" stroke="#f3eee3" strokeWidth="0.8" />
+                </g>
+            </svg>
+
+            {/* CSS clip-path styles & keyframes */}
+            <style jsx global>{`
+                @media (min-width: 1024px) {
+                    .chiaroscuro-slice {
+                        clip-path: url(#chiaroscuro-curve-desktop);
+                        -webkit-clip-path: url(#chiaroscuro-curve-desktop);
+                    }
+                }
+                @media (max-width: 1023px) {
+                    .chiaroscuro-slice {
+                        clip-path: url(#chiaroscuro-curve-mobile);
+                        -webkit-clip-path: url(#chiaroscuro-curve-mobile);
+                    }
+                }
                 @keyframes shimmer {
                     to { transform: translateX(200%); }
                 }

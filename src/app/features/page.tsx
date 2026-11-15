@@ -140,6 +140,7 @@ export default function FeaturesPage() {
         scrollText="Explore Pillars"
         scrollHref="#features-grid"
         bgImageSrc="/hero-features.jpg"
+        bgLightImageSrc="/hero-features-light.jpg"
       />
 
       {/* Main 6 Features Grid - Wide End of Screen */}

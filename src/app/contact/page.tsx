@@ -59,6 +59,7 @@ export default function ContactPage() {
         scrollText="Open Dispatch"
         scrollHref="#contact-form"
         bgImageSrc="/hero-contact.jpg"
+        bgLightImageSrc="/hero-contact-light.jpg"
       />
 
       {/* Main Contact Content - Wide End of Screen */}

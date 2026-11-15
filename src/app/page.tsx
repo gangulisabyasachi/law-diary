@@ -78,6 +78,7 @@ export default function HomePage() {
         bottomTagline={"Two-Man Verification Protocol\nStrict Chamber Vault Isolation\nBar Council of India Rule 36 Compliant"}
         scrollText="Scroll to Discover"
         bgImageSrc="/hero-judicial.jpg"
+        bgLightImageSrc="/hero-judicial-light.jpg"
       />
 
       {/* 2. Four Core Practice Pillars Overview — Wide End-of-Screen Panoramic Layout */}
