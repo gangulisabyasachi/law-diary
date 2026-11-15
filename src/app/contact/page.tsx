@@ -47,7 +47,7 @@ export default function ContactPage() {
       {/* Cinematic Judicial Hero */}
       <Hero3
         brandName="LexDaily"
-        badgeText="✦  Direct Chamber Registrar Desk"
+        eyebrowText="Direct Chamber Registrar Desk"
         headingLine1="Direct counsel communication"
         headingLine2="and chamber onboarding."
         description="Connect directly with the Chamber Administration Office for bespoke on-premise deployments, historical register migration, or team orientation across Indian jurisdictions."

@@ -130,7 +130,7 @@ export default function PricingPage() {
       {/* Cinematic Judicial Hero */}
       <Hero3
         brandName="LexDaily"
-        badgeText="✦  Transparent Chamber Retainers"
+        eyebrowText="Transparent Chamber Retainers"
         headingLine1="Transparent chamber retainers,"
         headingLine2="sovereign peace of mind."
         description="Choose the subscription tier tailored to your chamber size. No per-case fees, no hidden surcharges, and total data sovereignty across all High Court benches."
@@ -165,11 +165,10 @@ export default function PricingPage() {
           {plans.map((p, idx) => (
             <div
               key={idx}
-              className={`p-8 sm:p-10 md:p-12 rounded-3xl flex flex-col justify-between transition-all relative ${
-                p.highlight
-                  ? "bg-white dark:bg-[#181818] border-2 border-[#d9541e] shadow-xl shadow-[#d9541e]/5"
-                  : "bg-white/70 dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs hover:border-[#111111] dark:hover:border-[#f3eee3]/40"
-              }`}
+              className={`p-8 sm:p-10 md:p-12 rounded-3xl flex flex-col justify-between transition-all relative ${p.highlight
+                ? "bg-white dark:bg-[#181818] border-2 border-[#d9541e] shadow-xl shadow-[#d9541e]/5"
+                : "bg-white/70 dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs hover:border-[#111111] dark:hover:border-[#f3eee3]/40"
+                }`}
             >
               {p.badge && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-cinzel font-bold uppercase tracking-widest bg-[#d9541e] text-white shadow-xs">
@@ -242,11 +241,10 @@ export default function PricingPage() {
                         setAuthModal("signup");
                       }
                     }}
-                    className={`w-full py-3.5 rounded-full font-cinzel font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${
-                      p.highlight
-                        ? "bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm"
-                        : "bg-[#111111] text-[#f3eee3] dark:bg-[#f3eee3] dark:text-[#111111] hover:opacity-90"
-                    }`}
+                    className={`w-full py-3.5 rounded-full font-cinzel font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${p.highlight
+                      ? "bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm"
+                      : "bg-[#111111] text-[#f3eee3] dark:bg-[#f3eee3] dark:text-[#111111] hover:opacity-90"
+                      }`}
                   >
                     <span>{currentUser ? "Open Dashboard" : p.cta}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -347,9 +345,8 @@ export default function PricingPage() {
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#d9541e] transition-transform flex-shrink-0 ml-4 ${
-                    activeFaq === i ? "rotate-180" : ""
-                  }`}
+                  className={`w-5 h-5 text-[#d9541e] transition-transform flex-shrink-0 ml-4 ${activeFaq === i ? "rotate-180" : ""
+                    }`}
                 />
               </button>
               {activeFaq === i && (

@@ -64,7 +64,7 @@ export default function HomePage() {
         onSignUpClick={() => {
           if (!currentUser) setAuthModal("signin");
         }}
-        badgeText="✦  Sovereign Chamber Operating System"
+        eyebrowText="Sovereign Chamber Operating System"
         headingLine1="Building sovereign clarity"
         headingLine2="into Indian litigation."
         description="From automated court cause lists and 16-character CNR dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers."

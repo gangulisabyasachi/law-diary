@@ -20,7 +20,10 @@ export interface Hero3Props {
     signUpLabel?: string;
     signUpHref?: string;
     onSignUpClick?: () => void;
-    /** Small pill badge text above the heading */
+    /** Clean editorial eyebrow text above the heading */
+    eyebrowText?: string;
+    /** Backward compatibility fallbacks */
+    folioTitle?: string;
     badgeText?: string;
     headingLine1?: string;
     headingLine2?: string;
@@ -51,7 +54,9 @@ export default function Hero3({
     signUpLabel,
     signUpHref,
     onSignUpClick,
-    badgeText = '✦  Sovereign Chamber Operating System',
+    eyebrowText = 'Sovereign Chamber Operating System',
+    folioTitle,
+    badgeText,
     headingLine1 = 'Building sovereign clarity',
     headingLine2 = 'into Indian litigation.',
     description = 'From automated court cause lists and 16-character CNR dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers.',
@@ -95,7 +100,7 @@ export default function Hero3({
         const hrColor = isSlice ? "via-[#f3eee3]/20 dark:via-[#111111]/20" : "via-[#111111]/20 dark:via-[#f3eee3]/20";
 
         return (
-            <div 
+            <div
                 className={`relative flex flex-col h-full w-full ${isSlice ? "pointer-events-none select-none" : ""}`}
                 aria-hidden={isSlice ? "true" : undefined}
             >
@@ -104,7 +109,7 @@ export default function Hero3({
                     {/* Brand Logo & Name */}
                     {isSlice ? (
                         <div className="flex items-center shrink-0">
-                            <span 
+                            <span
                                 className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal select-none inline-block`}
                                 style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
                             >
@@ -113,7 +118,7 @@ export default function Hero3({
                         </div>
                     ) : (
                         <Link href="/" className="flex items-center shrink-0 group">
-                            <span 
+                            <span
                                 className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block`}
                                 style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
                             >
@@ -136,9 +141,8 @@ export default function Hero3({
                                     ) : (
                                         <Link
                                             href={link.href}
-                                            className={`text-[15px] font-cinzel font-semibold transition-colors duration-200 relative group ${
-                                                active ? "text-[#d9541e] font-bold" : navLinkColor
-                                            }`}
+                                            className={`text-[15px] font-cinzel font-semibold transition-colors duration-200 relative group ${active ? "text-[#d9541e] font-bold" : navLinkColor
+                                                }`}
                                         >
                                             {link.label}
                                             <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#d9541e] transition-all duration-300 ${active ? "w-full" : "w-0 group-hover:w-full"}`} />
@@ -231,15 +235,14 @@ export default function Hero3({
                 <div className="flex-1 flex flex-col justify-center px-6 md:px-10 lg:px-16 pb-16 md:pb-24">
                     <div className="max-w-2xl">
 
-                        {/* Badge pill with shimmering light sweep */}
-                        <div className="inline-flex items-center gap-2 mb-8 md:mb-10">
-                            <span className={`relative inline-flex items-center px-4 py-1.5 rounded-full text-[12px] md:text-[13px] font-cinzel font-bold ${textBase} border ${pillBorder} backdrop-blur-md overflow-hidden shadow-xs`}>
-                                {!isSlice && (
-                                    <span className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite] bg-gradient-to-r from-transparent via-[#d9541e]/25 to-transparent" />
-                                )}
-                                <span className="relative">{badgeText}</span>
-                            </span>
-                        </div>
+                        {/* Clean Editorial Eyebrow / Kicker */}
+                        {(eyebrowText || folioTitle || badgeText) && (
+                            <div className="mb-3.5 sm:mb-4 md:mb-5 select-none">
+                                <span className="text-[11px] sm:text-[12px] md:text-[13px] font-cinzel font-semibold tracking-[0.24em] text-[#d9541e] uppercase inline-block">
+                                    {eyebrowText || folioTitle || badgeText}
+                                </span>
+                            </div>
+                        )}
 
                         {/* Heading — Perfectly matched native text rendering with ZERO baseline drift */}
                         <h1 className={`${textBase} text-[38px] sm:text-[50px] md:text-[58px] lg:text-[66px] font-serif font-normal leading-[1.06] tracking-tight mb-6 md:mb-8`}>
@@ -469,7 +472,7 @@ export default function Hero3({
             {/* Because both layers are rendered by the unified renderer, */}
             {/* their vertical baseline is 100% identical (0px drift).    */}
             {/* ═══════════════════════════════════════════════════════════ */}
-            <div 
+            <div
                 className="chiaroscuro-slice absolute inset-0 z-20 pointer-events-none select-none overflow-hidden drop-shadow-[4px_0_20px_rgba(0,0,0,0.35)] dark:drop-shadow-[8px_0_32px_rgba(0,0,0,0.6)]"
                 aria-hidden="true"
             >
@@ -483,9 +486,9 @@ export default function Hero3({
             {/* ═══════════════════════════════════════════════════════════ */}
             {/* ─── LAYER 3: AESTHETIC GILDED SEAM FILAMENT & CELESTIAL PIPS ─ */}
             {/* ═══════════════════════════════════════════════════════════ */}
-            
+
             {/* Desktop Seam Artistry */}
-            <svg 
+            <svg
                 className="absolute inset-0 w-full h-full pointer-events-none z-25 hidden lg:block overflow-visible"
                 preserveAspectRatio="none"
                 viewBox="0 0 1000 1000"
@@ -537,7 +540,7 @@ export default function Hero3({
             </svg>
 
             {/* Mobile Seam Artistry */}
-            <svg 
+            <svg
                 className="absolute inset-0 w-full h-full pointer-events-none z-25 block lg:hidden overflow-visible"
                 preserveAspectRatio="none"
                 viewBox="0 0 1000 1000"

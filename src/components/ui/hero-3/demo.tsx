@@ -17,7 +17,7 @@ export default function Hero12Demo() {
         language="EN"
         signUpLabel="Sign up"
         signUpHref="#"
-        badgeText="✦  Award-winning digital studio"
+        eyebrowText="Award-Winning Digital Studio"
         headingLine1="Building bold ideas"
         headingLine2="into reality."
         description="Experiences that stand strong, scale fast, and look exceptional. We help brands and businesses design meaningful digital products."

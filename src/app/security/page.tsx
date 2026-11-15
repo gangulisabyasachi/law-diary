@@ -72,7 +72,7 @@ export default function SecurityPage() {
       {/* Cinematic Judicial Hero */}
       <Hero3
         brandName="LexDaily"
-        badgeText="✦  Evidentiary & Ethical Architecture"
+        eyebrowText="Evidentiary & Ethical Architecture"
         headingLine1="Sovereign safe custody,"
         headingLine2="uncompromising legal privilege."
         description="Designed from inception to honor the highest ethical traditions of the Indian Legal Profession, statutory attorney-client privilege, and Bar Council of India Rule 36 standards."

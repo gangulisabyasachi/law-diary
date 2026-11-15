@@ -128,7 +128,7 @@ export default function FeaturesPage() {
       {/* Cinematic Judicial Hero */}
       <Hero3
         brandName="LexDaily"
-        badgeText="✦  Chamber Practice Architecture"
+        eyebrowText="Chamber Practice Architecture"
         headingLine1="Engineered for litigation,"
         headingLine2="crafted with classical dignity."
         description="Every module in LexDaily is purpose-built to address the demanding daily realities of practicing advocates, arguing seniors, and courtroom clerks across all Indian jurisdictions."
