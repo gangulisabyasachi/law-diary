@@ -46,7 +46,7 @@ export default function ContactPage() {
     <PublicLayout hideNavbar={true}>
       {/* Cinematic Judicial Hero */}
       <Hero3
-        brandName="LexChron"
+        brandName="LexDaily"
         badgeText="✦  Direct Chamber Registrar Desk"
         headingLine1="Direct counsel communication"
         headingLine2="and chamber onboarding."

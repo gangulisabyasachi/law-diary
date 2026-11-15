@@ -129,7 +129,7 @@ export default function PricingPage() {
     <PublicLayout hideNavbar={true}>
       {/* Cinematic Judicial Hero */}
       <Hero3
-        brandName="LexChron"
+        brandName="LexDaily"
         badgeText="✦  Transparent Chamber Retainers"
         headingLine1="Transparent chamber retainers,"
         headingLine2="sovereign peace of mind."

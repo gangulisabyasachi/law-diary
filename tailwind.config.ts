@@ -107,6 +107,11 @@ const config: Config = {
         },
       },
       fontFamily: {
+        agatta: ["Agatta", "cursive", "sans-serif"],
+        clagista: ["Clagista", "cursive", "sans-serif"],
+        macalimo: ["Macalimo", "cursive", "sans-serif"],
+        scriptina: ["Scriptina", "cursive", "sans-serif"],
+        bizantheum: ["Bizantheum", "var(--font-serif)", "Georgia", "serif"],
         alexBrush: ["'Alex Brush'", "cursive", "sans-serif"],
         mogina: ["Mogina", "var(--font-serif)", "Georgia", "serif"],
         zaslia: ["Zaslia", "var(--font-serif)", "Georgia", "serif"],

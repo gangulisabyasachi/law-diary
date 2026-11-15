@@ -33,10 +33,10 @@ export function PublicNavbar() {
         {/* Brand Logo & Name */}
         <Link href="/" className="flex items-center shrink-0 group">
           <span 
-            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[32px] font-alex-brush tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
-            style={{ fontFamily: "'Alex Brush', cursive, sans-serif" }}
+            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
+            style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
           >
-            LexChron
+            LexDaily
           </span>
         </Link>
 

@@ -72,12 +72,12 @@ export function Sidebar() {
     currentUser.role === "lawyer"
       ? (currentUser.name.toLowerCase().startsWith("adv") ? `Chambers of ${currentUser.name}` : `Chambers of Adv. ${currentUser.name}`)
       : currentUser.role === "admin"
-      ? "LexChron Registrar Desk"
+      ? "LexDaily Registrar Desk"
       : (() => {
           const supLawyer = state?.users?.find(
             (u) => u.role === "lawyer" && (u.id === currentUser.lawyerId || state.cases.some((c) => c.lawyerId === u.id))
           );
-          return supLawyer ? `Chambers of ${supLawyer.name}` : `LexChron Chambers`;
+          return supLawyer ? `Chambers of ${supLawyer.name}` : `LexDaily Chambers`;
         })();
 
   return (

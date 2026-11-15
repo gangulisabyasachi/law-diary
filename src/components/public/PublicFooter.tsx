@@ -93,10 +93,10 @@ export function PublicFooter() {
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="inline-flex items-center group">
               <span 
-                className="text-3xl sm:text-4xl font-alex-brush tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
-                style={{ fontFamily: "'Alex Brush', cursive, sans-serif" }}
+                className="text-3xl sm:text-4xl font-clagista tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
+                style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
               >
-                LexChron
+                LexDaily
               </span>
             </Link>
 
@@ -347,26 +347,26 @@ export function PublicFooter() {
 
       {/* ─── 3. Full-Bleed End-to-End Watermark Background at Bottom of Footer ─── */}
       <div 
-        className="w-full overflow-hidden select-none pointer-events-none pt-4 sm:pt-8 pb-0 mt-2 mb-0"
+        className="w-full overflow-hidden select-none pointer-events-none pt-4 sm:pt-8 pb-0 mt-2 mb-0 flex justify-center items-center"
         aria-hidden="true"
       >
         <svg
-          viewBox="3.2 0 469 116"
+          viewBox="0 0 420 116"
           className="w-full h-auto select-none pointer-events-none block"
-          aria-label="LexChron"
+          aria-label="LexDaily"
         >
           <g transform="scale(1, 1.48)">
             <text
-              x="0"
+              x="50%"
               y="75"
-              textAnchor="start"
+              textAnchor="middle"
               className="font-mogina uppercase fill-[#111111]/[0.045] dark:fill-[#f3eee3]/[0.045] transition-colors"
               fontSize="100"
               style={{
                 fontFamily: "'Mogina', var(--font-serif), Georgia, serif",
               }}
             >
-              LEXCHRON
+              LEXDAILY
             </text>
           </g>
         </svg>
@@ -376,7 +376,7 @@ export function PublicFooter() {
       <div className="w-full px-6 md:px-10 lg:px-16 xl:px-20 relative z-10">
         <div className="pt-8 border-t border-[#111111]/10 dark:border-[#f3eee3]/15 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-            <span>© 2026 LexChron</span>
+            <span>© 2026 LexDaily</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-6">

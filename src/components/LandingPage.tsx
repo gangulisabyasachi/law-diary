@@ -133,13 +133,13 @@ export function LandingPage() {
       {/* 1. Header / Navbar */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-[#f3eee3]/90 dark:bg-[#111111]/90 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 transition-colors">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
-          {/* Pure Textual Logo: LexChron */}
+          {/* Pure Textual Logo: LexDaily */}
           <a href="#" className="group focus:outline-none select-none inline-flex items-center">
             <span 
-              className="font-alex-brush text-2xl sm:text-[32px] tracking-normal text-[#111111] dark:text-[#f3eee3] group-hover:opacity-85 transition-opacity select-none inline-block pl-0.5"
-              style={{ fontFamily: "'Alex Brush', cursive, sans-serif" }}
+              className="font-clagista text-2xl sm:text-[34px] tracking-normal text-[#111111] dark:text-[#f3eee3] group-hover:opacity-85 transition-opacity select-none inline-block pl-0.5"
+              style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
             >
-              LexChron
+              LexDaily
             </span>
           </a>
 
@@ -909,7 +909,7 @@ export function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
               <p className="text-xs font-serif leading-relaxed text-[#111111]/85 dark:text-[#f3eee3]/85 italic">
-                &ldquo;For years, our clerk maintained a massive paper diary that tore and was prone to misplacement. LexChron brought complete serenity to our morning cause list preparation.&rdquo;
+                &ldquo;For years, our clerk maintained a massive paper diary that tore and was prone to misplacement. LexDaily brought complete serenity to our morning cause list preparation.&rdquo;
               </p>
               <div className="mt-5 pt-4 border-t border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-[#111111] text-[#111111] dark:text-[#f3eee3] flex items-center justify-center font-cinzel font-bold text-xs">
@@ -970,11 +970,11 @@ export function LandingPage() {
           {[
             {
               q: "Is chamber and client data confidential and air-gapped?",
-              a: "Absolutely. LexChron uses air-gapped, encrypted database partitioning. Opposing counsels or outside advocates cannot query, search, or view your chamber's active matters, client advice, or fee ledgers.",
+              a: "Absolutely. LexDaily uses air-gapped, encrypted database partitioning. Opposing counsels or outside advocates cannot query, search, or view your chamber's active matters, client advice, or fee ledgers.",
             },
             {
-              q: "Does LexChron comply with Bar Council of India (BCI) Rule 36?",
-              a: "Yes, strictly. LexChron is a practice management and chamber operating system. It does not solicit clients, display advertisements, or rank advocates. Sign-up is restricted to enrolled lawyers.",
+              q: "Does LexDaily comply with Bar Council of India (BCI) Rule 36?",
+              a: "Yes, strictly. LexDaily is a practice management and chamber operating system. It does not solicit clients, display advertisements, or rank advocates. Sign-up is restricted to enrolled lawyers.",
             },
             {
               q: "Can junior associates and chamber clerks submit hearing outcomes?",
@@ -986,7 +986,7 @@ export function LandingPage() {
             },
             {
               q: "Can I print or export my Daily Cause List as a clean PDF?",
-              a: "Yes. LexChron provides a 1-click printable cause list formatted specifically for chamber boards, court bags, and sharing with briefing counsels.",
+              a: "Yes. LexDaily provides a 1-click printable cause list formatted specifically for chamber boards, court bags, and sharing with briefing counsels.",
             },
           ].map((faq, i) => (
             <div
@@ -1223,10 +1223,10 @@ export function LandingPage() {
             <div className="space-y-3.5">
               <div className="flex items-center">
                 <span 
-                  className="text-2xl font-alex-brush tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
-                  style={{ fontFamily: "'Alex Brush', cursive, sans-serif" }}
+                  className="text-2xl sm:text-3xl font-clagista tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
+                  style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
                 >
-                  LexChron
+                  LexDaily
                 </span>
               </div>
               <p className="text-xs leading-relaxed text-[#111111]/70 dark:text-[#f3eee3]/60">
@@ -1269,7 +1269,7 @@ export function LandingPage() {
           </div>
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono">
-            <span>© 2026 LexChron. All rights reserved.</span>
+            <span>© 2026 LexDaily. All rights reserved.</span>
             <span>Chamber Operating System</span>
           </div>
         </div>

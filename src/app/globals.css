@@ -64,12 +64,99 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Bizantheum';
+  src: url('/fonts/Bizantheum.otf') format('opentype'),
+    url('/fonts/bizantheum.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Scriptina';
+  src: url('/fonts/SCRIPTIN.ttf') format('truetype'),
+    url('/fonts/scriptin.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Macalimo';
+  src: url('/fonts/Macalimo.otf') format('opentype'),
+    url('/fonts/macalimo.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Clagista';
+  src: url('/fonts/Clagista.ttf') format('truetype'),
+    url('/fonts/clagista.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Agatta';
+  src: url('/fonts/Agatta.ttf') format('truetype'),
+    url('/fonts/agatta.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Clagista';
+  src: url('/fonts/Clagista.ttf') format('truetype'),
+    url('/fonts/clagista.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Agatta';
+  src: url('/fonts/Agatta.ttf') format('truetype'),
+    url('/fonts/agatta.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
   scroll-behavior: smooth;
+}
+
+.font-agatta {
+  font-family: 'Agatta', cursive, sans-serif;
+}
+
+.font-clagista {
+  font-family: 'Clagista', cursive, sans-serif;
+}
+
+.font-clagista {
+  font-family: 'Clagista', cursive, sans-serif;
+}
+
+.font-macalimo {
+  font-family: 'Macalimo', cursive, sans-serif;
+}
+
+.font-scriptina {
+  font-family: 'Scriptina', cursive, sans-serif;
+}
+
+.font-bizantheum {
+  font-family: 'Bizantheum', var(--font-serif), Georgia, serif;
 }
 
 .font-alex-brush,

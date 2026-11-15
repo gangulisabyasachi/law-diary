@@ -203,7 +203,7 @@ export default function AuthSwitch({
         }
 
         .as-brand-tag {
-          font-family: 'Alex Brush', cursive, sans-serif;
+          font-family: 'Clagista', cursive, sans-serif;
           color: #d9541e;
           font-size: 1.85rem;
           line-height: 1;
@@ -633,7 +633,7 @@ export default function AuthSwitch({
             {/* 1. SIGN IN FORM */}
             <form className="as-form as-sign-in-form" onSubmit={handleSignIn}>
               <div className="as-brand-tag">
-                <span>LexChron</span>
+                <span>LexDaily</span>
               </div>
               <h2 className="as-title">Sign In</h2>
               <p className="as-subtitle">Authenticate credentials to enter private chamber diary</p>
@@ -679,7 +679,7 @@ export default function AuthSwitch({
             {/* 2. SIGN UP FORM */}
             <form className="as-form as-sign-up-form" onSubmit={handleSignUp}>
               <div className="as-brand-tag">
-                <span>LexChron</span>
+                <span>LexDaily</span>
               </div>
               <h2 className="as-title">Sign Up</h2>
               <p className="as-subtitle">Solely for advocates enrolled under Bar Council of India</p>
