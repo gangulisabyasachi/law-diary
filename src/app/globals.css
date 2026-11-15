@@ -72,7 +72,8 @@ html {
   scroll-behavior: smooth;
 }
 
-.font-alex-brush, .font-alexbrush {
+.font-alex-brush,
+.font-alexbrush {
   font-family: 'Alex Brush', cursive, sans-serif;
 }
 
