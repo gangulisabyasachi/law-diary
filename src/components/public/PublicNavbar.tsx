@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
-import LogoIcon from "@/assets/logo-icon";
 import { useChamber } from "@/context/ChamberContext";
 import { AnimatedThemeToggle } from "@/components/ui/animated-theme-toggle";
 
@@ -32,12 +31,9 @@ export function PublicNavbar() {
     <header className="sticky top-0 z-40 bg-[#f3eee3]/90 dark:bg-[#111111]/90 backdrop-blur-xl border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
       <div className="w-full px-6 md:px-10 lg:px-16 xl:px-20 py-4 flex items-center justify-between gap-4">
         {/* Brand Logo & Name */}
-        <Link href="/" className="flex items-center gap-3 shrink-0 group">
-          <div className="w-8 h-8 rounded-xl bg-[#d9541e] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-            <LogoIcon className="size-5 text-white" />
-          </div>
+        <Link href="/" className="flex items-center shrink-0 group">
           <span 
-            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[30px] font-signature tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block pl-0.5"
+            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[30px] font-signature tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
             style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
           >
             Updated Law Diary

@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import LogoIcon from '@/assets/logo-icon';
 import { ArrowRight, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useChamber } from '@/context/ChamberContext';
@@ -73,7 +72,7 @@ export default function Hero3({
     const defaultSignUpLabel = currentUser ? 'Dashboard' : 'Sign In';
     const resolvedSignUpLabel = signUpLabel || defaultSignUpLabel;
 
-    const defaultPrimaryCtaLabel = currentUser ? 'Enter Dashboard' : 'Sign Up as Advocate';
+    const defaultPrimaryCtaLabel = currentUser ? 'Enter Dashboard' : 'Sign Up';
     const resolvedPrimaryCtaLabel = primaryCtaLabel || defaultPrimaryCtaLabel;
 
     const line1Words = headingLine1.split(' ');
@@ -130,12 +129,9 @@ export default function Hero3({
                     transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
                 >
                     {/* Brand Logo & Name */}
-                    <Link href="/" className="flex items-center gap-3 shrink-0 group">
-                        <div className="w-8 h-8 rounded-xl bg-[#d9541e] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                            <LogoIcon className="size-5 text-white" />
-                        </div>
+                    <Link href="/" className="flex items-center shrink-0 group">
                         <span 
-                            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[30px] font-signature tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block pl-0.5"
+                            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[30px] font-signature tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
                             style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
                         >
                             {brandName}
@@ -425,29 +421,6 @@ export default function Hero3({
                 </div>
 
             </div>
-
-            {/* ─── Decorative Corner Frame Lines (Hairlines in Light vs Dark Mode) ─── */}
-            {/* Top-right corner */}
-            <motion.div
-                className="absolute top-6 right-6 md:top-8 md:right-10 lg:right-16 w-12 h-12 pointer-events-none hidden md:block"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 2.5 }}
-            >
-                <span className="absolute top-0 right-0 w-full h-px bg-gradient-to-l from-[#111111]/25 dark:from-[#f3eee3]/30 to-transparent" />
-                <span className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-[#111111]/25 dark:from-[#f3eee3]/30 to-transparent" />
-            </motion.div>
-
-            {/* Bottom-left corner */}
-            <motion.div
-                className="absolute bottom-6 left-6 md:bottom-8 md:left-10 lg:left-16 w-12 h-12 pointer-events-none hidden md:block"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 2.5 }}
-            >
-                <span className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-[#111111]/25 dark:from-[#f3eee3]/30 to-transparent" />
-                <span className="absolute bottom-0 left-0 w-px h-full bg-gradient-to-t from-[#111111]/25 dark:from-[#f3eee3]/30 to-transparent" />
-            </motion.div>
 
             {/* CSS keyframes injected inline */}
             <style>{`

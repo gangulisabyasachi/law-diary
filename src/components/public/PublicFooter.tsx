@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import LogoIcon from "@/assets/logo-icon";
 import {
   Scale,
   ArrowUpRight,
@@ -73,7 +72,7 @@ export function PublicFooter() {
                   onClick={() => setAuthModal("signup")}
                   className="px-8 py-4 rounded-full bg-[#d9541e] text-white hover:bg-[#bf4513] shadow-md hover:shadow-xl font-cinzel font-bold text-xs tracking-widest uppercase transition-all duration-300 text-center inline-flex items-center justify-center gap-2 group/btn"
                 >
-                  <span>Sign Up as Advocate</span>
+                  <span>Sign Up</span>
                   <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
                 </button>
               )}
@@ -92,12 +91,9 @@ export function PublicFooter() {
 
           {/* Col 1: Brand & Chamber Identity (4 Cols) */}
           <div className="lg:col-span-4 space-y-6">
-            <Link href="/" className="inline-flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-xl bg-[#d9541e] text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-                <LogoIcon className="size-5 text-white" />
-              </div>
+            <Link href="/" className="inline-flex items-center group">
               <span 
-                className="text-2xl sm:text-3xl font-signature tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block pl-0.5"
+                className="text-2xl sm:text-3xl font-signature tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
                 style={{ fontFamily: "'Photograph Signature', 'PhotographSignature', cursive" }}
               >
                 Updated Law Diary

@@ -68,7 +68,7 @@ export default function HomePage() {
         headingLine1="Building sovereign clarity"
         headingLine2="into Indian litigation."
         description="From automated court cause lists and 16-character CNR dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers."
-        primaryCtaLabel={currentUser ? "Enter Dashboard" : "Sign Up as Advocate"}
+        primaryCtaLabel={currentUser ? "Enter Dashboard" : "Sign Up"}
         primaryCtaHref={currentUser ? dashboardHref : "#"}
         onPrimaryCtaClick={() => {
           if (!currentUser) setAuthModal("signup");
@@ -222,7 +222,7 @@ export default function HomePage() {
                 onClick={() => setAuthModal("signup")}
                 className="w-full sm:w-auto px-10 py-4 rounded-full bg-[#d9541e] text-white hover:bg-[#bf4513] dark:hover:bg-[#ea6026] font-cinzel font-bold text-xs tracking-widest uppercase transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-3 group"
               >
-                <span>Sign Up as Advocate</span>
+                <span>Sign Up</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
             )}
