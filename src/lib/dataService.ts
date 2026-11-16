@@ -665,7 +665,7 @@ export interface LawyerRegistrationData {
   email: string;
   password: string;
   phone?: string;
-  barEnrollment: string;
+  barEnrollment?: string;
   chamberName?: string;
   primaryCourt?: string;
 }
@@ -675,7 +675,10 @@ export async function registerLawyerUser(data: LawyerRegistrationData) {
   const id = "u-lawyer-" + Date.now();
   const passwordHash = await hashPassword(data.password);
   
-  const designation = `Senior Counsel (${data.barEnrollment.trim().toUpperCase()})${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`;
+  const barEnrollmentTrimmed = data.barEnrollment?.trim();
+  const designation = barEnrollmentTrimmed
+    ? `Senior Counsel (${barEnrollmentTrimmed.toUpperCase()})${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`
+    : `Senior Counsel${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`;
 
   const cleanName = data.name.trim();
   const displayName = cleanName.toLowerCase().startsWith("adv") ? cleanName : `Adv. ${cleanName}`;

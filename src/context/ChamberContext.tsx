@@ -43,7 +43,7 @@ interface ChamberContextType {
     email: string;
     password: string;
     phone?: string;
-    barEnrollment: string;
+    barEnrollment?: string;
     chamberName?: string;
     primaryCourt?: string;
   }) => Promise<boolean>;
@@ -258,7 +258,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     email: string;
     password: string;
     phone?: string;
-    barEnrollment: string;
+    barEnrollment?: string;
     chamberName?: string;
     primaryCourt?: string;
   }): Promise<boolean> => {

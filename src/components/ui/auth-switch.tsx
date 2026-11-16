@@ -9,8 +9,12 @@ import {
   Scale,
   ArrowRight,
   X,
+  Check,
+  Eye,
+  EyeOff,
   Sparkles,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useChamber } from "@/context/ChamberContext";
 
 export interface AuthSwitchProps {
@@ -19,6 +23,155 @@ export interface AuthSwitchProps {
   onClose?: () => void;
   isModal?: boolean;
   className?: string;
+}
+
+/**
+ * AnimatedTickCross:
+ * Spring-physics morphing indicator that animates from a cross (✕) to a tick (✓)
+ * when criteria or password matches are satisfied.
+ */
+function AnimatedTickCross({
+  isValid,
+  size = 13,
+}: {
+  isValid: boolean;
+  size?: number;
+}) {
+  return (
+    <div
+      className="relative flex items-center justify-center shrink-0"
+      style={{ width: size + 8, height: size + 8 }}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {isValid ? (
+          <motion.div
+            key="tick"
+            initial={{ scale: 0.2, rotate: -70, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            exit={{ scale: 0.2, rotate: 70, opacity: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 480,
+              damping: 20,
+            }}
+            className="w-full h-full rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xs ring-2 ring-emerald-500/30"
+          >
+            <motion.svg
+              width={size}
+              height={size}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <motion.polyline
+                points="20 6 9 17 4 12"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+              />
+            </motion.svg>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="cross"
+            initial={{ scale: 0.2, rotate: 70, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            exit={{ scale: 0.2, rotate: -70, opacity: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 480,
+              damping: 24,
+            }}
+            className="w-full h-full rounded-full bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center shadow-xs ring-1 ring-red-400/50"
+          >
+            <motion.svg
+              width={size}
+              height={size}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <motion.line
+                x1="18"
+                y1="6"
+                x2="6"
+                y2="18"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.18 }}
+              />
+              <motion.line
+                x1="6"
+                y1="6"
+                x2="18"
+                y2="18"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.18, delay: 0.05 }}
+              />
+            </motion.svg>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * CriteriaTile:
+ * Clear, highly legible, well-defined card tile showing requirement status with animated cross-to-tick.
+ */
+function CriteriaTile({
+  label,
+  sublabel,
+  met,
+}: {
+  label: string;
+  sublabel?: string;
+  met: boolean;
+}) {
+  return (
+    <motion.div
+      layout
+      className={`flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all duration-300 border ${
+        met
+          ? "bg-emerald-50/90 dark:bg-emerald-950/40 border-emerald-500/50 shadow-xs"
+          : "bg-white/95 dark:bg-[#23201d] border-neutral-300 dark:border-neutral-700 shadow-2xs"
+      }`}
+    >
+      <div className="shrink-0 flex items-center justify-center">
+        <AnimatedTickCross isValid={met} size={12} />
+      </div>
+      <div className="flex flex-col min-w-0">
+        <span
+          className={`text-[12px] font-semibold leading-tight transition-colors duration-200 ${
+            met
+              ? "text-emerald-900 dark:text-emerald-200"
+              : "text-neutral-800 dark:text-neutral-100"
+          }`}
+        >
+          {label}
+        </span>
+        {sublabel && (
+          <span
+            className={`text-[10px] leading-tight transition-colors duration-200 mt-0.5 ${
+              met
+                ? "text-emerald-700/80 dark:text-emerald-300/80 font-medium"
+                : "text-neutral-500 dark:text-neutral-400 font-medium"
+            }`}
+          >
+            {sublabel}
+          </span>
+        )}
+      </div>
+    </motion.div>
+  );
 }
 
 export default function AuthSwitch({
@@ -36,19 +189,47 @@ export default function AuthSwitch({
   // Sign In State
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [signingIn, setSigningIn] = useState(false);
 
   // Sign Up State
   const [signUpName, setSignUpName] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
+  const [signUpConfirmPassword, setSignUpConfirmPassword] = useState("");
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [showSignUpConfirmPassword, setShowSignUpConfirmPassword] = useState(false);
   const [signUpBarEnrollment, setSignUpBarEnrollment] = useState("");
+  const [passwordFocused, setPasswordFocused] = useState(false);
   const [signingUp, setSigningUp] = useState(false);
+
+  // Option 1 Password Security Criteria:
+  // 1. Minimum 8 characters
+  // 2. Uppercase and lowercase letters
+  // 3. At least one number
+  // 4. At least one special symbol
+  const passCriteria = {
+    length: signUpPassword.length >= 8,
+    upperLower: /[A-Z]/.test(signUpPassword) && /[a-z]/.test(signUpPassword),
+    number: /[0-9]/.test(signUpPassword),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(signUpPassword),
+  };
+
+  const isPasswordSafe =
+    passCriteria.length &&
+    passCriteria.upperLower &&
+    passCriteria.number &&
+    passCriteria.special;
+
+  // Real-time password match verification status
+  const confirmPasswordTouched = signUpConfirmPassword.length > 0;
+  const passwordsMatch = confirmPasswordTouched && signUpConfirmPassword === signUpPassword;
+  const passwordsMismatch = confirmPasswordTouched && signUpConfirmPassword !== signUpPassword;
 
   const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
     if (!signInEmail || !signInPassword) {
-      addToast("Please provide both email and chamber password.", "error");
+      addToast("Please provide both email and password.", "error");
       return;
     }
     setSigningIn(true);
@@ -71,12 +252,36 @@ export default function AuthSwitch({
 
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
-    if (!signUpName || !signUpEmail || !signUpPassword || !signUpBarEnrollment) {
-      addToast("Please complete all advocate registration fields (*)", "error");
+    if (!signUpName.trim()) {
+      addToast("Advocate Full Name is mandatory (*)", "error");
       return;
     }
-    if (signUpPassword.length < 6) {
-      addToast("Master password must be at least 6 characters.", "error");
+    if (!signUpEmail.trim()) {
+      addToast("Email ID is mandatory (*)", "error");
+      return;
+    }
+    if (!signUpPassword) {
+      addToast("Password is mandatory (*)", "error");
+      return;
+    }
+    if (!signUpConfirmPassword) {
+      addToast("Confirm password is mandatory (*)", "error");
+      return;
+    }
+    if (!isPasswordSafe) {
+      if (!passCriteria.length) {
+        addToast("Security Requirement: Password must be at least 8 characters.", "error");
+      } else if (!passCriteria.upperLower) {
+        addToast("Security Requirement: Password must contain both UPPERCASE and lowercase letters.", "error");
+      } else if (!passCriteria.number) {
+        addToast("Security Requirement: Password must include at least one number (0-9).", "error");
+      } else if (!passCriteria.special) {
+        addToast("Security Requirement: Password must include at least one special symbol (!@#$).", "error");
+      }
+      return;
+    }
+    if (signUpPassword !== signUpConfirmPassword) {
+      addToast("Passwords do not match. Please verify your confirm password.", "error");
       return;
     }
     setSigningUp(true);
@@ -85,7 +290,7 @@ export default function AuthSwitch({
         name: signUpName,
         email: signUpEmail,
         password: signUpPassword,
-        barEnrollment: signUpBarEnrollment,
+        barEnrollment: signUpBarEnrollment.trim() || undefined,
         chamberName: `Chambers of ${signUpName}`,
         primaryCourt: "High Court of Delhi",
       });
@@ -142,7 +347,7 @@ export default function AuthSwitch({
           position: relative;
           width: 100%;
           max-width: 900px;
-          height: 560px;
+          height: 670px;
           background: #ffffff;
           border-radius: 28px;
           border: 1px solid rgba(17, 17, 17, 0.12);
@@ -245,12 +450,13 @@ export default function AuthSwitch({
           width: 100%;
           background-color: #f7f4ec;
           border: 1px solid rgba(17, 17, 17, 0.12);
-          margin: 6px 0;
-          height: 48px;
+          margin: 3px 0;
+          height: 44px;
           border-radius: 9999px;
-          display: grid;
-          grid-template-columns: 14% 86%;
-          padding: 0 0.5rem;
+          display: flex;
+          align-items: center;
+          padding: 0 0.85rem;
+          gap: 0.6rem;
           position: relative;
           transition: all 0.25s ease;
         }
@@ -272,12 +478,51 @@ export default function AuthSwitch({
           box-shadow: 0 0 0 3px rgba(217, 84, 30, 0.25);
         }
 
+        .as-input-field.is-valid {
+          border-color: #10b981 !important;
+          box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+        }
+
+        .as-input-field.is-invalid {
+          border-color: #ef4444 !important;
+          box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+        }
+
         .as-input-icon {
           display: flex;
           align-items: center;
           justify-content: center;
           color: #d9541e;
+          flex-shrink: 0;
+          width: 20px;
           transition: 0.3s;
+        }
+
+        .as-input-action {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex-shrink: 0;
+        }
+
+        .as-input-eye-btn {
+          background: none;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          color: rgba(17, 17, 17, 0.45);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: color 0.2s ease;
+        }
+
+        :global(.dark) .as-input-eye-btn {
+          color: rgba(243, 238, 227, 0.45);
+        }
+
+        .as-input-eye-btn:hover {
+          color: #d9541e;
         }
 
         .as-input-field input {
@@ -288,8 +533,9 @@ export default function AuthSwitch({
           font-weight: 500;
           font-size: 0.88rem;
           color: #111111;
-          width: 100%;
-          padding-right: 12px;
+          flex: 1;
+          min-width: 0;
+          padding: 0;
         }
 
         :global(.dark) .as-input-field input {
@@ -513,9 +759,10 @@ export default function AuthSwitch({
 
         @media (max-width: 870px) {
           .auth-switch-container {
-            min-height: 740px;
-            height: 94vh;
-            max-height: 840px;
+            min-height: 820px;
+            height: 96vh;
+            max-height: 920px;
+            overflow-y: auto;
           }
           .as-signin-signup {
             width: 100%;
@@ -645,7 +892,7 @@ export default function AuthSwitch({
                 <input
                   type="email"
                   required
-                  placeholder="counsel@chambers.in"
+                  placeholder="Email ID"
                   value={signInEmail}
                   onChange={(e) => setSignInEmail(e.target.value)}
                   autoComplete="email"
@@ -657,13 +904,28 @@ export default function AuthSwitch({
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
-                  type="password"
+                  type={showSignInPassword ? "text" : "password"}
                   required
-                  placeholder="Chamber password"
+                  placeholder="Password"
                   value={signInPassword}
                   onChange={(e) => setSignInPassword(e.target.value)}
                   autoComplete="current-password"
                 />
+                <div className="as-input-action">
+                  <button
+                    type="button"
+                    onClick={() => setShowSignInPassword(!showSignInPassword)}
+                    className="as-input-eye-btn"
+                    tabIndex={-1}
+                    aria-label={showSignInPassword ? "Hide password" : "Show password"}
+                  >
+                    {showSignInPassword ? (
+                      <EyeOff className="w-3.5 h-3.5" />
+                    ) : (
+                      <Eye className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <button
@@ -704,8 +966,7 @@ export default function AuthSwitch({
                 </div>
                 <input
                   type="text"
-                  required
-                  placeholder="Bar Enrolment No. (e.g. D/1482/2012) *"
+                  placeholder="Bar Enrollment No. (Optional)"
                   value={signUpBarEnrollment}
                   onChange={(e) => setSignUpBarEnrollment(e.target.value)}
                 />
@@ -718,25 +979,166 @@ export default function AuthSwitch({
                 <input
                   type="email"
                   required
-                  placeholder="Chamber Email *"
+                  placeholder="Email ID *"
                   value={signUpEmail}
                   onChange={(e) => setSignUpEmail(e.target.value)}
                   autoComplete="email"
                 />
               </div>
 
-              <div className="as-input-field">
+              {/* Password field with real-time Option 1 security verification */}
+              <div className={`as-input-field ${
+                signUpPassword.length > 0
+                  ? isPasswordSafe
+                    ? "is-valid"
+                    : "is-invalid"
+                  : ""
+              }`}>
                 <div className="as-input-icon">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
-                  type="password"
+                  type={showSignUpPassword ? "text" : "password"}
                   required
-                  placeholder="Master Password (Min 6 chars) *"
+                  placeholder="Enter your password *"
                   value={signUpPassword}
                   onChange={(e) => setSignUpPassword(e.target.value)}
+                  onFocus={() => setPasswordFocused(true)}
                   autoComplete="new-password"
                 />
+                <div className="as-input-action">
+                  <button
+                    type="button"
+                    onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                    className="as-input-eye-btn"
+                    tabIndex={-1}
+                    aria-label={showSignUpPassword ? "Hide password" : "Show password"}
+                  >
+                    {showSignUpPassword ? (
+                      <EyeOff className="w-3.5 h-3.5" />
+                    ) : (
+                      <Eye className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                  {signUpPassword.length > 0 && (
+                    <div className="flex items-center gap-1 select-none">
+                      <AnimatedTickCross isValid={isPasswordSafe} size={11} />
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-wider hidden xs:inline ${
+                          isPasswordSafe
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {isPasswordSafe ? "Secure" : "Safe Pass"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Real-time Option 1 Security Criteria Panel with animated cross-to-tick */}
+              <AnimatePresence>
+                {(passwordFocused || signUpPassword.length > 0) && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, height: "auto", scale: 1 }}
+                    exit={{ opacity: 0, height: 0, scale: 0.98 }}
+                    transition={{ duration: 0.22, ease: "easeOut" }}
+                    className="w-full max-w-[380px] overflow-hidden my-1.5"
+                  >
+                    <div className="p-2.5 rounded-2xl bg-[#f7f4ec] dark:bg-[#1f1d1a] border border-neutral-300 dark:border-neutral-700/80 shadow-xs">
+                      <div className="flex items-center justify-between mb-2 px-1">
+                        <span className="text-[10px] font-cinzel font-bold tracking-[0.16em] uppercase text-neutral-600 dark:text-neutral-400">
+                          Password Criteria
+                        </span>
+                        <span
+                          className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full ${
+                            isPasswordSafe
+                              ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
+                              : "bg-amber-500/15 text-amber-700 dark:text-amber-400"
+                          }`}
+                        >
+                          {isPasswordSafe
+                            ? "✓ Safe Combination"
+                            : `${[passCriteria.length, passCriteria.upperLower, passCriteria.number, passCriteria.special].filter(Boolean).length}/4 Met`}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <CriteriaTile
+                          label="8+ Characters"
+                          sublabel="Minimum length"
+                          met={passCriteria.length}
+                        />
+                        <CriteriaTile
+                          label="Upper & Lower"
+                          sublabel="A-Z and a-z"
+                          met={passCriteria.upperLower}
+                        />
+                        <CriteriaTile
+                          label="Numbers"
+                          sublabel="0 through 9"
+                          met={passCriteria.number}
+                        />
+                        <CriteriaTile
+                          label="Special Symbol"
+                          sublabel="e.g. ! @ # $"
+                          met={passCriteria.special}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Confirm password field with real-time match verification */}
+              <div className={`as-input-field ${
+                confirmPasswordTouched
+                  ? passwordsMatch
+                    ? "is-valid"
+                    : "is-invalid"
+                  : ""
+              }`}>
+                <div className="as-input-icon">
+                  <Lock className="w-4 h-4" />
+                </div>
+                <input
+                  type={showSignUpConfirmPassword ? "text" : "password"}
+                  required
+                  placeholder="Confirm password *"
+                  value={signUpConfirmPassword}
+                  onChange={(e) => setSignUpConfirmPassword(e.target.value)}
+                  autoComplete="new-password"
+                />
+                <div className="as-input-action">
+                  <button
+                    type="button"
+                    onClick={() => setShowSignUpConfirmPassword(!showSignUpConfirmPassword)}
+                    className="as-input-eye-btn"
+                    tabIndex={-1}
+                    aria-label={showSignUpConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    {showSignUpConfirmPassword ? (
+                      <EyeOff className="w-3.5 h-3.5" />
+                    ) : (
+                      <Eye className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                  {confirmPasswordTouched && (
+                    <div className="flex items-center gap-1 select-none">
+                      <AnimatedTickCross isValid={passwordsMatch} size={11} />
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-wider hidden xs:inline ${
+                          passwordsMatch
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {passwordsMatch ? "Match" : "Mismatch"}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <button

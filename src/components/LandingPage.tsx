@@ -94,7 +94,7 @@ export function LandingPage() {
 
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!signUpName || !signUpEmail || !signUpPassword || !signUpBarEnrollment) {
+    if (!signUpName || !signUpEmail || !signUpPassword) {
       addToast("Please fill all required advocate registration fields", "error");
       return;
     }

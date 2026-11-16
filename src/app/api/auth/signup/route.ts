@@ -6,16 +6,26 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { name, email, password, barEnrollment } = body;
 
-    if (!name || !email || !password || !barEnrollment) {
+    if (!name || !email || !password) {
       return NextResponse.json(
-        { error: "Advocate name, email, password, and Bar Council Enrolment No. are required" },
+        { error: "Advocate name, email, and password are required" },
         { status: 400 }
       );
     }
 
-    if (password.length < 6) {
+    // Option 1 password security criteria: min 8 chars, uppercase, lowercase, number, special char
+    const hasLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+
+    if (!hasLength || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
       return NextResponse.json(
-        { error: "Security password must be at least 6 characters" },
+        {
+          error:
+            "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+        },
         { status: 400 }
       );
     }
