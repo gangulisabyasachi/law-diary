@@ -347,18 +347,18 @@ export function PublicFooter() {
 
       {/* ─── 3. Full-Bleed End-to-End Watermark Background at Bottom of Footer ─── */}
       <div 
-        className="w-full overflow-hidden select-none pointer-events-none pt-4 sm:pt-8 pb-0 mt-2 mb-0 flex justify-center items-center"
+        className="w-full overflow-hidden select-none pointer-events-none pt-4 sm:pt-6 pb-0 mt-2 mb-0 flex justify-center items-center"
         aria-hidden="true"
       >
         <svg
-          viewBox="0 0 420 116"
+          viewBox="0 0 420 86"
           className="w-full h-auto select-none pointer-events-none block"
           aria-label="LexDaily"
         >
-          <g transform="scale(1, 1.48)">
+          <g transform="scale(1, 1.10)">
             <text
               x="50%"
-              y="75"
+              y="74"
               textAnchor="middle"
               className="font-mogina uppercase fill-[#111111]/[0.045] dark:fill-[#f3eee3]/[0.045] transition-colors"
               fontSize="100"
