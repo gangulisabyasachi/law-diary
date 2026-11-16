@@ -134,9 +134,9 @@ export function LandingPage() {
       <header className="sticky top-0 z-40 backdrop-blur-md bg-[#f3eee3]/90 dark:bg-[#111111]/90 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 transition-colors">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between">
           {/* Pure Textual Logo: LexDaily */}
-          <a href="#" className="group focus:outline-none select-none inline-flex items-center">
+          <a href="#" className="group focus:outline-none select-none inline-flex items-center py-1 overflow-visible">
             <span 
-              className="font-clagista text-2xl sm:text-[34px] tracking-normal text-[#111111] dark:text-[#f3eee3] group-hover:opacity-85 transition-opacity select-none inline-block pl-0.5"
+              className="font-clagista text-2xl sm:text-[34px] tracking-normal text-[#111111] dark:text-[#f3eee3] group-hover:opacity-85 transition-opacity select-none inline-block py-1 px-2.5 leading-normal overflow-visible"
               style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
             >
               LexDaily
@@ -1221,9 +1221,9 @@ export function LandingPage() {
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
             <div className="space-y-3.5">
-              <div className="flex items-center">
+              <div className="flex items-center py-1 overflow-visible">
                 <span 
-                  className="text-2xl sm:text-3xl font-clagista tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
+                  className="text-2xl sm:text-3xl font-clagista tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block py-1 px-2.5 leading-normal overflow-visible"
                   style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
                 >
                   LexDaily

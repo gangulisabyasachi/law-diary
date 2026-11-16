@@ -108,18 +108,18 @@ export default function Hero3({
                 <nav className="w-full px-6 md:px-10 lg:px-16 py-5 md:py-6 flex items-center justify-between">
                     {/* Brand Logo & Name */}
                     {isSlice ? (
-                        <div className="flex items-center shrink-0">
+                        <div className="flex items-center shrink-0 py-1 overflow-visible">
                             <span
-                                className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal select-none inline-block`}
+                                className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal select-none inline-block py-1 px-2.5 leading-normal overflow-visible`}
                                 style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
                             >
                                 {brandName}
                             </span>
                         </div>
                     ) : (
-                        <Link href="/" className="flex items-center shrink-0 group">
+                        <Link href="/" className="flex items-center shrink-0 group py-1 overflow-visible">
                             <span
-                                className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block`}
+                                className={`${textBase} text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block py-1 px-2.5 leading-normal overflow-visible`}
                                 style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
                             >
                                 {brandName}

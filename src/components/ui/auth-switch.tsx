@@ -387,9 +387,9 @@ export default function AuthSwitch({
           align-items: center;
           justify-content: center;
           flex-direction: column;
-          padding: 0 3.5rem;
+          padding: 0.8rem 3.5rem 0.6rem 3.5rem;
           transition: all 0.2s 0.7s;
-          overflow: hidden;
+          overflow: visible;
           grid-column: 1 / 2;
           grid-row: 1 / 2;
           width: 100%;
@@ -410,12 +410,21 @@ export default function AuthSwitch({
         .as-brand-tag {
           font-family: 'Clagista', cursive, sans-serif;
           color: #d9541e;
-          font-size: 1.85rem;
-          line-height: 1;
-          margin-bottom: 4px;
-          display: flex;
+          font-size: 2.15rem;
+          line-height: 1.35;
+          margin-bottom: 2px;
+          display: inline-flex;
           align-items: center;
           justify-content: center;
+          overflow: visible;
+          padding: 4px 14px;
+        }
+
+        .as-brand-tag span {
+          display: inline-block;
+          line-height: 1.3;
+          padding: 0.1em 0.28em 0.2em 0.14em;
+          overflow: visible;
         }
 
         .as-title {
@@ -879,8 +888,8 @@ export default function AuthSwitch({
           <div className="as-signin-signup">
             {/* 1. SIGN IN FORM */}
             <form className="as-form as-sign-in-form" onSubmit={handleSignIn}>
-              <div className="as-brand-tag">
-                <span>LexDaily</span>
+              <div className="as-brand-tag select-none">
+                <span className="font-clagista">LexDaily</span>
               </div>
               <h2 className="as-title">Sign In</h2>
               <p className="as-subtitle">Authenticate credentials to enter private chamber diary</p>
@@ -940,8 +949,8 @@ export default function AuthSwitch({
 
             {/* 2. SIGN UP FORM */}
             <form className="as-form as-sign-up-form" onSubmit={handleSignUp}>
-              <div className="as-brand-tag">
-                <span>LexDaily</span>
+              <div className="as-brand-tag select-none">
+                <span className="font-clagista">LexDaily</span>
               </div>
               <h2 className="as-title">Sign Up</h2>
               <p className="as-subtitle">Solely for advocates enrolled under Bar Council of India</p>

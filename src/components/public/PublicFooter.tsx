@@ -91,9 +91,9 @@ export function PublicFooter() {
 
           {/* Col 1: Brand & Chamber Identity (4 Cols) */}
           <div className="lg:col-span-4 space-y-6">
-            <Link href="/" className="inline-flex items-center group">
+            <Link href="/" className="inline-flex items-center group py-1 overflow-visible">
               <span 
-                className="text-3xl sm:text-4xl font-clagista tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block"
+                className="text-3xl sm:text-4xl font-clagista tracking-normal text-[#111111] dark:text-[#f3eee3] select-none inline-block py-1.5 px-3 leading-normal overflow-visible"
                 style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
               >
                 LexDaily

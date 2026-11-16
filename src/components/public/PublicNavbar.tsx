@@ -31,9 +31,9 @@ export function PublicNavbar() {
     <header className="sticky top-0 z-40 bg-[#f3eee3]/90 dark:bg-[#111111]/90 backdrop-blur-xl border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
       <div className="w-full px-6 md:px-10 lg:px-16 xl:px-20 py-4 flex items-center justify-between gap-4">
         {/* Brand Logo & Name */}
-        <Link href="/" className="flex items-center shrink-0 group">
+        <Link href="/" className="flex items-center shrink-0 group py-1 overflow-visible">
           <span 
-            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block"
+            className="text-[#111111] dark:text-[#f3eee3] text-2xl sm:text-[34px] font-clagista tracking-normal group-hover:opacity-90 transition-opacity duration-300 select-none inline-block py-1 px-2.5 leading-normal overflow-visible"
             style={{ fontFamily: "'Clagista', cursive, sans-serif" }}
           >
             LexDaily

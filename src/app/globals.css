@@ -141,10 +141,14 @@ html {
 
 .font-clagista {
   font-family: 'Clagista', cursive, sans-serif;
-}
-
-.font-clagista {
-  font-family: 'Clagista', cursive, sans-serif;
+  line-height: 1.25;
+  padding-left: 0.08em;
+  padding-right: 0.22em;
+  padding-top: 0.06em;
+  padding-bottom: 0.16em;
+  overflow: visible;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .font-macalimo {
