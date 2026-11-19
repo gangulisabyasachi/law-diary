@@ -20,7 +20,7 @@ export function ContactsView() {
       name: "Adv. Arjun Mehta",
       email: "lawyer@chambers.in",
       phone: "+91 98110 20002",
-      designation: "Senior Counsel & Principal Advocate (D/1482/2012)",
+      designation: "Senior Advocate & Chamber Head (D/1482/2012)",
     };
 
   const associates = state.users.filter(
@@ -33,14 +33,14 @@ export function ContactsView() {
       <div className="pb-2 border-b border-[#111111]/10 dark:border-[#f3eee3]/10">
         <h3 className="text-lg font-bold font-cinzel text-[#111111] dark:text-[#f3eee3] flex items-center gap-2">
           <Scale className="w-5 h-5 text-[#111111] dark:text-[#f3eee3]" />
-          <span>Retained Legal Counsel &amp; Chamber Contacts</span>
+          <span>Retained Legal Advocate &amp; Chamber Contacts</span>
         </h3>
         <p className="text-xs text-[#111111]/60 dark:text-[#f3eee3]/50 font-serif italic mt-0.5">
           Direct communication channels with your designated Senior Advocate, Briefing Associates, and Chamber Registrar.
         </p>
       </div>
 
-      {/* Senior Counsel Card */}
+      {/* Senior Advocate Card */}
       <div className="p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:border-[#111111] dark:hover:border-[#f3eee3]/50 transition-all">
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 rounded-2xl bg-[#111111] dark:bg-[#f3eee3] text-[#f3eee3] dark:text-[#111111] font-bold text-sm flex items-center justify-center flex-shrink-0 shadow-md shadow-[#f3eee3]/20 dark:shadow-[#f3eee3]/20">
@@ -48,7 +48,7 @@ export function ContactsView() {
           </div>
           <div>
             <span className="text-[10px] uppercase tracking-widest text-[#111111]/70 dark:text-[#f3eee3] font-bold font-cinzel block">
-              Lead Arguing Counsel &amp; Senior Advocate
+              Lead Arguing Advocate &amp; Chamber Head
             </span>
             <h4 className="text-xl font-bold font-cinzel text-[#111111] dark:text-[#f3eee3] mt-0.5">{lawyer.name}</h4>
             <p className="text-xs text-[#111111]/60 dark:text-[#f3eee3]/50 font-serif italic mt-0.5">{lawyer.designation}</p>
@@ -70,7 +70,7 @@ export function ContactsView() {
       {/* Briefing Associates */}
       <div className="space-y-4">
         <h4 className="text-xs font-bold uppercase tracking-widest text-[#111111]/60 dark:text-[#f3eee3]/50 font-cinzel">
-          Assigned Briefing Associates &amp; Junior Counsel
+          Assigned Briefing Associates &amp; Junior Advocates
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {associates.map((a) => (

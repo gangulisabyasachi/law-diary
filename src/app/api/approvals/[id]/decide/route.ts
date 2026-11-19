@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { decideApproval, getChamberState } from "@/lib/dataService";
 import { getAuthUser } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }

@@ -288,10 +288,10 @@ export function LandingPage() {
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
             <div className="p-5 rounded-2xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
               <span className="block text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-                16-Digit
+                Pan-India
               </span>
               <span className="text-[11px] font-cinzel tracking-wider text-[#111111]/65 dark:text-[#f3eee3]/60 block mt-1 uppercase">
-                eCourts CNR Standard
+                All Courts &amp; Tribunals
               </span>
             </div>
 
@@ -378,7 +378,7 @@ export function LandingPage() {
                       : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
                   }`}
                 >
-                  CNR Radar
+                  Court Radar
                 </button>
               </div>
             </div>
@@ -392,7 +392,7 @@ export function LandingPage() {
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" />
                       <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#111111] dark:text-[#f3eee3]">
-                        Delhi High Court Listings (2 Matters Today)
+                        Chamber Cause Board (2 Matters Today)
                       </span>
                     </div>
                     <span className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
@@ -410,9 +410,6 @@ export function LandingPage() {
                           </span>
                           <span className="font-mono text-xs font-bold text-[#111111] dark:text-[#f3eee3]">
                             W.P.(C) 4120/2024
-                          </span>
-                          <span className="text-[10px] text-[#111111]/65 dark:text-[#f3eee3]/60 font-mono">
-                            CNR: DLHC01-008129-2024
                           </span>
                         </div>
                         <h4 className="text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1.5">
@@ -444,9 +441,6 @@ export function LandingPage() {
                           </span>
                           <span className="font-mono text-xs font-bold text-[#111111] dark:text-[#f3eee3]">
                             CS (COMM) 890/2023
-                          </span>
-                          <span className="text-[10px] text-[#111111]/65 dark:text-[#f3eee3]/60 font-mono">
-                            CNR: DLHC01-019482-2023
                           </span>
                         </div>
                         <h4 className="text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1.5">
@@ -551,14 +545,14 @@ export function LandingPage() {
                 </div>
               )}
 
-              {/* Tab 4: CNR Radar */}
+              {/* Tab 4: Court Radar */}
               {simulatorTab === "search" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between pb-3 border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
                     <div className="flex items-center gap-2">
                       <Search className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" />
                       <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#111111] dark:text-[#f3eee3]">
-                        16-Digit CNR National Search Engine
+                        National Court &amp; Docket Search Engine
                       </span>
                     </div>
                   </div>
@@ -568,7 +562,7 @@ export function LandingPage() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Try searching: DLHC01-008129-2024 or AeroGlide..."
+                      placeholder="Try searching: W.P.(C) 4120/2024 or AeroGlide..."
                       className="w-full px-4 py-3 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] font-mono shadow-xs"
                     />
                     <Search className="w-4 h-4 absolute right-4 top-3.5 text-[#111111]/65 dark:text-[#f3eee3]/60" />
@@ -601,7 +595,7 @@ export function LandingPage() {
               <BookOpen className="w-5 h-5" />
             </div>
             <h3 className="text-base font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-              Chronological Case Dossiers &amp; NDOH
+              Chronological Case Dossiers &amp; Next Dates
             </h3>
             <p className="text-xs text-[#111111]/70 dark:text-[#f3eee3]/60 font-serif leading-relaxed mt-2.5">
               Record bench, courtroom, stage, opposite party, and case numbers once. Maintain an uninterrupted audit trail of all previous orders, adjournments, and procedural stages.
@@ -708,10 +702,10 @@ export function LandingPage() {
                 II
               </span>
               <h4 className="text-sm font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-                File Matters &amp; CNRs
+                File Matters &amp; Cases
               </h4>
               <p className="text-xs text-[#111111]/70 dark:text-[#f3eee3]/60 font-serif mt-2 leading-relaxed">
-                Log active matters with 16-digit CNR, bench, court room, judge, and client contact details.
+                Log active matters with case number, court, bench, judge, and client contact details.
               </p>
             </div>
 
@@ -749,7 +743,7 @@ export function LandingPage() {
             TRANSPARENT PLANS
           </span>
           <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-2.5 tracking-tight">
-            Plans for Individual Counsels &amp; Established Chambers.
+            Plans for Individual Advocates &amp; Established Chambers.
           </h2>
           <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 mt-3">
             Begin with a full-featured complimentary tier. Upgrade only as your litigation chamber expands.
@@ -764,7 +758,7 @@ export function LandingPage() {
                 Solo Practitioner
               </span>
               <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1">
-                Individual Counsel
+                Individual Advocate
               </h3>
               <div className="mt-5 flex items-baseline gap-1.5">
                 <span className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">₹0</span>
@@ -858,7 +852,7 @@ export function LandingPage() {
                 Enterprise Chambers
               </span>
               <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1">
-                Senior Counsel / Law Firm
+                Senior Advocate / Law Firm
               </h3>
               <div className="mt-5 flex items-baseline gap-1.5">
                 <span className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">Custom</span>
@@ -902,7 +896,7 @@ export function LandingPage() {
               CHAMBER TESTIMONIALS
             </span>
             <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-2.5">
-              Endorsed by Practicing Counsels Nationwide.
+              Endorsed by Practicing Advocates Nationwide.
             </h2>
           </div>
 
@@ -962,7 +956,7 @@ export function LandingPage() {
             INQUIRIES &amp; PROTOCOL
           </span>
           <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-2.5">
-            Common Questions by Practicing Counsels.
+            Common Questions by Practicing Advocates.
           </h2>
         </div>
 
@@ -970,7 +964,7 @@ export function LandingPage() {
           {[
             {
               q: "Is chamber and client data confidential and air-gapped?",
-              a: "Absolutely. LexDaily uses air-gapped, encrypted database partitioning. Opposing counsels or outside advocates cannot query, search, or view your chamber's active matters, client advice, or fee ledgers.",
+              a: "Absolutely. LexDaily uses air-gapped, encrypted database partitioning. Opposing advocates or outside lawyers cannot query, search, or view your chamber's active matters, client advice, or fee ledgers.",
             },
             {
               q: "Does LexDaily comply with Bar Council of India (BCI) Rule 36?",
@@ -978,15 +972,15 @@ export function LandingPage() {
             },
             {
               q: "Can junior associates and chamber clerks submit hearing outcomes?",
-              a: "Yes. In the Chamber Pro plan, junior associates log verbatim court proceedings and propose the Next Date of Hearing (NDOH). These submissions enter the Senior Advocate's Verification Desk for final sign-off.",
+              a: "Yes. In the Chamber Pro plan, junior associates log verbatim court proceedings and propose the Next Date of Hearing. These submissions enter the Senior Advocate's Verification Desk for final sign-off.",
             },
             {
-              q: "Does it support the 16-character eCourts CNR number standard?",
-              a: "Yes. Every matter features full support for the 16-character Case Natural Record (e.g. DLHC01-008129-2024), enabling unified tracking across High Courts, District Courts, and Tribunals.",
+              q: "Does it support custom case tracking across all courts in India?",
+              a: "Yes. Every matter features full support for custom case numbers and docket references, enabling unified tracking across High Courts, District Courts, and Tribunals nationwide.",
             },
             {
               q: "Can I print or export my Daily Cause List as a clean PDF?",
-              a: "Yes. LexDaily provides a 1-click printable cause list formatted specifically for chamber boards, court bags, and sharing with briefing counsels.",
+              a: "Yes. LexDaily provides a 1-click printable cause list formatted specifically for chamber boards, court bags, and sharing with briefing advocates.",
             },
           ].map((faq, i) => (
             <div
@@ -1041,9 +1035,8 @@ export function LandingPage() {
                       Chamber Registry Headquarters
                     </h4>
                     <p className="text-xs font-serif text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1.5 leading-relaxed">
-                      Chamber Block II, Sher Shah Road / Bhagwan Das Road<br />
-                      Opposite Delhi High Court &amp; Supreme Court of India<br />
-                      New Delhi 110001
+                      Bar Chamber Registry Desk<br />
+                      New Delhi, India
                     </p>
                   </div>
                 </div>
@@ -1100,7 +1093,7 @@ export function LandingPage() {
                       Communication Dispatched to Chamber Registrar
                     </h4>
                     <p className="text-xs font-serif text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1.5 max-w-md mx-auto">
-                      Thank you, {contactName || "Counsel"}. Our technical representative will reach out shortly.
+                      Thank you, {contactName || "Advocate"}. Our technical representative will reach out shortly.
                     </p>
                     <button
                       onClick={() => setContactSubmitted(false)}
@@ -1149,7 +1142,7 @@ export function LandingPage() {
                           required
                           value={contactEmail}
                           onChange={(e) => setContactEmail(e.target.value)}
-                          placeholder="counsel@singhania.in"
+                          placeholder="advocate@singhania.in"
                           className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] text-xs focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3]"
                         />
                       </div>
@@ -1252,7 +1245,7 @@ export function LandingPage() {
               </h4>
               <ul className="space-y-2">
                 <li><button onClick={() => setAuthModal("signup")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Advocate Sign Up (Lawyers Only)</button></li>
-                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Senior Counsel Sign In</button></li>
+                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Senior Advocate Sign In</button></li>
                 <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Associate Briefing Desk</button></li>
                 <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Litigant Client Access</button></li>
               </ul>

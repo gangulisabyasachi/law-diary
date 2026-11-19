@@ -4,7 +4,7 @@ import { ChamberProvider } from "@/context/ChamberContext";
 
 export const metadata: Metadata = {
   title: "LexDaily",
-  description: "The premier multi-chamber legal practice platform for Senior Advocates, Associate Counsels, Law Firms, and Corporate Litigants. Built for the Indian judicial ecosystem.",
+  description: "The premier multi-chamber legal practice platform for Senior Advocates, Associate Advocates, Law Firms, and Corporate Litigants. Built for the Indian judicial ecosystem.",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

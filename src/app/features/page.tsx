@@ -34,20 +34,20 @@ export default function FeaturesPage() {
         "Automatically aggregates daily courtroom listings across High Courts, District Courts, and Tribunals. View calling orders, item numbers, court rooms, and presiding benches filtered for Today, Tomorrow, or entire statutory terms.",
       bullets: [
         "1-Click Printable Cause List for court bags and briefing folders",
-        "Filtered court views: Delhi High Court, Tis Hazari, NCLT Principal Bench",
-        "Chronological listing boards with Next Date of Hearing (NDOH) radar",
+        "Multi-bench cause board views across all jurisdictions",
+        "Chronological listing boards with Next Date radar",
       ],
     },
     {
       icon: Scale,
-      title: "16-Character National CNR Tracking",
-      tagline: "Unified case identification across all Indian forums.",
+      title: "Comprehensive Case & Docket Tracking",
+      tagline: "Unified case tracking across all Indian forums.",
       description:
-        "Full support for Case Natural Records (e.g. DLHC01-008129-2024). Easily track matters as they move from lower courts through High Court appeals and Supreme Court Special Leave Petitions (SLPs).",
+        "Full support for all Indian court matters. Easily track matters as they move from lower courts through High Court appeals and Supreme Court Special Leave Petitions (SLPs).",
       bullets: [
-        "Instant clipboard copy and lookup with zero formatting friction",
+        "Instant case search and lookup with zero formatting friction",
         "Complete historical record of orders, hearings, and bench changes",
-        "Direct association with Vakalatnamas, arguing counsels, and briefing associates",
+        "Direct association with Vakalatnamas, arguing advocates, and briefing associates",
       ],
     },
     {
@@ -64,14 +64,14 @@ export default function FeaturesPage() {
     },
     {
       icon: FileCheck,
-      title: "Senior Counsel Verification Desk",
+      title: "Senior Advocate Verification Desk",
       tagline: "Two-man rule for junior associate drafting and court submissions.",
       description:
         "Junior and briefing associates can prepare hearing notes, draft order summaries, and propose next dates. Every entry is placed on the Senior Advocate's verification desk for sign-off and approval before it alters the official chamber docket.",
       bullets: [
         "Prevents unvetted court notes or inaccurate business records from entering the master register",
         "Real-time pending queue with 1-click 'Sanction & Commit' or 'Reject Draft'",
-        "Complete audit trail showing which associate drafted and which counsel signed off",
+        "Complete audit trail showing which associate drafted and which advocate signed off",
       ],
     },
     {
@@ -109,17 +109,17 @@ export default function FeaturesPage() {
     {
       step: "02",
       title: "Docket Enrollment",
-      description: "Log active matters with 16-character CNR, case title, presiding bench, court room, and client Vakalatnama.",
+      description: "Log active matters with case number, title, presiding bench, court room, and client Vakalatnama.",
     },
     {
       step: "03",
       title: "Daily Listing & Hearing Board",
-      description: "Review your Daily Cause List every morning, check calling order, and record hearing outcomes and next dates (NDOH).",
+      description: "Review your Daily Cause List every morning, check calling order, and record hearing outcomes and next dates.",
     },
     {
       step: "04",
       title: "Senior Verification & Custody",
-      description: "Senior Counsel sanctions junior drafts, certified orders are committed to safe custody, and dockets remain spotless.",
+      description: "Senior Advocate sanctions junior drafts, certified orders are committed to safe custody, and dockets remain spotless.",
     },
   ];
 
@@ -210,7 +210,7 @@ export default function FeaturesPage() {
               </h2>
             </div>
             <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
-              How distinguished counsels transition from disorganized paper registers to a sovereign digital chamber.
+              How distinguished advocates transition from disorganized paper registers to a sovereign digital chamber.
             </p>
           </div>
 

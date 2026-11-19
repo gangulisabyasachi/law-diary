@@ -516,7 +516,7 @@ export default function AuthSwitch({
       });
       setSigningUp(false);
       if (success) {
-        addToast("Chamber successfully commissioned! Welcome, Counsel.", "success");
+        addToast("Chamber successfully commissioned! Welcome, Advocate.", "success");
         onSuccess?.();
         onClose?.();
         router.push("/dashboard");
@@ -1414,7 +1414,7 @@ export default function AuthSwitch({
             <div className="as-content">
               <h3>New Chamber?</h3>
               <p>
-                Initialize an encrypted digital operating system for your legal practice. Cause lists, CNR dockets, and statutory limitation radar.
+                Initialize an encrypted digital operating system for your legal practice. Cause lists, case dockets, and statutory limitation radar.
               </p>
               <button
                 type="button"
@@ -1430,7 +1430,7 @@ export default function AuthSwitch({
             <div className="as-content">
               <h3>Already Enrolled?</h3>
               <p>
-                Welcome back, Counsel. Authenticate your chamber master key to access confidential daily hearings and court dockets.
+                Welcome back, Advocate. Authenticate your chamber master key to access confidential daily hearings and court dockets.
               </p>
               <button
                 type="button"

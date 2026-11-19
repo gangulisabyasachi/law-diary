@@ -59,7 +59,7 @@ export default function Hero3({
     badgeText,
     headingLine1 = 'Building sovereign clarity',
     headingLine2 = 'into Indian litigation.',
-    description = 'From automated court cause lists and 16-character CNR dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers.',
+    description = 'From automated court cause lists and active case dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers.',
     primaryCtaLabel,
     primaryCtaHref = '#features-section',
     onPrimaryCtaClick,

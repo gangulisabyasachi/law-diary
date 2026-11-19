@@ -48,12 +48,12 @@ export default function ContactPage() {
       <Hero3
         brandName="LexDaily"
         eyebrowText="Direct Chamber Registrar Desk"
-        headingLine1="Direct counsel communication"
+        headingLine1="Direct advocate communication"
         headingLine2="and chamber onboarding."
         description="Connect directly with the Chamber Administration Office for bespoke on-premise deployments, historical register migration, or team orientation across Indian jurisdictions."
         primaryCtaLabel="Dispatch Communication"
         primaryCtaHref="#contact-form"
-        secondaryCtaLabel="Call Counsel Hotline"
+        secondaryCtaLabel="Call Advocate Hotline"
         secondaryCtaHref="tel:+919811020002"
         scrollText="Open Dispatch"
         scrollHref="#contact-form"
@@ -86,8 +86,7 @@ export default function ContactPage() {
                       Physical Chamber Desk
                     </span>
                     <p className="text-[#111111]/80 dark:text-[#f3eee3]/80 mt-0.5 leading-relaxed text-xs">
-                      Chamber Block, Sher Shah Road, New Delhi 110003<br />
-                      (Adjacent to High Court of Delhi)
+                      Bar Chamber Registry Desk, New Delhi, India
                     </p>
                   </div>
                 </div>
@@ -112,7 +111,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <span className="font-cinzel font-bold text-xs text-[#111111] dark:text-[#f3eee3] block">
-                      Counsel Hotline
+                      Advocate Hotline
                     </span>
                     <p className="font-mono text-xs text-[#111111] dark:text-[#f3eee3] mt-0.5">
                       +91 98110 20002
@@ -161,7 +160,7 @@ export default function ContactPage() {
                     Communication Dispatched to Chamber Registrar
                   </h4>
                   <p className="text-sm font-serif text-[#111111]/75 dark:text-[#f3eee3]/70 max-w-md mx-auto leading-relaxed">
-                    Thank you, Counsel. A representative from the registrar desk will review your inquiry and connect with your chamber shortly.
+                    Thank you, Advocate. A representative from the registrar desk will review your inquiry and connect with your chamber shortly.
                   </p>
                   <button
                     onClick={() => {
@@ -214,7 +213,7 @@ export default function ContactPage() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="counsel@singhania.in"
+                        placeholder="advocate@singhania.in"
                         className="w-full px-4 py-3 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] text-sm focus:outline-none focus:border-[#d9541e]"
                       />
                     </div>

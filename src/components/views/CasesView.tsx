@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Scale, Search, Plus, Download, Clock, ArrowRight, User, Copy, Check, Building, Gavel } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
@@ -8,7 +9,6 @@ export function CasesView() {
   const { state, currentUser, openCase, openModal, addToast } = useChamber();
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
-  const [copiedCNR, setCopiedCNR] = useState<string | null>(null);
 
   if (!state || !currentUser) return null;
 
@@ -40,7 +40,9 @@ export function CasesView() {
       c.caseNo.toLowerCase().includes(q) ||
       (c.cnr && c.cnr.toLowerCase().includes(q)) ||
       c.court.toLowerCase().includes(q) ||
-      c.stage.toLowerCase().includes(q);
+      c.stage.toLowerCase().includes(q) ||
+      (c.caseType && c.caseType.toLowerCase().includes(q)) ||
+      (c.city && c.city.toLowerCase().includes(q));
     return matchesFilter && matchesSearch;
   });
 
@@ -48,14 +50,6 @@ export function CasesView() {
     if (!iso) return "—";
     const d = new Date(iso.length === 10 ? iso + "T00:00:00" : iso);
     return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
-  };
-
-  const handleCopyCNR = (e: React.MouseEvent, cnr: string) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(cnr);
-    setCopiedCNR(cnr);
-    addToast(`Copied CNR Number: ${cnr}`, "info");
-    setTimeout(() => setCopiedCNR(null), 2500);
   };
 
   const handleExport = () => {
@@ -95,20 +89,20 @@ export function CasesView() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by CNR, Case Number, Court, Bench or Stage..."
+            placeholder="Search by Case Number, Court, Bench or Stage..."
             className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] text-xs text-[#111111] dark:text-[#f3eee3] placeholder:text-[#8e929f] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] shadow-xs transition-colors font-sans"
           />
         </div>
 
         <div className="flex items-center gap-3">
-          {(currentUser.role === "lawyer" || currentUser.role === "associate") && (
-            <button
-              onClick={() => openModal("add-case")}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm text-xs font-cinzel font-bold tracking-wider transition-all shadow-md"
+          {(currentUser.role === "lawyer" || currentUser.role === "associate" || currentUser.role === "admin") && (
+            <Link
+              href={currentUser.role === "admin" ? "/admin/cases/new" : "/dashboard/cases/new"}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] text-xs font-cinzel font-bold tracking-wider transition-all shadow-md"
             >
               <Plus className="w-4 h-4" />
               <span>File Fresh Matter</span>
-            </button>
+            </Link>
           )}
 
           <button
@@ -153,11 +147,11 @@ export function CasesView() {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="bg-white dark:bg-[#111111] border-b border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/65 dark:text-[#f3eee3]/60 font-cinzel text-[10px] uppercase tracking-wider">
-                <th className="py-4 px-5 font-bold">Case No &amp; CNR</th>
+                <th className="py-4 px-5 font-bold">Case No</th>
                 <th className="py-4 px-5 font-bold">Parties (Cause Title)</th>
                 <th className="py-4 px-5 font-bold">Court &amp; Presiding Bench</th>
                 <th className="py-4 px-5 font-bold">Current Stage</th>
-                <th className="py-4 px-5 font-bold">Next Date (NDOH)</th>
+                <th className="py-4 px-5 font-bold">Next Date</th>
                 <th className="py-4 px-5 font-bold text-right">Status</th>
               </tr>
             </thead>
@@ -181,30 +175,26 @@ export function CasesView() {
                       onClick={() => openCase(c.id)}
                       className="hover:bg-white/80 dark:hover:bg-[#161820]/80 transition-colors cursor-pointer group"
                     >
-                      {/* Case No & CNR */}
+                      {/* Case No */}
                       <td className="py-4 px-5">
                         <div className="font-mono font-bold text-[#111111] dark:text-[#f3eee3] group-hover:text-[#111111] dark:group-hover:text-[#f3eee3] transition-colors">
                           {c.caseNo}
                         </div>
-                        {c.cnr && (
-                          <div className="flex items-center gap-1.5 mt-1">
-                            <span className="font-mono text-[10px] text-[#111111]/65 dark:text-[#f3eee3]/60">
-                              {c.cnr}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={(e) => handleCopyCNR(e, c.cnr || "")}
-                              className="text-[#111111] dark:text-[#f3eee3] hover:opacity-80 p-0.5 rounded"
-                              title="Copy 16-digit CNR Number"
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {((c.caseTypes && c.caseTypes.length > 0)
+                            ? c.caseTypes
+                            : c.caseType
+                            ? c.caseType.split(",").map((s: string) => s.trim()).filter(Boolean)
+                            : []
+                          ).map((ct: string) => (
+                            <span
+                              key={ct}
+                              className="inline-block text-[9.5px] font-cinzel font-semibold px-1.5 py-0.5 rounded bg-[#d9541e]/10 text-[#d9541e] dark:bg-[#d9541e]/15 border border-[#d9541e]/20"
                             >
-                              {copiedCNR === c.cnr ? (
-                                <Check className="w-3 h-3 text-emerald-600" />
-                              ) : (
-                                <Copy className="w-3 h-3 opacity-60" />
-                              )}
-                            </button>
-                          </div>
-                        )}
+                              {ct}
+                            </span>
+                          ))}
+                        </div>
                         {hasPending && (
                           <span className="inline-block mt-1.5 text-[9px] font-cinzel font-bold px-2 py-0.5 rounded-full bg-[#f3eee3]/30 dark:bg-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] border border-[#111111]/50 dark:border-[#f3eee3]/40">
                             Drafts Pending Review
@@ -239,7 +229,7 @@ export function CasesView() {
                         </span>
                       </td>
 
-                      {/* Next Date of Hearing (NDOH) */}
+                      {/* Next Date */}
                       <td className="py-4 px-5">
                         {nextH ? (
                           <div>

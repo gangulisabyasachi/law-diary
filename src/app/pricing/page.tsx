@@ -34,7 +34,7 @@ export default function PricingPage() {
       highlight: false,
       features: [
         "Up to 25 Active Matters & Dossiers",
-        "National 16-Character CNR Support",
+        "Chamber Docket Management",
         "Daily Board & Cause List Generation",
         "1-Click Printable Cause List",
         "Client Record & Vakalatnama Tracking",
@@ -58,7 +58,7 @@ export default function PricingPage() {
       features: [
         "Unlimited Active Matters & Dossiers",
         "Up to 5 Advocates & Briefing Associates",
-        "Senior Counsel Verification Desk",
+        "Senior Advocate Verification Desk",
         "Limitation Act 1963 Statutory Radar",
         "Certified Judicial Orders & Citations",
         "Litigant Fee Accounting & Receipts",
@@ -72,7 +72,7 @@ export default function PricingPage() {
     },
     {
       name: "Enterprise Chambers",
-      tagline: "Full-scale deployment for prominent senior counsels and multi-advocate law firms.",
+      tagline: "Full-scale deployment for prominent senior advocates and multi-advocate law firms.",
       price: "Custom",
       period: "/ tailored deployment",
       cta: "Inquire with Registrar",
@@ -93,10 +93,10 @@ export default function PricingPage() {
 
   const comparisonRows = [
     { feature: "Active Matter Capacity", solo: "25 Matters", pro: "Unlimited", enterprise: "Unlimited" },
-    { feature: "National 16-Character CNR Support", solo: true, pro: true, enterprise: true },
+    { feature: "Chamber Docket Management", solo: true, pro: true, enterprise: true },
     { feature: "Daily Cause List Generator", solo: true, pro: true, enterprise: true },
     { feature: "Printable Court Bag Cause List", solo: true, pro: true, enterprise: true },
-    { feature: "Associate & Junior Seats", solo: "1 Counsel", pro: "Up to 5", enterprise: "Unlimited" },
+    { feature: "Associate & Junior Seats", solo: "1 Advocate", pro: "Up to 5", enterprise: "Unlimited" },
     { feature: "Senior Advocate Verification Desk", solo: false, pro: true, enterprise: true },
     { feature: "Limitation Act 1963 Radar", solo: false, pro: true, enterprise: true },
     { feature: "Certified Court Orders & Citations", solo: "Basic", pro: "Advanced", enterprise: "Custom Repository" },
@@ -156,7 +156,7 @@ export default function PricingPage() {
             </h2>
           </div>
           <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
-            All tiers include 16-character National CNR tracking, cause list generation, and BCI Rule 36 encryption.
+            All tiers include comprehensive case tracking, cause list generation, and BCI Rule 36 encryption.
           </p>
         </div>
 
@@ -327,7 +327,7 @@ export default function PricingPage() {
             </h2>
           </div>
           <p className="text-sm font-serif italic text-[#111111]/70 dark:text-[#f3eee3]/60 max-w-md">
-            Everything counsels ask about confidentiality, migrations, and billing.
+            Everything advocates ask about confidentiality, migrations, and billing.
           </p>
         </div>
 

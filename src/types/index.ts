@@ -45,13 +45,53 @@ export interface FeeReceipt {
   note?: string;
 }
 
-export type CaseStatus = "Active" | "Listed" | "Reserved" | "Adjourned" | "Disposed";
+export interface CustomField {
+  id: string;
+  name: string;
+  value: string;
+}
+
+export interface CaseAttachment {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  uploadedAt: string;
+  dataUrl?: string;
+}
+
+export interface TimesheetEntry {
+  id: string;
+  date: string;
+  advocateName: string;
+  activity: string;
+  hours: number;
+  rate?: number;
+}
+
+export type CaseStatus =
+  | "Active"
+  | "Listed"
+  | "Reserved"
+  | "Adjourned"
+  | "Disposed"
+  | "Stayed"
+  | "Quashed"
+  | "Adjourned S.D."
+  | string;
 
 export interface Case {
   id: string;
   caseNo: string;
   cnr?: string;
   title: string;
+  officeFileNo?: string;
+  caseType?: string;
+  caseTypes?: string[];
+  city?: string;
+  counselFor?: string;
+  opponentName?: string;
+  opponentLawyer?: string;
   court: string;
   courtRoom?: string;
   itemNo?: string;
@@ -67,7 +107,11 @@ export interface Case {
   notes?: string;
   feeAgreed?: number;
   feeReceived?: number;
+  caseCharge?: number;
   feeReceipts?: FeeReceipt[];
+  customFields?: CustomField[];
+  attachments?: CaseAttachment[];
+  timesheet?: TimesheetEntry[];
   hearings: Hearing[];
   orders: Order[];
   queries: ClientQuery[];

@@ -30,7 +30,7 @@ export function AssociatesView() {
         <div>
           <h3 className="text-lg font-bold font-cinzel text-[#111111] dark:text-[#f3eee3] flex items-center gap-2">
             <Briefcase className="w-5 h-5 text-[#111111] dark:text-[#f3eee3]" />
-            <span>Chamber Associate Roster &amp; Briefing Counsel</span>
+            <span>Chamber Associate Roster &amp; Briefing Advocates</span>
           </h3>
           <p className="text-xs text-[#111111]/60 dark:text-[#f3eee3]/50 font-serif italic mt-0.5">
             Junior and Senior Associates assigned to High Court, District Court &amp; Tribunal dockets.
@@ -43,7 +43,7 @@ export function AssociatesView() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm text-xs font-bold font-sans tracking-wide transition-all shadow-md hover:scale-[1.01]"
           >
             <Plus className="w-4 h-4" />
-            <span>Induct Associate Counsel</span>
+            <span>Induct Associate Advocate</span>
           </button>
         )}
       </div>
@@ -135,7 +135,7 @@ export function AssociatesView() {
         {associates.length === 0 && (
           <div className="col-span-full p-16 text-center bg-white dark:bg-[#181818] rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
             <Briefcase className="w-10 h-10 mx-auto mb-3 text-[#111111]/40 dark:text-[#f3eee3]/60" />
-            <p className="text-sm font-semibold font-cinzel text-[#111111] dark:text-[#f3eee3]">No junior or briefing counsel rostered.</p>
+            <p className="text-sm font-semibold font-cinzel text-[#111111] dark:text-[#f3eee3]">No junior or briefing advocates rostered.</p>
             <p className="text-xs text-[#111111]/50 dark:text-[#f3eee3]/50 font-serif italic mt-1">Induct chamber associates to delegate research, drafting, and cause list appearances.</p>
           </div>
         )}

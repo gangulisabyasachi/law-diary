@@ -63,7 +63,7 @@ export default function SecurityPage() {
       title: "Tamper-Evident Chamber Audit Trail",
       summary: "Immutable log of all filings, order edits, and stage transitions.",
       details:
-        "Every change to a matter's Next Date of Hearing (NDOH), order transcript, or fee disbursement is cryptographically recorded with advocate timestamp, user role, and audit snapshot for total evidentiary accountability.",
+        "Every change to a matter's Next Date of Hearing, order transcript, or fee disbursement is cryptographically recorded with advocate timestamp, user role, and audit snapshot for total evidentiary accountability.",
     },
   ];
 
@@ -159,7 +159,7 @@ export default function SecurityPage() {
               <div className="p-6 rounded-2xl bg-[#f3eee3]/30 dark:bg-[#111111]/40 border border-[#111111]/10 dark:border-[#f3eee3]/10">
                 <h4 className="font-cinzel font-bold text-xs uppercase tracking-wider text-[#d9541e] mb-2">Vakalatnama Custody</h4>
                 <p>
-                  Litigants and corporate clients cannot search for or retain advocates through this platform. Client access is granted exclusively by the retained counsel of record under a duly executed Vakalatnama.
+                  Litigants and corporate clients cannot search for or retain advocates through this platform. Client access is granted exclusively by the retained advocate of record under a duly executed Vakalatnama.
                 </p>
               </div>
             </div>

@@ -24,7 +24,7 @@ export function getSeedData() {
       name: "Adv. Arjun Mehta",
       email: "lawyer@chambers.in",
       phone: "+91 98110 20002",
-      designation: "Senior Counsel & Principal Advocate (D/1482/2012)",
+      designation: "Senior Advocate & Chamber Head (D/1482/2012)",
     },
     {
       id: "u-assoc",
@@ -32,7 +32,7 @@ export function getSeedData() {
       name: "Priya Sharma",
       email: "associate@chambers.in",
       phone: "+91 98110 20003",
-      designation: "Senior Associate Counsel",
+      designation: "Senior Associate Advocate",
       lawyerId: "u-lawyer",
     },
     {
@@ -41,7 +41,7 @@ export function getSeedData() {
       name: "Kabir Rao",
       email: "kabir@chambers.in",
       phone: "+91 98110 20007",
-      designation: "Junior Associate / Briefing Counsel",
+      designation: "Junior Associate / Briefing Advocate",
       lawyerId: "u-lawyer",
     },
     {
@@ -77,7 +77,7 @@ export function getSeedData() {
       name: "Ananya Deshmukh",
       email: "ananya@chambers.in",
       phone: "+91 98110 30003",
-      designation: "Associate Counsel (Sen Law Chambers)",
+      designation: "Associate Advocate (Sen Law Chambers)",
       lawyerId: "u-lawyer2",
     },
     {
@@ -149,7 +149,7 @@ export function getSeedData() {
         {
           date: "2026-10-22",
           purpose: "Plaintiff Evidence — Examination-in-Chief of PW-1",
-          outcome: "PW-1 tendered affidavit of evidence; Exhibits A-1 to A-7 marked; deferred for cross-examination by defendant's senior counsel.",
+          outcome: "PW-1 tendered affidavit of evidence; Exhibits A-1 to A-7 marked; deferred for cross-examination by defendant's senior advocate.",
           by: "u-assoc",
         },
         {
@@ -170,7 +170,7 @@ export function getSeedData() {
         {
           date: "2026-09-18",
           title: "Order on Record: Framing of Issues",
-          text: "Four contentious issues framed in terms of pleadings. Counsel for Plaintiff undertakes to serve copies of affidavit of evidence 3 weeks in advance.",
+          text: "Four contentious issues framed in terms of pleadings. Advocate for Plaintiff undertakes to serve copies of affidavit of evidence 3 weeks in advance.",
           citation: "2026:DHC:7109",
           addedBy: "u-lawyer",
         },
@@ -287,7 +287,7 @@ export function getSeedData() {
         {
           date: "2026-10-09",
           purpose: "Final Arguments Concluded",
-          outcome: "Counsel for appellant and learned Additional Solicitor General heard at length. Matter reserved for pronouncement of judgment.",
+          outcome: "Advocate for appellant and learned Additional Solicitor General heard at length. Matter reserved for pronouncement of judgment.",
           by: "u-lawyer",
         },
         {
@@ -301,7 +301,7 @@ export function getSeedData() {
         {
           date: "2026-10-09",
           title: "Order on Record: Judgment Reserved",
-          text: "Heard learned Senior Counsel for the Appellant and learned ASG for the Union of India. Judgment reserved. Liberty granted to file brief notes of written arguments within 3 days.",
+          text: "Heard learned Senior Advocate for the Appellant and learned ASG for the Union of India. Judgment reserved. Liberty granted to file brief notes of written arguments within 3 days.",
           citation: "2026:DHC:7944-DB",
           addedBy: "u-lawyer",
         },
@@ -348,7 +348,7 @@ export function getSeedData() {
         {
           date: "2026-10-30",
           purpose: "Pre-Charge Evidence & Cross-Examination of Complainant",
-          outcome: "CW-1 examined in part; counsel for accused sought accommodation; matter adjourned to 18.12.2026 subject to ₹5,000 costs.",
+          outcome: "CW-1 examined in part; advocate for accused sought accommodation; matter adjourned to 18.12.2026 subject to ₹5,000 costs.",
           by: "u-assoc",
         },
         {
@@ -362,7 +362,7 @@ export function getSeedData() {
         {
           date: "2026-10-30",
           title: "Order on Record: Adjournment with Costs",
-          text: "Part cross-examination of CW-1 conducted. On request of learned counsel for accused, matter adjourned. Accused to pay ₹5,000 costs to complainant before next date of hearing.",
+          text: "Part cross-examination of CW-1 conducted. On request of learned advocate for accused, matter adjourned. Accused to pay ₹5,000 costs to complainant before next date of hearing.",
           addedBy: "u-assoc",
         },
       ],
@@ -436,7 +436,7 @@ export function getSeedData() {
         {
           date: "2026-10-18",
           purpose: "Urgent Motion on Interim Stay",
-          outcome: "Notice issued; status quo directed regarding demolition until next date of hearing (NDOH).",
+          outcome: "Notice issued; status quo directed regarding demolition until next date of hearing.",
           by: "u-lawyer",
         },
         {
@@ -450,7 +450,7 @@ export function getSeedData() {
         {
           date: "2026-10-18",
           title: "Interim Injunction Order: Status Quo Directed",
-          text: "Issue notice. Learned Standing Counsel for DDA accepts notice. In the meantime, parties to maintain status quo as of today with respect to the subject property until the next date.",
+          text: "Issue notice. Learned Standing Advocate for DDA accepts notice. In the meantime, parties to maintain status quo as of today with respect to the subject property until the next date.",
           citation: "2026:DHC:8190-WRIT",
           addedBy: "u-lawyer",
         },

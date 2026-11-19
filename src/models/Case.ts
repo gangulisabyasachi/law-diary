@@ -5,6 +5,13 @@ export interface ICaseDocument extends Document {
   caseNo: string;
   cnr?: string;
   title: string;
+  officeFileNo?: string;
+  caseType?: string;
+  caseTypes?: string[];
+  city?: string;
+  counselFor?: string;
+  opponentName?: string;
+  opponentLawyer?: string;
   court: string;
   courtRoom?: string;
   itemNo?: string;
@@ -12,7 +19,7 @@ export interface ICaseDocument extends Document {
   lawyerId?: string;
   clientId: string;
   associateIds: string[];
-  status: "Active" | "Listed" | "Reserved" | "Adjourned" | "Disposed";
+  status: "Active" | "Listed" | "Reserved" | "Adjourned" | "Disposed" | "Stayed" | "Quashed" | "Adjourned S.D." | string;
   stage: string;
   filingDate: string;
   limitationDate?: string;
@@ -20,12 +27,34 @@ export interface ICaseDocument extends Document {
   notes?: string;
   feeAgreed?: number;
   feeReceived?: number;
+  caseCharge?: number;
   feeReceipts?: Array<{
     receiptNo: string;
     date: string;
     amount: number;
     mode?: string;
     note?: string;
+  }>;
+  customFields?: Array<{
+    id: string;
+    name: string;
+    value: string;
+  }>;
+  attachments?: Array<{
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+    uploadedAt: string;
+    dataUrl?: string;
+  }>;
+  timesheet?: Array<{
+    id: string;
+    date: string;
+    advocateName: string;
+    activity: string;
+    hours: number;
+    rate?: number;
   }>;
   hearings: Array<{
     date: string;
@@ -100,7 +129,6 @@ const CaseSchema = new Schema<ICaseDocument>(
     associateIds: [{ type: String }],
     status: {
       type: String,
-      enum: ["Active", "Listed", "Reserved", "Adjourned", "Disposed"],
       default: "Active",
       index: true,
     },
@@ -120,11 +148,46 @@ const CaseSchema = new Schema<ICaseDocument>(
         note: { type: String, default: "" },
       },
     ],
+    officeFileNo: { type: String, default: "" },
+    caseType: { type: String, default: "" },
+    caseTypes: [{ type: String }],
+    city: { type: String, default: "" },
+    counselFor: { type: String, default: "Plaintiff" },
+    opponentName: { type: String, default: "" },
+    opponentLawyer: { type: String, default: "" },
+    caseCharge: { type: Number, default: 0 },
+    customFields: [
+      {
+        id: { type: String, required: true },
+        name: { type: String, required: true },
+        value: { type: String, default: "" },
+      },
+    ],
+    attachments: [
+      {
+        id: { type: String, required: true },
+        name: { type: String, required: true },
+        size: { type: Number, default: 0 },
+        type: { type: String, default: "" },
+        uploadedAt: { type: String, default: "" },
+        dataUrl: { type: String, default: "" },
+      },
+    ],
+    timesheet: [
+      {
+        id: { type: String, required: true },
+        date: { type: String, required: true },
+        advocateName: { type: String, default: "" },
+        activity: { type: String, default: "" },
+        hours: { type: Number, default: 0 },
+        rate: { type: Number, default: 0 },
+      },
+    ],
     hearings: [HearingSchema],
     orders: [OrderSchema],
     queries: [QuerySchema],
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
 
 export const CaseModel: Model<ICaseDocument> =

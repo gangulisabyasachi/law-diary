@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Search, Scale, Calendar, Users, Plus, CheckCircle2, ArrowRight, CornerDownLeft } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
@@ -10,6 +11,7 @@ interface CommandPaletteProps {
 }
 
 export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
+  const router = useRouter();
   const { state, currentUser, openCase, setActivePage, openModal } = useChamber();
   const [query, setQuery] = useState("");
 
@@ -44,14 +46,27 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   ).slice(0, 5);
 
   const matchingClients = state.users.filter(
-    (u) => u.role === "client" && (u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+    (u) =>
+      u.role === "client" &&
+      (u.name.toLowerCase().includes(q) ||
+        (u.phone && u.phone.includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)))
   ).slice(0, 3);
 
   const actions = [
     { label: "View Daily Cause List (Hearing Board)", icon: Calendar, action: () => { setActivePage("calendar"); onClose(); } },
     { label: "Open Master Case Diary", icon: Scale, action: () => { setActivePage("cases"); onClose(); } },
     ...(currentUser?.role === "lawyer" || currentUser?.role === "associate"
-      ? [{ label: "File Fresh Matter (New Brief)", icon: Plus, action: () => { openModal("add-case"); onClose(); } }]
+      ? [
+          {
+            label: "File Fresh Matter (Dedicated Intake Page)",
+            icon: Plus,
+            action: () => {
+              router.push(currentUser?.role === "admin" ? "/admin/cases/new" : "/dashboard/cases/new");
+              onClose();
+            },
+          },
+        ]
       : []),
     ...(currentUser?.role === "lawyer" || currentUser?.role === "admin"
       ? [{ label: "Review Advocate Verification Desk", icon: CheckCircle2, action: () => { setActivePage("approvals"); onClose(); } }]
@@ -69,7 +84,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by CNR, Case Number, Court, Bench or Client..."
+            placeholder="Search by Case Number, Court, Bench or Client..."
             className="w-full bg-transparent text-sm text-[#111111] dark:text-[#f3eee3] placeholder:text-[#111111]/50 dark:placeholder:text-[#f3eee3]/40 focus:outline-none font-sans"
           />
           <kbd className="px-2 py-0.5 text-[9.5px] bg-[#111111]/10 dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/30 rounded-md text-[#111111] dark:text-[#f3eee3] font-mono">
@@ -124,7 +139,6 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                     <div className="min-w-0 flex-1 pr-3">
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-[#111111] dark:text-[#f3eee3]">{c.caseNo}</span>
-                        {c.cnr && <span className="font-mono text-[10px] text-[#111111]/60 dark:text-[#f3eee3]/60">({c.cnr})</span>}
                       </div>
                       <p className="text-xs text-[#111111] dark:text-[#f3eee3] font-medium truncate mt-0.5 font-sans">{c.title}</p>
                       <p className="text-[10.5px] text-[#111111]/60 dark:text-[#f3eee3]/60 truncate font-serif italic">{c.court}</p>

@@ -54,7 +54,7 @@ export function PublicFooter() {
                 Commission your sovereign chamber docket in under two minutes.
               </h3>
               <p className="text-sm sm:text-base font-serif italic text-[#111111]/75 dark:text-[#f3eee3]/70 leading-relaxed">
-                Purpose-built for High Court Senior Advocates, Arguing Counsels, and Briefing Associates. Instant voluntary enrolment with your official State Bar Council credentials.
+                Purpose-built for High Court Senior Advocates, Arguing Advocates, and Briefing Associates. Instant voluntary enrolment with your official State Bar Council credentials.
               </p>
             </div>
 
@@ -101,7 +101,7 @@ export function PublicFooter() {
             </Link>
 
             <p className="text-xs sm:text-sm font-serif italic text-[#111111]/75 dark:text-[#f3eee3]/70 leading-relaxed max-w-sm">
-              A private, sovereign practice management system built specifically for Senior Advocates, Chamber Counsels, and Briefing Associates across the Supreme Court, High Courts, and Tribunals of India.
+              A private, sovereign practice management system built specifically for Senior Advocates, Chamber Advocates, and Briefing Associates across the Supreme Court, High Courts, and Tribunals of India.
             </p>
 
             {/* Live Operational Status Node */}
@@ -114,7 +114,7 @@ export function PublicFooter() {
                 <span className="font-semibold text-emerald-700 dark:text-emerald-400">All India Benches Operational</span>
               </div>
               <p className="text-[11px] font-mono text-[#111111]/60 dark:text-[#f3eee3]/60 leading-tight">
-                Sher Shah Road · Supreme Court · Delhi High Court Dockets Active
+                Chamber Vakalatnama &amp; Active Judicial Dockets
               </p>
             </div>
 
@@ -139,7 +139,7 @@ export function PublicFooter() {
                     required
                     value={gazetteEmail}
                     onChange={(e) => setGazetteEmail(e.target.value)}
-                    placeholder="counsel@chamber.in"
+                    placeholder="advocate@chamber.in"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#1c1c1c] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] text-xs placeholder:text-[#111111]/40 dark:placeholder:text-[#f3eee3]/40 focus:outline-none focus:border-[#d9541e]"
                   />
                   <button
@@ -168,7 +168,7 @@ export function PublicFooter() {
               </li>
               <li>
                 <Link href="/features" className="text-[#111111]/80 hover:text-[#d9541e] dark:text-[#f3eee3]/80 dark:hover:text-[#d9541e] transition-colors block py-0.5">
-                  16-Character CNR Docket
+                  Active Case Dockets
                 </Link>
               </li>
               <li>
@@ -298,14 +298,14 @@ export function PublicFooter() {
                   Chamber Physical Office:
                 </span>
                 <p className="text-[11px] leading-relaxed text-[#111111]/70 dark:text-[#f3eee3]/65">
-                  Chamber Block, Sher Shah Road, New Delhi 110003<br />
-                  (Adjacent to High Court of Delhi)
+                  Chamber Registry Desk<br />
+                  New Delhi, India
                 </p>
               </div>
 
               <div className="space-y-1 pt-1">
                 <span className="font-cinzel font-bold text-[11px] text-[#111111] dark:text-[#f3eee3] block">
-                  Counsel Hotline:
+                  Advocate Hotline:
                 </span>
                 <a href="tel:+919811020002" className="font-mono text-[11px] text-[#d9541e] hover:underline block">
                   +91 98110 20002

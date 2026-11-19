@@ -344,7 +344,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         addToast(data.error || "Submission failed", "error");
         return false;
       }
-      addToast("Submitted for Senior Counsel verification", "info");
+      addToast("Submitted for Senior Advocate verification", "info");
       await refreshState();
       return true;
     } catch (err: any) {

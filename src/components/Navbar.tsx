@@ -27,33 +27,36 @@ export function Navbar() {
 
   const pendingCount = state?.approvals?.length || 0;
 
-  // Determine Roman Numeral & Title from Pathname
+  // Determine Page Title & Subtitle from Pathname
   const getPageMeta = () => {
     if (pathname.endsWith("/cases")) {
-      return { roman: "II", title: "Case Diary (Matters)", subtitle: "Active pleadings, vakalatnamas & judicial records" };
+      return { title: "Case Diary (Matters)", subtitle: "Active pleadings, vakalatnamas & judicial records" };
+    }
+    if (pathname.endsWith("/cases/new")) {
+      return { title: "File Fresh Matter", subtitle: "Court brief intake & judicial docket" };
     }
     if (pathname.includes("/cases/")) {
-      return { roman: "III", title: "Matter Dossier & Case Details", subtitle: "Full court records, order sheets & stage history" };
+      return { title: "Matter Dossier & Case Details", subtitle: "Full court records, order sheets & stage history" };
     }
     if (pathname.endsWith("/calendar")) {
-      return { roman: "IV", title: "Judicial Hearing Calendar", subtitle: "Cause list schedules, court rooms & statutory dates" };
+      return { title: "Judicial Hearing Calendar", subtitle: "Cause list schedules, court rooms & statutory dates" };
     }
     if (pathname.endsWith("/clients")) {
-      return { roman: "V", title: "Litigant Client Register", subtitle: "Retainers, fee structures & corporate party records" };
+      return { title: "Litigant Client Register", subtitle: "Retainers, fee structures & corporate party records" };
     }
     if (pathname.endsWith("/associates")) {
-      return { roman: "VI", title: "Chamber Associate Roster", subtitle: "Assigned drafting duties, hearings & research tasks" };
+      return { title: "Chamber Associate Roster", subtitle: "Assigned drafting duties, hearings & research tasks" };
     }
     if (pathname.endsWith("/approvals")) {
-      return { roman: "VII", title: "Senior Advocate Verification Desk", subtitle: "Cause list entries, fee notes & filings awaiting sign-off" };
+      return { title: "Senior Advocate Verification Desk", subtitle: "Cause list entries, fee notes & filings awaiting sign-off" };
     }
     if (pathname.endsWith("/contacts")) {
-      return { roman: "IV", title: "Briefed Legal Counsel", subtitle: "Direct hotline to Senior Advocate & chamber desk" };
+      return { title: "Briefed Legal Advocate", subtitle: "Direct hotline to Senior Advocate & chamber desk" };
     }
     if (pathname.endsWith("/users") || pathname === "/admin") {
-      return { roman: "VIII", title: "Chamber Administration", subtitle: "Advocate credentials, user roles & database control" };
+      return { title: "Chamber Administration", subtitle: "Advocate credentials, user roles & database control" };
     }
-    return { roman: "I", title: "Daily Board & Cause List", subtitle: "Court listings, calling order & daily hearing schedule" };
+    return { title: "Daily Board & Cause List", subtitle: "Court listings, calling order & daily hearing schedule" };
   };
 
   const meta = getPageMeta();
@@ -61,18 +64,13 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between px-6 py-3.5 bg-white/95 dark:bg-[#111111]/95 backdrop-blur-md border-b border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
-        {/* Left: Page Title & Classical Roman Index */}
+        {/* Left: Page Title & Subtitle */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            <span className="w-7 h-7 rounded-lg bg-[#111111] dark:bg-[#f3eee3]/15 border border-[#111111] dark:border-[#f3eee3]/40 flex items-center justify-center font-cinzel text-xs font-bold text-[#f3eee3] shadow-xs">
-              {meta.roman}
-            </span>
-            <div>
-              <h1 className="text-sm font-semibold font-cinzel text-[#111111] dark:text-[#f3eee3] tracking-wide flex items-center gap-2">
-                {meta.title}
-              </h1>
-              <p className="text-[11px] text-[#111111]/70 dark:text-[#f3eee3]/60 font-serif italic tracking-wide">{meta.subtitle}</p>
-            </div>
+          <div>
+            <h1 className="text-sm font-semibold font-cinzel text-[#111111] dark:text-[#f3eee3] tracking-wide flex items-center gap-2">
+              {meta.title}
+            </h1>
+            <p className="text-[11px] text-[#111111]/70 dark:text-[#f3eee3]/60 font-serif italic tracking-wide">{meta.subtitle}</p>
           </div>
         </div>
 
@@ -83,7 +81,7 @@ export function Navbar() {
             className="flex items-center gap-3.5 px-4 py-2 rounded-xl bg-white dark:bg-[#181818] hover:bg-white/80 dark:hover:bg-[#202020] text-[#111111]/70 dark:text-[#f3eee3]/60 text-xs transition-all border border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#111111] dark:hover:border-[#f3eee3] shadow-xs group"
           >
             <Search className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3] group-hover:scale-110 transition-transform" />
-            <span className="font-sans text-[11.5px] tracking-wide">Search CNR, Case No, Bench or Client...</span>
+            <span className="font-sans text-[11.5px] tracking-wide">Search Case No, Court, Bench or Client...</span>
             <span className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] bg-[#111111]/5 dark:bg-[#111111] border border-[#111111]/15 dark:border-[#f3eee3]/30 text-[#111111] dark:text-[#f3eee3] font-mono font-semibold shadow-xs">
               <Command className="w-2.5 h-2.5" /> K
             </span>
@@ -95,7 +93,7 @@ export function Navbar() {
           {/* Animated Theme Toggle (21st.dev SolarSwitch) */}
           <AnimatedThemeToggle />
 
-          {/* Verification Queue (For Senior Counsel / Admin) */}
+          {/* Verification Queue (For Senior Advocate / Admin) */}
           {(currentUser?.role === "lawyer" || currentUser?.role === "admin") && (
             <button
               onClick={() => router.push(currentUser.role === "admin" ? "/admin/approvals" : "/dashboard/approvals")}
@@ -118,7 +116,7 @@ export function Navbar() {
                 {currentUser?.name || "Advocate"}
               </span>
               <span className="text-[9.5px] font-cinzel font-bold tracking-widest text-[#111111]/80 dark:text-[#f3eee3]">
-                {currentUser?.role === "lawyer" ? "SENIOR ADVOCATE" : currentUser?.role === "associate" ? "ASSOCIATE COUNSEL" : currentUser?.role === "client" ? "LITIGANT" : "REGISTRAR"}
+                {currentUser?.role === "lawyer" ? "SENIOR ADVOCATE" : currentUser?.role === "associate" ? "ASSOCIATE ADVOCATE" : currentUser?.role === "client" ? "LITIGANT" : "REGISTRAR"}
               </span>
             </div>
 

@@ -102,8 +102,8 @@ export function DiaryHero() {
           className="pt-6 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left"
         >
           <div className="p-5 rounded-2xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs hover:border-[#d9541e] transition-colors">
-            <span className="block text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">16-Char</span>
-            <span className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">National CNR Support</span>
+            <span className="block text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">Docket</span>
+            <span className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60 font-serif italic">Chamber Case Tracking</span>
           </div>
           <div className="p-5 rounded-2xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs hover:border-[#d9541e] transition-colors">
             <span className="block text-2xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">Act 1963</span>

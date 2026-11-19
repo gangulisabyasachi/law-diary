@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Users, Plus, Mail, Phone, Scale, ArrowRight, Building } from "lucide-react";
+import { Users, Plus, Mail, Phone, Scale, ArrowRight, Building, Edit3 } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function ClientsView() {
@@ -68,9 +68,21 @@ export function ClientsView() {
                       .join("")
                       .toUpperCase()}
                   </div>
-                  <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-[#111111]/5 dark:bg-white/5 text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20">
-                    {clientCases.length} {clientCases.length === 1 ? "Matter" : "Matters"}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#111111]/5 dark:bg-white/5 text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20">
+                      {clientCases.length} {clientCases.length === 1 ? "Matter" : "Matters"}
+                    </span>
+                    {(currentUser.role === "lawyer" || currentUser.role === "associate") && (
+                      <button
+                        onClick={() => openModal("edit-client", { client: cl })}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#d9541e] text-[10.5px] font-cinzel font-semibold text-[#111111] dark:text-[#f3eee3] transition-all hover:text-[#d9541e] cursor-pointer"
+                        title={currentUser.role === "associate" ? "Edit Client (Submits for Senior Advocate approval)" : "Edit Client Details & Password"}
+                      >
+                        <Edit3 className="w-3 h-3 text-[#d9541e]" />
+                        <span>Edit</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <h4 className="text-base font-bold text-[#111111] dark:text-[#f3eee3] font-cinzel">{cl.name}</h4>

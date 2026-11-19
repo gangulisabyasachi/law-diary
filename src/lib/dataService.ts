@@ -108,27 +108,42 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
     caseNo: c.caseNo,
     title: c.title,
     court: c.court,
-    courtRoom: c.courtRoom,
-    itemNo: c.itemNo,
-    cnr: c.cnr,
-    judge: c.judge,
+    courtRoom: c.courtRoom || "",
+    itemNo: c.itemNo || "",
+    cnr: c.cnr || "",
+    judge: c.judge || "",
     lawyerId: c.lawyerId || "u-lawyer",
     clientId: c.clientId,
     associateIds: c.associateIds || [],
-    status: c.status,
-    stage: c.stage,
-    filingDate: c.filingDate,
-    limitationDate: c.limitationDate,
-    limitationTask: c.limitationTask,
-    notes: c.notes,
+    status: c.status || "Active",
+    stage: c.stage || "Fresh Filing",
+    filingDate: c.filingDate || "",
+    limitationDate: c.limitationDate || "",
+    limitationTask: c.limitationTask || "",
+    notes: c.notes || "",
     feeAgreed: c.feeAgreed || 0,
     feeReceived: c.feeReceived || 0,
+    caseCharge: c.caseCharge || 0,
     feeReceipts: c.feeReceipts || [],
+    officeFileNo: c.officeFileNo || "",
+    caseType: c.caseType || (Array.isArray(c.caseTypes) ? c.caseTypes.join(", ") : ""),
+    caseTypes: Array.isArray(c.caseTypes)
+      ? c.caseTypes
+      : c.caseType
+      ? c.caseType.split(",").map((s: string) => s.trim()).filter(Boolean)
+      : [],
+    city: c.city || "",
+    counselFor: c.counselFor || "",
+    opponentName: c.opponentName || "",
+    opponentLawyer: c.opponentLawyer || "",
+    customFields: c.customFields || [],
+    attachments: c.attachments || [],
+    timesheet: c.timesheet || [],
     hearings: c.hearings || [],
     orders: c.orders || [],
     queries: c.queries || [],
-    createdAt: c.createdAt?.toISOString?.() || c.createdAt,
-    updatedAt: c.updatedAt?.toISOString?.() || c.updatedAt,
+    createdAt: c.createdAt?.toISOString?.() || c.createdAt || new Date().toISOString(),
+    updatedAt: c.updatedAt?.toISOString?.() || c.updatedAt || new Date().toISOString(),
   });
 
   const sanitizeApproval = (a: any): Approval => ({
@@ -382,8 +397,9 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         break;
       }
       case "setStatus": {
-        const set: any = { status: payload.status, updatedAt: now };
-        if (payload.stage) set.stage = payload.stage;
+        const set: any = { updatedAt: now };
+        if (payload.status) set.status = payload.status;
+        if (payload.stage !== undefined) set.stage = payload.stage;
         await CaseModel.findOneAndUpdate({ id: payload.caseId }, { $set: set });
         break;
       }
@@ -465,6 +481,26 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         await UserModel.deleteOne({ id: payload.userId });
         break;
       }
+      case "updateUser": {
+        const updateDoc: any = {};
+        if (payload.name !== undefined) updateDoc.name = payload.name;
+        if (payload.email !== undefined) updateDoc.email = payload.email;
+        if (payload.phone !== undefined) updateDoc.phone = payload.phone;
+        if (payload.designation !== undefined) updateDoc.designation = payload.designation;
+        if (payload.password) {
+          updateDoc.passwordHash = await hashPassword(payload.password);
+        }
+        await UserModel.findOneAndUpdate(
+          { id: payload.userId },
+          { $set: updateDoc },
+          { new: true }
+        );
+        break;
+      }
+      case "deleteCase": {
+        await CaseModel.deleteOne({ id: payload.caseId });
+        break;
+      }
     }
   }
 
@@ -501,8 +537,8 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
     case "setStatus": {
       const c = fallbackStore.cases.find((x) => x.id === payload.caseId);
       if (c) {
-        c.status = payload.status;
-        if (payload.stage) c.stage = payload.stage;
+        if (payload.status) c.status = payload.status;
+        if (payload.stage !== undefined) c.stage = payload.stage;
         c.updatedAt = now;
       }
       break;
@@ -559,6 +595,22 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
     }
     case "removeUser":
       fallbackStore.users = fallbackStore.users.filter((u) => u.id !== payload.userId);
+      break;
+    case "updateUser": {
+      const u = fallbackStore.users.find((user) => user.id === payload.userId);
+      if (u) {
+        if (payload.name !== undefined) u.name = payload.name;
+        if (payload.email !== undefined) u.email = payload.email;
+        if (payload.phone !== undefined) u.phone = payload.phone;
+        if (payload.designation !== undefined) u.designation = payload.designation;
+        if (payload.password) {
+          u.passwordHash = await hashPassword(payload.password);
+        }
+      }
+      break;
+    }
+    case "deleteCase":
+      fallbackStore.cases = fallbackStore.cases.filter((c) => c.id !== payload.caseId);
       break;
   }
 }
@@ -677,8 +729,8 @@ export async function registerLawyerUser(data: LawyerRegistrationData) {
   
   const barEnrollmentTrimmed = data.barEnrollment?.trim();
   const designation = barEnrollmentTrimmed
-    ? `Senior Counsel (${barEnrollmentTrimmed.toUpperCase()})${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`
-    : `Senior Counsel${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`;
+    ? `Senior Advocate (${barEnrollmentTrimmed.toUpperCase()})${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`
+    : `Senior Advocate${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`;
 
   const cleanName = data.name.trim();
   const displayName = cleanName.toLowerCase().startsWith("adv") ? cleanName : `Adv. ${cleanName}`;
@@ -815,6 +867,42 @@ export async function registerLawyerUser(data: LawyerRegistrationData) {
       phone: newUser.phone,
       designation: newUser.designation,
     },
+  };
+}
+
+export async function getPublicCase(caseId: string) {
+  const { isConnected } = await connectToDatabase();
+  let c: any = null;
+  if (isConnected) {
+    c = await CaseModel.findOne({ id: caseId }).lean();
+  }
+  if (!c) {
+    await initFallbackStore();
+    c = fallbackStore.cases.find((item) => item.id === caseId);
+  }
+  if (!c) return null;
+
+  // Sanitize for public docket view (strip internal notes and fee details)
+  return {
+    id: c.id,
+    caseNo: c.caseNo,
+    cnr: c.cnr,
+    title: c.title,
+    court: c.court,
+    courtRoom: c.courtRoom,
+    itemNo: c.itemNo,
+    judge: c.judge,
+    caseType: c.caseType,
+    caseTypes: c.caseTypes || (c.caseType ? [c.caseType] : []),
+    counselFor: c.counselFor,
+    status: c.status,
+    stage: c.stage,
+    filingDate: c.filingDate,
+    limitationDate: c.limitationDate,
+    limitationTask: c.limitationTask,
+    hearings: c.hearings || [],
+    orders: c.orders || [],
+    updatedAt: c.updatedAt,
   };
 }
 

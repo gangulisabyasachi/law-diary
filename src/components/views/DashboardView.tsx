@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   Scale,
   Calendar,
@@ -21,7 +22,6 @@ import {
   Check,
   Copy,
   Plus,
-  Printer,
   Sparkles,
 } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
@@ -38,8 +38,6 @@ export function DashboardView() {
   } = useChamber();
 
   const [dateFilter, setDateFilter] = useState<"all" | "today" | "tomorrow">("all");
-  const [filterCourt, setFilterCourt] = useState<string>("all");
-  const [copiedCNR, setCopiedCNR] = useState<string | null>(null);
 
   if (!currentUser || !state) return null;
 
@@ -87,28 +85,27 @@ export function DashboardView() {
   if (dateFilter === "today") filteredHearings = todayHearings;
   if (dateFilter === "tomorrow") filteredHearings = tomorrowHearings;
 
-  // Filter by court
-  if (filterCourt !== "all") {
-    filteredHearings = filteredHearings.filter((h) =>
-      h.caseItem.court.toLowerCase().includes(filterCourt.toLowerCase())
-    );
-  }
-
   // Pending verification tasks
   const pendingApprovalsCount = state.approvals ? state.approvals.length : 0;
 
-  // Financial accounting
+  // Financial accounting: dynamically aggregated from case retainers & fee receipts
   let totalFeeReceived = 0;
   let totalFeePending = 0;
   visibleCases.forEach((c) => {
-    (c.orders || []).forEach((o) => {
-      if (o.citation && o.citation.includes("Fee")) {
-        totalFeeReceived += 50000;
-      }
-    });
-    totalFeeReceived += 125000;
-    totalFeePending += 45000;
+    const agreed = Number(c.feeAgreed) || Number(c.caseCharge) || 0;
+    const receiptsSum = (c.feeReceipts || []).reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+    const received = Math.max(Number(c.feeReceived) || 0, receiptsSum);
+    const pending = Math.max(0, agreed - received);
+    totalFeeReceived += received;
+    totalFeePending += pending;
   });
+
+  const formatFeeMetric = (val: number) => {
+    if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)} Cr`;
+    if (val >= 100000) return `₹${(val / 100000).toFixed(2)} Lakh`;
+    if (val >= 1000) return `₹${(val / 1000).toFixed(1)}k`;
+    return `₹${val.toLocaleString("en-IN")}`;
+  };
 
   const formatDate = (iso: string) => {
     if (!iso) return "—";
@@ -121,14 +118,6 @@ export function DashboardView() {
     return { day: d.getDate(), mon: d.toLocaleDateString("en-IN", { month: "short" }) };
   };
 
-  const handleCopyCNR = (e: React.MouseEvent, cnr: string) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(cnr);
-    setCopiedCNR(cnr);
-    addToast(`Copied CNR Number: ${cnr}`, "info");
-    setTimeout(() => setCopiedCNR(null), 2500);
-  };
-
   // Statutory limitation deadlines under Limitation Act, 1963
   const limitationItems = visibleCases
     .filter((c) => c.limitationDate && c.status !== "Disposed")
@@ -139,10 +128,6 @@ export function DashboardView() {
       return { caseItem: c, daysLeft, task: c.limitationTask || "Statutory Limitation Filing" };
     })
     .sort((a, b) => a.daysLeft - b.daysLeft);
-
-  const handlePrintCauseList = () => {
-    window.print();
-  };
 
   return (
     <div className="space-y-7">
@@ -163,28 +148,20 @@ export function DashboardView() {
               </span>
             </div>
             <p className="text-xs font-serif text-[#111111]/70 dark:text-[#f3eee3]/60 mt-1">
-              Sher Shah Road (Delhi High Court) · Tis Hazari Courts · NCLT Principal Bench · Supreme Court Registry
+              Active listings and hearing schedule across all chamber briefs
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          {(currentUser.role === "lawyer" || currentUser.role === "associate") && (
-            <button
-              onClick={() => openModal("add-case")}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
+          {(currentUser.role === "lawyer" || currentUser.role === "associate" || currentUser.role === "admin") && (
+            <Link
+              href={currentUser.role === "admin" ? "/admin/cases/new" : "/dashboard/cases/new"}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] font-cinzel font-bold text-xs tracking-wider transition-all shadow-md"
             >
               <Plus className="w-4 h-4 text-white" /> File Fresh Matter
-            </button>
+            </Link>
           )}
-
-          <button
-            onClick={handlePrintCauseList}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-[#202020] hover:bg-[#f3efe6] dark:hover:bg-[#1c202a] text-[#111111] dark:text-[#f3eee3] text-xs font-cinzel font-semibold tracking-wide border border-[#111111]/15 dark:border-[#f3eee3]/20 transition-colors shadow-xs"
-            title="Print Official Chamber Cause List"
-          >
-            <Printer className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" /> Print Cause List
-          </button>
         </div>
       </div>
 
@@ -194,7 +171,6 @@ export function DashboardView() {
         <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">I.</span>
               <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Vakalatnama Dossier</p>
             </div>
             <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">{visibleCases.length}</p>
@@ -208,7 +184,6 @@ export function DashboardView() {
         <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">II.</span>
               <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Listed on Board</p>
             </div>
             <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">{upcomingHearings.length}</p>
@@ -226,14 +201,13 @@ export function DashboardView() {
           <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
             <div>
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">III.</span>
                 <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Fee Collections</p>
               </div>
               <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-                ₹{(totalFeeReceived / 1000).toFixed(0)}k
+                {formatFeeMetric(totalFeeReceived)}
               </p>
               <span className="text-[10.5px] font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
-                ₹{(totalFeePending / 1000).toFixed(0)}k Pending Dues
+                {formatFeeMetric(totalFeePending)} Pending Dues
               </span>
             </div>
             <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center font-bold shadow-xs">
@@ -244,7 +218,6 @@ export function DashboardView() {
           <div className="p-5 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs flex items-center justify-between group hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all">
             <div>
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">III.</span>
                 <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">Active Pleadings</p>
               </div>
               <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">{activeCases.length}</p>
@@ -264,7 +237,6 @@ export function DashboardView() {
         >
           <div>
             <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">IV.</span>
               <p className="text-[10px] font-cinzel font-bold text-[#111111]/65 dark:text-[#f3eee3]/60 uppercase tracking-wider">
                 {currentUser.role === "associate" ? "My Submissions" : "Verification Desk"}
               </p>
@@ -294,50 +266,6 @@ export function DashboardView() {
               <p className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60">
                 Court Room, Item Number, Presiding Bench &amp; Purpose of Listing
               </p>
-            </div>
-
-            {/* Bench Filter Pills */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#f3efe6] dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20">
-              <button
-                onClick={() => setFilterCourt("all")}
-                className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
-                  filterCourt === "all"
-                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
-                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
-                }`}
-              >
-                All Benches
-              </button>
-              <button
-                onClick={() => setFilterCourt("delhi")}
-                className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
-                  filterCourt === "delhi"
-                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
-                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
-                }`}
-              >
-                High Court
-              </button>
-              <button
-                onClick={() => setFilterCourt("district")}
-                className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
-                  filterCourt === "district"
-                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
-                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
-                }`}
-              >
-                Tis Hazari
-              </button>
-              <button
-                onClick={() => setFilterCourt("nclt")}
-                className={`px-3 py-1 rounded-lg text-xs font-cinzel font-semibold transition-colors ${
-                  filterCourt === "nclt"
-                    ? "bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] shadow-xs"
-                    : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111]"
-                }`}
-              >
-                NCLT
-              </button>
             </div>
           </div>
 
@@ -427,20 +355,6 @@ export function DashboardView() {
                           <span className="text-xs font-mono font-bold text-[#111111] dark:text-[#f3eee3]">
                             {h.caseItem.caseNo}
                           </span>
-                          {h.caseItem.cnr && (
-                            <button
-                              onClick={(e) => handleCopyCNR(e, h.caseItem.cnr!)}
-                              className="inline-flex items-center gap-1 text-[10px] font-mono text-[#111111]/65 dark:text-[#f3eee3]/60 bg-white dark:bg-[#202020] hover:bg-[#f3efe6] px-2 py-0.5 rounded-lg border border-[#111111]/15 dark:border-[#f3eee3]/20 transition-colors"
-                              title="Click to copy 16-character CNR"
-                            >
-                              <span>CNR: {h.caseItem.cnr}</span>
-                              {copiedCNR === h.caseItem.cnr ? (
-                                <Check className="w-2.5 h-2.5 text-emerald-600" />
-                              ) : (
-                                <Copy className="w-2.5 h-2.5 opacity-60" />
-                              )}
-                            </button>
-                          )}
                           {h.caseItem.courtRoom && (
                             <span className="text-[10px] font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] bg-white dark:bg-[#202020] px-2 py-0.5 rounded-lg border border-[#111111]/15 dark:border-[#f3eee3]/20">
                               {h.caseItem.courtRoom}
@@ -554,7 +468,7 @@ export function DashboardView() {
               onClick={() => openModal("add-hearing")}
               className="w-full py-3 px-3.5 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] text-xs font-cinzel font-semibold text-left hover:border-[#111111] dark:hover:border-[#f3eee3] transition-all flex items-center justify-between shadow-xs"
             >
-              <span>Record Next Date of Hearing (NDOH)</span>
+              <span>Record Next Date</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" />
             </button>
             <button

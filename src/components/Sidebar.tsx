@@ -23,6 +23,7 @@ import { useChamber } from "@/context/ChamberContext";
 export function Sidebar() {
   const { currentUser, state } = useChamber();
   const pathname = usePathname();
+  const currentYear = new Date().getFullYear();
 
   if (!currentUser) return null;
 
@@ -56,7 +57,7 @@ export function Sidebar() {
     ],
     client: [
       { id: "dashboard", label: "My Court Matters", href: "/dashboard", icon: Scale, section: "LITIGANT PORTAL" },
-      { id: "contacts", label: "Briefed Legal Counsel", href: "/dashboard/contacts", icon: PhoneCall },
+      { id: "contacts", label: "Briefed Legal Advocate", href: "/dashboard/contacts", icon: PhoneCall },
     ],
     admin: [
       { id: "dashboard", label: "Chamber Overview", href: "/admin", icon: LayoutDashboard, section: "REGISTRAR DESK" },
@@ -96,7 +97,9 @@ export function Sidebar() {
             <span className="text-[9.5px] uppercase font-cinzel tracking-widest text-[#111111]/80 dark:text-[#f3eee3]/90 font-bold truncate">
               {currentUser.role === "admin" ? "Master Register" : "Chamber Diary"}
             </span>
-            <span className="text-[9px] font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">· MMXII</span>
+            <span className="text-[9.5px] font-mono font-semibold text-[#111111]/60 dark:text-[#f3eee3]/60">
+              · {currentYear}
+            </span>
           </div>
         </div>
       </div>
@@ -157,14 +160,14 @@ export function Sidebar() {
             Credentialed User
           </span>
           <span className="text-[9px] font-cinzel px-2 py-0.5 rounded-full bg-[#111111] text-[#f3eee3] dark:bg-[#f3eee3]/20 dark:text-[#f3eee3] font-bold border border-[#111111] dark:border-[#f3eee3]/40">
-            {role.toUpperCase()}
+            {role === "lawyer" ? "SENIOR ADVOCATE" : role === "associate" ? "ASSOCIATE ADVOCATE" : role.toUpperCase()}
           </span>
         </div>
         <p className="font-bold text-[#111111] dark:text-[#f3eee3] truncate font-sans text-xs">
           {currentUser.name}
         </p>
         <p className="text-[11px] text-[#111111]/70 dark:text-[#f3eee3]/60 truncate font-serif italic">
-          {currentUser.designation || "Counsel"}
+          {currentUser.role === "lawyer" ? "Senior Advocate" : (currentUser.designation?.replace(/Counsel/gi, "Advocate") || "Advocate")}
         </p>
       </div>
     </aside>

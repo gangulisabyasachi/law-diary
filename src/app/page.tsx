@@ -27,8 +27,8 @@ export default function HomePage() {
     },
     {
       icon: Scale,
-      title: "16-Character National CNR Tracking",
-      description: "Direct tracking across all Indian jurisdictions with single-click clipboard copy and unified docket progression.",
+      title: "Unified National Docket Tracking",
+      description: "Direct tracking across all Indian court jurisdictions with single-click case search and unified docket progression.",
       link: "/features",
     },
     {
@@ -39,7 +39,7 @@ export default function HomePage() {
     },
     {
       icon: FileCheck,
-      title: "Senior Counsel Verification Desk",
+      title: "Senior Advocate Verification Desk",
       tagline: "Two-man sign-off rule",
       description: "Sanction junior associate draft entries and hearing outcomes before they alter official judicial chamber records.",
       link: "/features",
@@ -67,7 +67,7 @@ export default function HomePage() {
         eyebrowText="Sovereign Chamber Operating System"
         headingLine1="Building sovereign clarity"
         headingLine2="into Indian litigation."
-        description="From automated court cause lists and 16-character CNR dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers."
+        description="From automated court cause lists and active case dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers."
         primaryCtaLabel={currentUser ? "Enter Dashboard" : "Sign Up"}
         primaryCtaHref={currentUser ? dashboardHref : "#"}
         onPrimaryCtaClick={() => {
