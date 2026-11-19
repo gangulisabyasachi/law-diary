@@ -80,7 +80,6 @@ export default function SecurityPage() {
         primaryCtaHref="#security-pillars"
         secondaryCtaLabel="Inquire with Registrar"
         secondaryCtaHref="/contact"
-        bottomTagline={"Strict BCI Rule 36 Compliance\n256-Bit Cryptographic Vault\nSections 126 & 129 Evidence Act / BSA 2023"}
         scrollText="Review Standards"
         scrollHref="#security-pillars"
         bgImageSrc="/hero-security.jpg"

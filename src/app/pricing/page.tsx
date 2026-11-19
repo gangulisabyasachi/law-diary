@@ -138,7 +138,6 @@ export default function PricingPage() {
         primaryCtaHref="#pricing-tiers"
         secondaryCtaLabel="Read Frequently Answered Questions"
         secondaryCtaHref="#pricing-faqs"
-        bottomTagline={"Solo Advocate Free Forever\nChamber Pro for Teams\nDedicated Enterprise Private Deployments"}
         scrollText="Compare Tiers"
         scrollHref="#pricing-tiers"
         bgImageSrc="/hero-pricing.jpg"

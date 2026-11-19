@@ -136,7 +136,6 @@ export default function FeaturesPage() {
         primaryCtaHref="#features-grid"
         secondaryCtaLabel="View Retainer Tiers"
         secondaryCtaHref="/pricing"
-        bottomTagline={"16-Character National CNR Tracking\nAutomated Daily Cause List Generation\nTwo-Man Senior Verification Protocol"}
         scrollText="Explore Pillars"
         scrollHref="#features-grid"
         bgImageSrc="/hero-features.jpg"

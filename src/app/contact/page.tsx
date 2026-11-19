@@ -55,7 +55,6 @@ export default function ContactPage() {
         primaryCtaHref="#contact-form"
         secondaryCtaLabel="Call Counsel Hotline"
         secondaryCtaHref="tel:+919811020002"
-        bottomTagline={"Chamber Block, Sher Shah Road, New Delhi 110003\nAdjacent to High Court of Delhi\nImmediate Advocate Self-Service Available"}
         scrollText="Open Dispatch"
         scrollHref="#contact-form"
         bgImageSrc="/hero-contact.jpg"

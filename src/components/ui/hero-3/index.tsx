@@ -66,7 +66,7 @@ export default function Hero3({
     secondaryCtaLabel = 'Chamber Security',
     secondaryCtaHref = '/security',
     onSecondaryCtaClick,
-    bottomTagline = 'Two-Man Verification Protocol\nStrict Chamber Vault Isolation\nBar Council of India Rule 36 Compliant',
+    bottomTagline,
     scrollText = 'Scroll to Discover',
     scrollHref = '#features-section',
     bgImageSrc = '/hero-judicial.jpg',
@@ -232,7 +232,7 @@ export default function Hero3({
                 )}
 
                 {/* ─── Main Content Area ─── */}
-                <div className="flex-1 flex flex-col justify-center px-6 md:px-10 lg:px-16 pb-16 md:pb-24">
+                <div className="flex-1 flex flex-col justify-center px-6 md:px-10 lg:px-16 pb-10 md:pb-16">
                     <div className="max-w-2xl">
 
                         {/* Clean Editorial Eyebrow / Kicker */}
@@ -339,10 +339,12 @@ export default function Hero3({
                 </div>
 
                 {/* ─── Bottom Bar ─── */}
-                <div className="w-full px-6 md:px-10 lg:px-16 pb-8 md:pb-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
-                    <p className={`${textSubtle} font-serif italic text-[12px] md:text-[13px] leading-relaxed whitespace-pre-line`}>
-                        {bottomTagline}
-                    </p>
+                <div className={`w-full px-6 md:px-10 lg:px-16 pb-14 sm:pb-16 md:pb-20 flex items-center ${bottomTagline ? 'justify-between' : 'justify-end'}`}>
+                    {bottomTagline && (
+                        <p className={`${textSubtle} font-serif italic text-[12px] md:text-[13px] leading-relaxed whitespace-pre-line`}>
+                            {bottomTagline}
+                        </p>
+                    )}
 
                     {isSlice ? (
                         <div className={`flex items-center gap-2.5 ${textSubtle} text-[12px] md:text-[13px] font-cinzel font-bold tracking-wider uppercase shrink-0 pointer-events-none`}>
