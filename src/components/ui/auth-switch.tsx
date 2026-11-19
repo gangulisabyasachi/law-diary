@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, type FormEvent } from "react";
+import React, { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   Mail,
@@ -13,6 +13,8 @@ import {
   Eye,
   EyeOff,
   Sparkles,
+  RotateCw,
+  ShieldCheck,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChamber } from "@/context/ChamberContext";
@@ -174,6 +176,177 @@ function CriteriaTile({
   );
 }
 
+/**
+ * Alphanumeric CAPTCHA Security Generator & Canvas Engine
+ * Built specifically for legal chamber security: 100% offline, zero third-party tracking,
+ * tamper-resistant wave interference and dynamic multi-angle glyph rotation.
+ */
+const CAPTCHA_CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+function generateCaptchaCode(length = 5): string {
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += CAPTCHA_CHARS.charAt(Math.floor(Math.random() * CAPTCHA_CHARS.length));
+  }
+  return result;
+}
+
+function drawCaptchaCanvas(
+  canvas: HTMLCanvasElement | null,
+  text: string,
+  isDark: boolean
+) {
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const w = canvas.width;
+  const h = canvas.height;
+
+  // Background
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = isDark ? "#24201c" : "#f4efe4";
+  ctx.fillRect(0, 0, w, h);
+
+  // Decorative wavy security interference lines
+  const lineColors = isDark
+    ? ["rgba(217, 84, 30, 0.4)", "rgba(243, 238, 227, 0.22)", "rgba(16, 185, 129, 0.28)"]
+    : ["rgba(217, 84, 30, 0.45)", "rgba(17, 17, 17, 0.2)", "rgba(37, 99, 235, 0.3)"];
+
+  for (let i = 0; i < 3; i++) {
+    ctx.strokeStyle = lineColors[i % lineColors.length];
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.moveTo(Math.random() * w * 0.2, Math.random() * h);
+    ctx.bezierCurveTo(
+      Math.random() * w * 0.4, Math.random() * h,
+      Math.random() * w * 0.7, Math.random() * h,
+      w * 0.8 + Math.random() * w * 0.2, Math.random() * h
+    );
+    ctx.stroke();
+  }
+
+  // Security disturbance noise specks
+  for (let i = 0; i < 16; i++) {
+    ctx.fillStyle = isDark ? "rgba(243, 238, 227, 0.3)" : "rgba(17, 17, 17, 0.25)";
+    ctx.beginPath();
+    ctx.arc(Math.random() * w, Math.random() * h, 0.7 + Math.random() * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Draw characters with distinct fonts, rotations, and contrast colors
+  const charColors = isDark
+    ? ["#f97316", "#34d399", "#60a5fa", "#f59e0b", "#c084fc"]
+    : ["#d9541e", "#047857", "#1d4ed8", "#b45309", "#7c3aed"];
+
+  const fontFamilies = ["'Cinzel', serif", "'Plus Jakarta Sans', sans-serif", "Courier New, monospace", "Georgia, serif"];
+  const charWidth = w / (text.length + 0.5);
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    ctx.save();
+    const x = (i + 0.7) * charWidth + (Math.random() * 2 - 1);
+    const y = h / 2 + (Math.random() * 2 - 1);
+    const angle = (Math.random() * 20 - 10) * (Math.PI / 180);
+
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.font = `bold ${Math.floor(h * 0.56)}px ${fontFamilies[i % fontFamilies.length]}`;
+    ctx.fillStyle = charColors[i % charColors.length];
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(char, 0, 0);
+    ctx.restore();
+  }
+}
+
+interface CaptchaFieldProps {
+  value: string;
+  onChange: (val: string) => void;
+  captchaCode: string;
+  onRefresh: () => void;
+  isDark?: boolean;
+  placeholder?: string;
+}
+
+function CaptchaField({
+  value,
+  onChange,
+  captchaCode,
+  onRefresh,
+  isDark = false,
+  placeholder = "Captcha *",
+}: CaptchaFieldProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [spinning, setSpinning] = useState(false);
+
+  useEffect(() => {
+    drawCaptchaCanvas(canvasRef.current, captchaCode, isDark);
+  }, [captchaCode, isDark]);
+
+  const handleRefreshClick = () => {
+    setSpinning(true);
+    onRefresh();
+    setTimeout(() => setSpinning(false), 500);
+  };
+
+  const isMatched = value.trim().length >= 4 && value.trim().toUpperCase() === captchaCode.toUpperCase();
+  const isMismatch = value.trim().length >= 5 && value.trim().toUpperCase() !== captchaCode.toUpperCase();
+
+  return (
+    <div className={`as-input-field ${
+      isMatched ? "is-valid" : isMismatch ? "is-invalid" : ""
+    }`}>
+      {/* Aligned Icon */}
+      <div className="as-input-icon">
+        <ShieldCheck className="w-4 h-4" />
+      </div>
+
+      {/* Aligned Text Input */}
+      <input
+        type="text"
+        required
+        maxLength={6}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value.toUpperCase())}
+        autoComplete="off"
+        spellCheck="false"
+        className={`placeholder:normal-case placeholder:tracking-normal placeholder:font-sans placeholder:text-[0.84rem] ${
+          value.length > 0
+            ? "!font-mono !font-bold !tracking-widest !uppercase !text-xs"
+            : "!font-sans !normal-case !tracking-normal !text-[0.84rem]"
+        }`}
+      />
+
+      {/* Aligned Right Side: Embedded Security Canvas Badge & Match Indicator */}
+      <div className="as-input-action flex items-center gap-1.5 shrink-0 pr-0.5">
+        <div className="h-[30px] pl-2 pr-1 rounded-full bg-[#ede8dc] dark:bg-[#2b2724] border border-neutral-300/80 dark:border-neutral-700/80 flex items-center gap-1 select-none shadow-2xs">
+          <canvas
+            ref={canvasRef}
+            width={82}
+            height={26}
+            className="rounded pointer-events-none block"
+            title="Security CAPTCHA verification code"
+          />
+          <button
+            type="button"
+            onClick={handleRefreshClick}
+            className="p-1 rounded-full text-neutral-500 hover:text-[#d9541e] hover:bg-neutral-200/60 dark:hover:bg-neutral-700/60 transition-colors cursor-pointer"
+            title="Generate fresh security code"
+            aria-label="Refresh security code"
+          >
+            <RotateCw className={`w-3 h-3 transition-transform duration-500 ${spinning ? "rotate-180 text-[#d9541e]" : ""}`} />
+          </button>
+        </div>
+        {value.trim().length > 0 && (
+          <AnimatedTickCross isValid={isMatched} size={11} />
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function AuthSwitch({
   initialSignUp = false,
   onSuccess,
@@ -182,7 +355,15 @@ export default function AuthSwitch({
   className = "",
 }: AuthSwitchProps) {
   const router = useRouter();
-  const { login, signupLawyer, addToast } = useChamber();
+  const { login, signupLawyer, addToast, theme } = useChamber();
+
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    setIsDark(
+      theme === "dark" ||
+      (typeof document !== "undefined" && document.documentElement.classList.contains("dark"))
+    );
+  }, [theme]);
 
   const [isSignUp, setIsSignUp] = useState(initialSignUp);
 
@@ -190,7 +371,14 @@ export default function AuthSwitch({
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
   const [showSignInPassword, setShowSignInPassword] = useState(false);
+  const [signInCaptcha, setSignInCaptcha] = useState("");
+  const [signInCaptchaCode, setSignInCaptchaCode] = useState("7K4WP");
   const [signingIn, setSigningIn] = useState(false);
+
+  const refreshSignInCaptcha = useCallback(() => {
+    setSignInCaptchaCode(generateCaptchaCode(5));
+    setSignInCaptcha("");
+  }, []);
 
   // Sign Up State
   const [signUpName, setSignUpName] = useState("");
@@ -200,8 +388,21 @@ export default function AuthSwitch({
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const [showSignUpConfirmPassword, setShowSignUpConfirmPassword] = useState(false);
   const [signUpBarEnrollment, setSignUpBarEnrollment] = useState("");
+  const [signUpCaptcha, setSignUpCaptcha] = useState("");
+  const [signUpCaptchaCode, setSignUpCaptchaCode] = useState("9M3RX");
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [signingUp, setSigningUp] = useState(false);
+
+  const refreshSignUpCaptcha = useCallback(() => {
+    setSignUpCaptchaCode(generateCaptchaCode(5));
+    setSignUpCaptcha("");
+  }, []);
+
+  // Initialize randomized CAPTCHA codes on client mount
+  useEffect(() => {
+    setSignInCaptchaCode(generateCaptchaCode(5));
+    setSignUpCaptchaCode(generateCaptchaCode(5));
+  }, []);
 
   // Option 1 Password Security Criteria:
   // 1. Minimum 8 characters
@@ -232,6 +433,15 @@ export default function AuthSwitch({
       addToast("Please provide both email and password.", "error");
       return;
     }
+    if (!signInCaptcha.trim()) {
+      addToast("Please enter the CAPTCHA code (*)", "error");
+      return;
+    }
+    if (signInCaptcha.trim().toUpperCase() !== signInCaptchaCode.toUpperCase()) {
+      addToast("Invalid CAPTCHA code. Please check the characters shown in the image.", "error");
+      refreshSignInCaptcha();
+      return;
+    }
     setSigningIn(true);
     try {
       const success = await login(signInEmail, signInPassword);
@@ -242,11 +452,12 @@ export default function AuthSwitch({
         onClose?.();
         router.push("/dashboard");
       } else {
-        addToast("Invalid credentials. Please verify your email & password.", "error");
+        refreshSignInCaptcha();
       }
     } catch {
       setSigningIn(false);
       addToast("Authentication service unavailable. Please retry.", "error");
+      refreshSignInCaptcha();
     }
   };
 
@@ -284,6 +495,15 @@ export default function AuthSwitch({
       addToast("Passwords do not match. Please verify your confirm password.", "error");
       return;
     }
+    if (!signUpCaptcha.trim()) {
+      addToast("Please enter the CAPTCHA code (*)", "error");
+      return;
+    }
+    if (signUpCaptcha.trim().toUpperCase() !== signUpCaptchaCode.toUpperCase()) {
+      addToast("Invalid CAPTCHA code. Please check the characters shown in the image.", "error");
+      refreshSignUpCaptcha();
+      return;
+    }
     setSigningUp(true);
     try {
       const success = await signupLawyer({
@@ -301,11 +521,12 @@ export default function AuthSwitch({
         onClose?.();
         router.push("/dashboard");
       } else {
-        addToast("Enrolment registration failed. Please review details.", "error");
+        refreshSignUpCaptcha();
       }
     } catch {
       setSigningUp(false);
       addToast("Registration service error. Please retry.", "error");
+      refreshSignUpCaptcha();
     }
   };
 
@@ -347,7 +568,8 @@ export default function AuthSwitch({
           position: relative;
           width: 100%;
           max-width: 900px;
-          height: 670px;
+          height: 720px;
+          max-height: 94vh;
           background: #ffffff;
           border-radius: 28px;
           border: 1px solid rgba(17, 17, 17, 0.12);
@@ -387,9 +609,12 @@ export default function AuthSwitch({
           align-items: center;
           justify-content: center;
           flex-direction: column;
-          padding: 0.8rem 3.5rem 0.6rem 3.5rem;
+          padding: 0.8rem 3.2rem 0.6rem 3.2rem;
           transition: all 0.2s 0.7s;
-          overflow: visible;
+          overflow-y: auto;
+          overflow-x: hidden;
+          max-height: 100%;
+          scrollbar-width: thin;
           grid-column: 1 / 2;
           grid-row: 1 / 2;
           width: 100%;
@@ -555,6 +780,9 @@ export default function AuthSwitch({
           color: rgba(17, 17, 17, 0.4);
           font-weight: 400;
           font-size: 0.84rem;
+          text-transform: none !important;
+          letter-spacing: normal !important;
+          font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif) !important;
         }
 
         :global(.dark) .as-input-field input::placeholder {
@@ -768,9 +996,9 @@ export default function AuthSwitch({
 
         @media (max-width: 870px) {
           .auth-switch-container {
-            min-height: 820px;
+            min-height: 860px;
             height: 96vh;
-            max-height: 920px;
+            max-height: 980px;
             overflow-y: auto;
           }
           .as-signin-signup {
@@ -901,7 +1129,7 @@ export default function AuthSwitch({
                 <input
                   type="email"
                   required
-                  placeholder="Email ID"
+                  placeholder="Email ID *"
                   value={signInEmail}
                   onChange={(e) => setSignInEmail(e.target.value)}
                   autoComplete="email"
@@ -915,7 +1143,7 @@ export default function AuthSwitch({
                 <input
                   type={showSignInPassword ? "text" : "password"}
                   required
-                  placeholder="Password"
+                  placeholder="Password *"
                   value={signInPassword}
                   onChange={(e) => setSignInPassword(e.target.value)}
                   autoComplete="current-password"
@@ -936,6 +1164,15 @@ export default function AuthSwitch({
                   </button>
                 </div>
               </div>
+
+              {/* Working CAPTCHA Security Verification Field */}
+              <CaptchaField
+                value={signInCaptcha}
+                onChange={setSignInCaptcha}
+                captchaCode={signInCaptchaCode}
+                onRefresh={refreshSignInCaptcha}
+                isDark={isDark}
+              />
 
               <button
                 type="submit"
@@ -1149,6 +1386,15 @@ export default function AuthSwitch({
                   )}
                 </div>
               </div>
+
+              {/* Working CAPTCHA Security Verification Field */}
+              <CaptchaField
+                value={signUpCaptcha}
+                onChange={setSignUpCaptcha}
+                captchaCode={signUpCaptchaCode}
+                onRefresh={refreshSignUpCaptcha}
+                isDark={isDark}
+              />
 
               <button
                 type="submit"
