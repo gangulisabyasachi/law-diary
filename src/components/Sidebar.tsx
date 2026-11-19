@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Scale,
@@ -17,18 +18,33 @@ import {
   Gavel,
   FileCheck,
   Award,
+  LogOut,
 } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function Sidebar() {
-  const { currentUser, state } = useChamber();
+  const { currentUser, state, logout } = useChamber();
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
   if (!currentUser) return null;
 
   const role = currentUser.role;
-  const pendingApprovals = state?.approvals?.length || 0;
+  const pendingApprovals = (state?.approvals || []).filter((a) => {
+    if (currentUser?.role === "admin") return true;
+    if (currentUser?.role === "associate") return a.by === currentUser.id;
+    if (currentUser?.role === "lawyer") {
+      if (a.by === currentUser.id) return true;
+      const cId = a.payload?.caseId || a.payload?.case?.id;
+      if (cId && (state?.cases || []).some((c) => c.id === cId && (c.lawyerId || "u-lawyer") === currentUser.id)) return true;
+      if (a.payload?.case?.lawyerId === currentUser.id) return true;
+      const submitter = (state?.users || []).find((u) => u.id === a.by);
+      if (submitter && (submitter.lawyerId || "u-lawyer") === currentUser.id) return true;
+      if (currentUser.id === "u-lawyer" || !submitter?.lawyerId) return true;
+      return false;
+    }
+    return false;
+  }).length;
 
   interface NavItem {
     id: string;
@@ -53,7 +69,7 @@ export function Sidebar() {
       { id: "cases", label: "Assigned Matters", href: "/dashboard/cases", icon: Scale },
       { id: "calendar", label: "Hearing Calendar", href: "/dashboard/calendar", icon: CalendarDays },
       { id: "clients", label: "Client Briefs", href: "/dashboard/clients", icon: Users, section: "CHAMBER WORKFLOW" },
-      { id: "approvals", label: "My Draft Submissions", href: "/dashboard/approvals", icon: FileCheck },
+      { id: "approvals", label: "My Draft Submissions", href: "/dashboard/approvals", icon: FileCheck, badge: pendingApprovals },
     ],
     client: [
       { id: "dashboard", label: "My Court Matters", href: "/dashboard", icon: Scale, section: "LITIGANT PORTAL" },
@@ -74,6 +90,8 @@ export function Sidebar() {
       ? (currentUser.name.toLowerCase().startsWith("adv") ? `Chambers of ${currentUser.name}` : `Chambers of Adv. ${currentUser.name}`)
       : currentUser.role === "admin"
       ? "LexDaily Registrar Desk"
+      : currentUser.role === "client"
+      ? "LexDaily Litigant Portal"
       : (() => {
           const supLawyer = state?.users?.find(
             (u) => u.role === "lawyer" && (u.id === currentUser.lawyerId || state.cases.some((c) => c.lawyerId === u.id))
@@ -85,9 +103,15 @@ export function Sidebar() {
     <aside className="w-64 bg-white dark:bg-[#111111] text-[#111111] dark:text-[#f3eee3] flex flex-col h-screen sticky top-0 border-r border-[#111111]/15 dark:border-[#f3eee3]/20 select-none transition-colors duration-200 shadow-xs">
       {/* Sophisticated Chamber Crest Header */}
       <div className="p-4 sm:p-5 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center gap-3 bg-[#f3eee3]/10 dark:bg-[#181818] backdrop-blur-md">
-        <div className="w-10 h-10 rounded-2xl bg-[#111111] border border-[#f3eee3]/50 flex items-center justify-center text-[#f3eee3] shadow-md flex-shrink-0 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-[#f3eee3]/10 opacity-60" />
-          <Scale className="w-5 h-5 text-[#f3eee3] relative z-10 transition-transform group-hover:scale-110" />
+        <div className="w-10 h-10 rounded-2xl border border-[#111111]/15 dark:border-[#f3eee3]/25 bg-white dark:bg-[#181818] flex items-center justify-center shadow-sm flex-shrink-0 relative overflow-hidden group">
+          <Image
+            src="/favicon.png"
+            alt="LexDaily LD Logo"
+            width={40}
+            height={40}
+            className="w-full h-full object-contain p-0.5 transition-transform group-hover:scale-105"
+            priority
+          />
         </div>
         <div className="min-w-0">
           <h2 className="text-xs font-semibold font-cinzel text-[#111111] dark:text-[#f3eee3] tracking-wider leading-tight truncate">
@@ -95,7 +119,11 @@ export function Sidebar() {
           </h2>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-[9.5px] uppercase font-cinzel tracking-widest text-[#111111]/80 dark:text-[#f3eee3]/90 font-bold truncate">
-              {currentUser.role === "admin" ? "Master Register" : "Chamber Diary"}
+              {currentUser.role === "admin"
+                ? "Master Register"
+                : currentUser.role === "client"
+                ? "Litigant Dossier"
+                : "Chamber Diary"}
             </span>
             <span className="text-[9.5px] font-mono font-semibold text-[#111111]/60 dark:text-[#f3eee3]/60">
               · {currentYear}
@@ -153,22 +181,84 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* User Status / Chamber Clerk Desk */}
-      <div className="p-3.5 m-3 rounded-2xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs shadow-xs">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[9.5px] font-cinzel uppercase tracking-widest text-[#111111]/60 dark:text-[#f3eee3]/60">
-            Credentialed User
-          </span>
-          <span className="text-[9px] font-cinzel px-2 py-0.5 rounded-full bg-[#111111] text-[#f3eee3] dark:bg-[#f3eee3]/20 dark:text-[#f3eee3] font-bold border border-[#111111] dark:border-[#f3eee3]/40">
-            {role === "lawyer" ? "SENIOR ADVOCATE" : role === "associate" ? "ASSOCIATE ADVOCATE" : role.toUpperCase()}
+      {/* Sovereign Advocate Credential Medallion */}
+      <div className="relative m-3 rounded-2xl p-3 bg-gradient-to-b from-[#faf8f5] via-[#f5f0e8] to-[#eee7dc] dark:from-[#1c1a17] dark:via-[#161412] dark:to-[#100f0e] border border-[#111111]/12 dark:border-[#f3eee3]/15 shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden">
+        {/* Subtle Luxury Top Hairline Accent */}
+        <div className="absolute top-0 left-3 right-3 h-[1.5px] bg-gradient-to-r from-transparent via-[#d9541e]/40 dark:via-[#ea6026]/50 to-transparent" />
+
+        {/* Header: Verified Chamber Roll / Litigant Status + Refined Single-Line Pill */}
+        <div className="flex items-center justify-between gap-1.5 pb-2 mb-2 border-b border-[#111111]/8 dark:border-[#f3eee3]/10">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 ring-2 ring-emerald-500/20" />
+            <span className="text-[9px] font-cinzel font-bold tracking-[0.14em] text-[#111111]/70 dark:text-[#f3eee3]/70 uppercase truncate">
+              {role === "client" ? "RETAINED LITIGANT" : "BAR COUNCIL ROLL"}
+            </span>
+          </div>
+
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] font-cinzel font-bold tracking-wider uppercase whitespace-nowrap shrink-0 bg-[#d9541e]/10 text-[#d9541e] dark:bg-[#d9541e]/20 dark:text-[#ea6026] border border-[#d9541e]/25 shadow-2xs">
+            {role === "lawyer"
+              ? "Senior Advocate"
+              : role === "associate"
+              ? "Associate Advocate"
+              : role === "client"
+              ? "Litigant Client"
+              : "Registrar"}
           </span>
         </div>
-        <p className="font-bold text-[#111111] dark:text-[#f3eee3] truncate font-sans text-xs">
-          {currentUser.name}
-        </p>
-        <p className="text-[11px] text-[#111111]/70 dark:text-[#f3eee3]/60 truncate font-serif italic">
-          {currentUser.role === "lawyer" ? "Senior Advocate" : (currentUser.designation?.replace(/Counsel/gi, "Advocate") || "Advocate")}
-        </p>
+
+        {/* Identity: Bespoke Seal Medallion + Elegant Serif Name */}
+        <div className="flex items-center gap-2.5">
+          {/* Monogram Seal Medallion */}
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#1a1715] via-[#2a2420] to-[#12100e] dark:from-[#24201c] dark:to-[#12100e] text-[#f3eee3] border border-[#c5a059]/40 dark:border-[#c5a059]/30 flex items-center justify-center font-cinzel font-bold text-xs shrink-0 shadow-sm relative overflow-hidden group-hover:scale-105 transition-transform duration-200">
+            <div className="absolute inset-0 bg-radial from-[#c5a059]/15 to-transparent pointer-events-none" />
+            <span className="relative z-10 tracking-wider">
+              {currentUser.name
+                .replace(/^Adv\.?\s*/i, "")
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase() || "AM"}
+            </span>
+          </div>
+
+          {/* Advocate / Client Name & Designation */}
+          <div className="min-w-0 flex-1">
+            <p className="font-serif font-bold text-xs text-[#111111] dark:text-[#f3eee3] leading-snug tracking-tight truncate">
+              {currentUser.name}
+            </p>
+            <p className="text-[10px] text-[#111111]/60 dark:text-[#f3eee3]/60 font-serif italic truncate mt-0.5">
+              {role === "lawyer"
+                ? (currentUser.designation || "Senior Advocate & Chamber Head")
+                : role === "associate"
+                ? (currentUser.designation || "Briefing & Arguing Counsel")
+                : role === "client"
+                ? (currentUser.phone ? `Mob: ${currentUser.phone}` : "Retained Litigant Dossier")
+                : "Master Registrar"}
+            </p>
+          </div>
+        </div>
+
+        {/* Footer Meta & Sign Out */}
+        <div className="flex items-center justify-between pt-2 mt-2 border-t border-[#111111]/8 dark:border-[#f3eee3]/10 text-[9px]">
+          <span className="inline-flex items-center gap-1 font-mono text-[#111111]/50 dark:text-[#f3eee3]/50 truncate">
+            <ShieldCheck className="w-3 h-3 text-[#d9541e] shrink-0" />
+            <span className="truncate">
+              {role === "client" ? "Vakalatnama Protected" : "Rule 36 BCI Verified"}
+            </span>
+          </span>
+
+          <button
+            type="button"
+            onClick={logout}
+            title="Sign out of chamber"
+            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[#111111]/50 hover:text-rose-600 dark:text-[#f3eee3]/50 dark:hover:text-rose-400 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer shrink-0"
+          >
+            <span className="text-[8.5px] font-cinzel font-semibold">Exit</span>
+            <LogOut className="w-3 h-3" />
+          </button>
+        </div>
       </div>
     </aside>
   );

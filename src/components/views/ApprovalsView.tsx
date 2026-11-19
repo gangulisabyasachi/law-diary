@@ -17,23 +17,30 @@ export function ApprovalsView() {
   const myAssociates = state.users.filter((u) => u.role === "associate" && (u.lawyerId || "u-lawyer") === currentUser.id);
   const myAssociateIds = new Set(myAssociates.map((u) => u.id));
 
-  const approvals = currentUser.role === "associate"
-    ? state.approvals.filter((a) => a.by === currentUser.id)
-    : currentUser.role === "lawyer"
-    ? state.approvals.filter((a) => {
-        const cId = a.payload?.caseId || a.payload?.case?.id;
-        return myCaseIds.has(cId) || myAssociateIds.has(a.by) || a.by === currentUser.id;
-      })
-    : state.approvals;
+  const isRelevantForUser = (item: any) => {
+    if (currentUser.role === "admin") return true;
+    if (currentUser.role === "associate") return item.by === currentUser.id;
+    if (currentUser.role === "lawyer") {
+      // 1. Submitted by the lawyer themselves
+      if (item.by === currentUser.id) return true;
+      // 2. Draft for a case belonging to this chamber
+      const cId = item.payload?.caseId || item.payload?.case?.id;
+      if (cId && myCaseIds.has(cId)) return true;
+      if (item.payload?.case?.lawyerId === currentUser.id) return true;
+      if (item.payload?.user?.lawyerId === currentUser.id) return true;
+      // 3. Submitted by an associate rostered in this chamber
+      if (myAssociateIds.has(item.by)) return true;
+      const submitter = state.users.find((u) => u.id === item.by);
+      if (submitter && (submitter.lawyerId || "u-lawyer") === currentUser.id) return true;
+      // 4. Fallback for chamber head: if no specific supervisor or assigned to primary chamber
+      if (currentUser.id === "u-lawyer" || !submitter?.lawyerId || submitter?.lawyerId === currentUser.id) return true;
+      return false;
+    }
+    return false;
+  };
 
-  const decided = currentUser.role === "associate"
-    ? state.decided.filter((d) => d.by === currentUser.id)
-    : currentUser.role === "lawyer"
-    ? state.decided.filter((d) => {
-        const cId = d.payload?.caseId || d.payload?.case?.id;
-        return myCaseIds.has(cId) || myAssociateIds.has(d.by) || d.by === currentUser.id;
-      })
-    : state.decided;
+  const approvals = state.approvals.filter(isRelevantForUser);
+  const decided = state.decided.filter(isRelevantForUser);
 
   const handleDecision = async (id: string, decision: "approve" | "reject") => {
     setDecidingId(id);
@@ -44,7 +51,12 @@ export function ApprovalsView() {
   const describePayload = (a: any) => {
     const p = a.payload || {};
     if (a.type === "compound") {
-      return (p.ops || []).map((op: any) => op.type).join(", ");
+      return (p.ops || []).map((op: any) => {
+        if (op.type === "updateCase") return "Case Details Update";
+        if (op.type === "addHearing") return `Next Hearing: ${op.payload?.hearing?.date} (${op.payload?.hearing?.purpose || "Hearing"})`;
+        if (op.type === "addOrder") return `Order: ${op.payload?.order?.title || "Court Order"}`;
+        return op.type;
+      }).join(" · ");
     }
     if (a.type === "addHearing") {
       return `Date: ${p.hearing?.date} · Purpose: ${p.hearing?.purpose}${p.hearing?.outcome ? ` — ${p.hearing.outcome}` : ""}`;
@@ -59,7 +71,16 @@ export function ApprovalsView() {
       return `Fresh Filing: ${p.case?.caseNo} — ${p.case?.title}`;
     }
     if (a.type === "updateUser") {
-      return `Client Dossier Update: ${p.name || ""}${p.phone ? ` · Phone: ${p.phone}` : ""}${p.email ? ` · User/Email: ${p.email}` : ""}${p.password ? " · Password change requested" : ""}`;
+      return `Profile & Credentials Update: ${p.name || ""}${p.designation ? ` (${p.designation})` : ""}${p.phone ? ` · Phone: ${p.phone}` : ""}${p.email ? ` · Email: ${p.email}` : ""}${p.password ? " · Password change requested" : ""}`;
+    }
+    if (a.type === "addClient") {
+      return `New Client Intake: ${p.user?.name || ""}${p.user?.phone ? ` · Phone: ${p.user.phone}` : ""}${p.user?.email ? ` · Email: ${p.user.email}` : ""}`;
+    }
+    if (a.type === "addAssociate") {
+      return `New Associate Induction: ${p.user?.name || ""}${p.user?.designation ? ` (${p.user.designation})` : ""}${p.user?.email ? ` · Email: ${p.user.email}` : ""}`;
+    }
+    if (a.type === "replyQuery") {
+      return `Litigant Legal Advice Draft: "${p.reply}"`;
     }
     return JSON.stringify(p);
   };

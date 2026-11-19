@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Search, Scale, Calendar, Users, Plus, CheckCircle2, ArrowRight, CornerDownLeft } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
@@ -77,8 +78,11 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 p-4 bg-[#111111]/80 backdrop-blur-md transition-all">
       <div className="relative w-full max-w-xl overflow-hidden bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/30 rounded-3xl shadow-2xl text-[#111111] dark:text-[#f3eee3] animate-in fade-in-0 zoom-in-95 duration-150">
         {/* Search Input Bar */}
-        <div className="flex items-center gap-3.5 px-5 py-4 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 bg-[#f3eee3]/10 dark:bg-[#111111]">
-          <Search className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0" />
+        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[#111111]/15 dark:border-[#f3eee3]/20 bg-[#f3eee3]/10 dark:bg-[#111111]">
+          <div className="w-6 h-6 rounded-lg overflow-hidden shrink-0 border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] shadow-2xs">
+            <Image src="/favicon.png" width={24} height={24} alt="LD" className="w-full h-full object-contain p-0.5" />
+          </div>
+          <Search className="w-3.5 h-3.5 text-[#111111]/60 dark:text-[#f3eee3]/60 flex-shrink-0" />
           <input
             type="text"
             autoFocus

@@ -6,9 +6,14 @@ export const metadata: Metadata = {
   title: "LexDaily",
   description: "The premier multi-chamber legal practice platform for Senior Advocates, Associate Advocates, Law Firms, and Corporate Litigants. Built for the Indian judicial ecosystem.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 

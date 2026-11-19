@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Image from "next/image";
 import {
   ArrowLeft,
   Calendar,
@@ -44,6 +45,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
   } = useChamber();
 
   const [activeTab, setActiveTab] = useState<"hearings" | "orders" | "queries" | "billing" | "parties" | "documents" | "notes">("hearings");
+  const isLawyerOrAssociate = currentUser?.role === "lawyer" || currentUser?.role === "associate" || currentUser?.role === "admin";
   const [queryText, setQueryText] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
@@ -83,7 +85,9 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
   if (!c) {
     return (
       <div className="p-14 text-center bg-white dark:bg-[#181818] rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
-        <Scale className="w-10 h-10 mx-auto text-[#111111]/65 dark:text-[#f3eee3]/60 mb-3" />
+        <div className="w-14 h-14 mx-auto mb-3.5 rounded-2xl overflow-hidden border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] p-1.5 shadow-2xs opacity-75">
+          <Image src="/favicon.png" width={48} height={48} alt="LD" className="w-full h-full object-contain" />
+        </div>
         <h2 className="text-base font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Court Brief Not Found</h2>
         <p className="text-xs font-serif text-[#111111]/65 dark:text-[#f3eee3]/60 mt-1">This dossier does not exist in your chamber registry.</p>
         <button
@@ -144,23 +148,44 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
     if (!replyText.trim()) return;
     setSubmittingReply(true);
 
-    const updatedQueries = (c.queries || []).map((q) => {
-      if (q.id === queryId) {
-        return {
-          ...q,
+    if (currentUser.role === "associate") {
+      // Submits for Senior Advocate verification and sanction
+      await submitApproval({
+        id: "a-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+        by: currentUser.id,
+        byName: currentUser.name,
+        ts: new Date().toISOString(),
+        type: "replyQuery",
+        label: `Associate Counsel Legal Advice for Case ${c.caseNo}`,
+        payload: {
+          caseId: c.id,
+          queryId,
           reply: replyText.trim(),
           replyBy: currentUser.id,
-          replyTs: new Date().toISOString(),
-        };
-      }
-      return q;
-    });
+        },
+      });
+      setReplyingTo(null);
+      setReplyText("");
+      setSubmittingReply(false);
+      return;
+    }
 
-    await sendOps([{ type: "updateCase", payload: { caseId: c.id, fields: { queries: updatedQueries } } }]);
+    // Senior Advocate / Admin applies directly
+    await sendOps([
+      {
+        type: "replyQuery",
+        payload: {
+          caseId: c.id,
+          queryId,
+          reply: replyText.trim(),
+          replyBy: currentUser.id,
+        },
+      },
+    ]);
     setReplyingTo(null);
     setReplyText("");
     setSubmittingReply(false);
-    addToast("Advocate legal advice recorded on brief.", "success");
+    addToast("Advocate legal advice recorded and delivered to litigant.", "success");
   };
 
   // Limitation calculation
@@ -443,35 +468,37 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
               </>
             )}
 
-            {/* Public Docket Share */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={handleSharePublicLink}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] font-cinzel font-semibold text-xs hover:border-[#d9541e] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
-                title="Copy public link to view case docket without signing in"
-              >
-                {copiedShareLink ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-emerald-600 font-bold">Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Share2 className="w-3.5 h-3.5 text-[#d9541e]" />
-                    <span>Public Share</span>
-                  </>
-                )}
-              </button>
-              <a
-                href={`/share/case/${c.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-xl bg-white dark:bg-[#202020] text-[#111111]/70 dark:text-[#f3eee3]/70 hover:text-[#d9541e] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center shadow-xs transition-colors"
-                title="Open public docket in new tab"
-              >
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
+            {/* Public Docket Share (Restricted to Chamber Advocates & Admins) */}
+            {isLawyerOrAssociate && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={handleSharePublicLink}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] font-cinzel font-semibold text-xs hover:border-[#d9541e] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs cursor-pointer"
+                  title="Copy public link to view case docket without signing in"
+                >
+                  {copiedShareLink ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-600 font-bold">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5 text-[#d9541e]" />
+                      <span>Public Share</span>
+                    </>
+                  )}
+                </button>
+                <a
+                  href={`/share/case/${c.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-xl bg-white dark:bg-[#202020] text-[#111111]/70 dark:text-[#f3eee3]/70 hover:text-[#d9541e] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center shadow-xs transition-colors"
+                  title="Open public docket in new tab"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            )}
 
             {/* Delete Case Option — STRICTLY for Senior Advocates (Lawyer login) */}
             {(currentUser.role === "lawyer" || currentUser.role === "admin") && (
@@ -572,16 +599,18 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
           Dossier Documents ({(c.attachments || []).length})
         </button>
 
-        <button
-          onClick={() => setActiveTab("notes")}
-          className={`pb-3 transition-colors ${
-            activeTab === "notes"
-              ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
-              : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
-          }`}
-        >
-          Chamber Notes
-        </button>
+        {isLawyerOrAssociate && (
+          <button
+            onClick={() => setActiveTab("notes")}
+            className={`pb-3 transition-colors ${
+              activeTab === "notes"
+                ? "text-[#111111] dark:text-[#f3eee3] border-b-2 border-[#111111] dark:border-[#f3eee3]"
+                : "text-[#111111]/65 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
+            }`}
+          >
+            Chamber Notes
+          </button>
+        )}
       </div>
 
       {/* 1. Hearings Board */}
@@ -767,46 +796,80 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                         Advocate Advice:
                       </span>
                       <p className="text-[#111111]/85 dark:text-[#f3eee3]/85 font-serif leading-relaxed">{q.reply}</p>
+                      {q.replyTs && (
+                        <span className="text-[10px] text-[#111111]/45 dark:text-[#f3eee3]/45 font-mono block mt-2">
+                          Delivered {formatDate(q.replyTs)}
+                        </span>
+                      )}
                     </div>
-                  ) : (
-                    (currentUser.role === "lawyer" || currentUser.role === "associate") && (
-                      <div className="pt-2">
-                        {replyingTo === q.id ? (
-                          <div className="space-y-3">
-                            <textarea
-                              rows={2}
-                              value={replyText}
-                              onChange={(e) => setReplyText(e.target.value)}
-                              placeholder="Type advocate response..."
-                              className="w-full p-3.5 rounded-xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs text-[#111111] dark:text-[#f3eee3] font-serif"
-                            />
-                            <div className="flex gap-2.5">
-                              <button
-                                onClick={() => handleReplySubmit(q.id)}
-                                disabled={submittingReply || !replyText.trim()}
-                                className="px-5 py-2 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs"
-                              >
-                                {submittingReply ? "Saving..." : "Send Advice"}
-                              </button>
-                              <button
-                                onClick={() => setReplyingTo(null)}
-                                className="px-4 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs font-cinzel font-semibold"
-                              >
-                                Cancel
-                              </button>
-                            </div>
+                  ) : (() => {
+                    const pendingDraft = state.approvals?.find(
+                      (a) => a.type === "replyQuery" && a.payload?.queryId === q.id
+                    );
+                    if (pendingDraft) {
+                      return (
+                        <div className="mt-3 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-xs text-amber-900 dark:text-amber-200 font-serif">
+                          <div className="flex items-center gap-2 font-cinzel font-bold text-[11px] mb-1">
+                            <Clock className="w-3.5 h-3.5 text-amber-600" />
+                            <span>Associate Draft Awaiting Senior Advocate Approval</span>
                           </div>
-                        ) : (
-                          <button
-                            onClick={() => setReplyingTo(q.id)}
-                            className="text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:underline"
-                          >
-                            Reply as Chamber Advocate →
-                          </button>
-                        )}
-                      </div>
-                    )
-                  )}
+                          <p className="italic">&ldquo;{pendingDraft.payload?.reply}&rdquo;</p>
+                          <p className="text-[10px] text-amber-700/80 dark:text-amber-300/80 mt-1.5">
+                            Drafted by {pendingDraft.byName}. Will be dispatched to litigant once sanctioned by Senior Advocate.
+                          </p>
+                        </div>
+                      );
+                    }
+                    return (
+                      (currentUser.role === "lawyer" || currentUser.role === "associate") && (
+                        <div className="pt-2">
+                          {replyingTo === q.id ? (
+                            <div className="space-y-3">
+                              <textarea
+                                rows={2}
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
+                                placeholder={
+                                  currentUser.role === "associate"
+                                    ? "Draft legal advice (will be submitted to Senior Advocate for sign-off)..."
+                                    : "Type advocate legal advice to client..."
+                                }
+                                className="w-full p-3.5 rounded-xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs text-[#111111] dark:text-[#f3eee3] font-serif"
+                              />
+                              <div className="flex gap-2.5">
+                                <button
+                                  onClick={() => handleReplySubmit(q.id)}
+                                  disabled={submittingReply || !replyText.trim()}
+                                  className="px-5 py-2 rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm font-cinzel font-bold text-xs cursor-pointer"
+                                >
+                                  {submittingReply
+                                    ? "Saving..."
+                                    : currentUser.role === "associate"
+                                    ? "Submit for Senior Advocate Approval"
+                                    : "Send Advice to Litigant"}
+                                </button>
+                                <button
+                                  onClick={() => setReplyingTo(null)}
+                                  className="px-4 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs font-cinzel font-semibold cursor-pointer"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setReplyingTo(q.id)}
+                              className="text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:underline cursor-pointer"
+                            >
+                              {currentUser.role === "associate"
+                                ? "Draft Reply for Advocate Approval →"
+                                : "Reply as Chamber Advocate →"}
+                            </button>
+                          )}
+                        </div>
+                      )
+                    );
+                  })()}
                 </div>
               ))
             )}
@@ -862,28 +925,30 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                 Payment Receipts &amp; Disbursements
               </h4>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setReceiptNo(`REC-${Date.now().toString(36).toUpperCase()}`);
-                    setShowAddReceipt(!showAddReceipt);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#d9541e] text-white text-xs font-cinzel font-bold hover:bg-[#bf4513] transition-colors shadow-2xs"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>{showAddReceipt ? "Cancel" : "Add Fee Entry"}</span>
-                </button>
+                {isLawyerOrAssociate && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReceiptNo(`REC-${Date.now().toString(36).toUpperCase()}`);
+                      setShowAddReceipt(!showAddReceipt);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#d9541e] text-white text-xs font-cinzel font-bold hover:bg-[#bf4513] transition-colors shadow-2xs cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>{showAddReceipt ? "Cancel" : "Add Fee Entry"}</span>
+                  </button>
+                )}
                 <button
                   onClick={() => addToast("Receipt statement exported for client record.", "success")}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#202020] text-xs font-cinzel font-semibold hover:bg-[#f3efe6] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#202020] text-xs font-cinzel font-semibold hover:bg-[#f3efe6] transition-colors border border-[#111111]/15 dark:border-[#f3eee3]/20 cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" /> Print Statement
                 </button>
               </div>
             </div>
 
-            {/* Inline Add Fee Entry Form */}
-            {showAddReceipt && (
+            {/* Inline Add Fee Entry Form (Restricted to Chamber Advocates & Admins) */}
+            {isLawyerOrAssociate && showAddReceipt && (
               <form onSubmit={handleAddFeeReceipt} className="p-5 bg-[#f3eee3]/20 dark:bg-[#202020] border-b border-[#111111]/10 dark:border-[#f3eee3]/10 space-y-4">
                 <div className="flex items-center justify-between">
                   <h5 className="text-xs font-cinzel font-bold text-[#d9541e]">Record New Payment / Fee Receipt</h5>
@@ -1047,22 +1112,24 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
               <h3 className="text-xs font-cinzel font-bold uppercase tracking-widest text-[#111111] dark:text-[#f3eee3]">
                 Parties to Suit &amp; Opposing Counsel
               </h3>
-              <button
-                type="button"
-                onClick={() => {
-                  setPartyOpponentName(c.opponentName || "");
-                  setPartyOpponentLawyer(c.opponentLawyer || "");
-                  setPartyCounselFor(c.counselFor || "");
-                  setShowEditParties(!showEditParties);
-                }}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[11px] font-cinzel font-bold hover:border-[#d9541e] text-[#d9541e] transition-colors"
-              >
-                <Edit className="w-3 h-3" />
-                <span>{showEditParties ? "Cancel" : "Add / Edit Parties"}</span>
-              </button>
+              {isLawyerOrAssociate && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPartyOpponentName(c.opponentName || "");
+                    setPartyOpponentLawyer(c.opponentLawyer || "");
+                    setPartyCounselFor(c.counselFor || "");
+                    setShowEditParties(!showEditParties);
+                  }}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[11px] font-cinzel font-bold hover:border-[#d9541e] text-[#d9541e] transition-colors cursor-pointer"
+                >
+                  <Edit className="w-3 h-3" />
+                  <span>{showEditParties ? "Cancel" : "Add / Edit Parties"}</span>
+                </button>
+              )}
             </div>
 
-            {showEditParties ? (
+            {isLawyerOrAssociate && showEditParties ? (
               <form onSubmit={handleSaveParties} className="space-y-3 pt-2">
                 <div>
                   <label className="block text-[11px] font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1">
@@ -1169,28 +1236,34 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
               <span className="text-[10px] font-mono font-bold text-[#111111]/60 dark:text-[#f3eee3]/60">
                 {(c.attachments || []).length} File(s)
               </span>
-              <input
-                type="file"
-                ref={docInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
-              />
-              <button
-                type="button"
-                disabled={uploadingDoc}
-                onClick={() => docInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#d9541e] hover:bg-[#bf4513] text-white text-xs font-cinzel font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
-              >
-                <UploadCloud className="w-3.5 h-3.5" />
-                <span>{uploadingDoc ? "Uploading..." : "+ Add New Document"}</span>
-              </button>
+              {isLawyerOrAssociate && (
+                <>
+                  <input
+                    type="file"
+                    ref={docInputRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
+                  />
+                  <button
+                    type="button"
+                    disabled={uploadingDoc}
+                    onClick={() => docInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#d9541e] hover:bg-[#bf4513] text-white text-xs font-cinzel font-bold transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                  >
+                    <UploadCloud className="w-3.5 h-3.5" />
+                    <span>{uploadingDoc ? "Uploading..." : "+ Add New Document"}</span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
           {(c.attachments || []).length === 0 ? (
             <div className="p-8 text-center text-xs font-serif text-[#111111]/65 dark:text-[#f3eee3]/60 italic bg-[#f3eee3]/10 dark:bg-white/2 rounded-2xl border border-dashed border-[#111111]/15 dark:border-[#f3eee3]/15">
-              No electronic attachments filed with this docket yet. Click &quot;+ Add New Document&quot; above to attach petitions, vakalatnamas, or trial evidence.
+              {isLawyerOrAssociate
+                ? 'No electronic attachments filed with this docket yet. Click "+ Add New Document" above to attach petitions, vakalatnamas, or trial evidence.'
+                : "No electronic court documents or certified copies attached to this brief by chamber counsel yet."}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1234,8 +1307,8 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
         </div>
       )}
 
-      {/* 7. Chamber Notes Timeline */}
-      {activeTab === "notes" && (
+      {/* 7. Chamber Notes Timeline (Privileged & Confidential — Strictly Advocate & Associate Access) */}
+      {activeTab === "notes" && isLawyerOrAssociate && (
         <div className="p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-6 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#111111]/10 dark:border-[#f3eee3]/10">
             <div>

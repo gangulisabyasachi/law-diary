@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { X, Scale, FileText, CheckCircle2, AlertCircle, Search, ChevronDown, ShieldAlert } from "lucide-react";
+import { X, Scale, FileText, CheckCircle2, AlertCircle, Search, ChevronDown, ShieldAlert, Copy, Check } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -28,14 +28,16 @@ export function Modals() {
         label,
         payload: opPayload,
       };
-      await submitApproval(approvalItem);
-      addToast("Draft submitted to Senior Advocate verification desk.", "info");
+      const ok = await submitApproval(approvalItem);
+      if (ok) {
+        closeModal();
+      }
     } else {
       const op = customOp || { type, payload: opPayload };
       await sendOps([op]);
       addToast(label + " recorded successfully on judicial docket.", "success");
+      closeModal();
     }
-    closeModal();
   };
 
   return (
@@ -181,6 +183,16 @@ export function Modals() {
                 handleMutation("addAssociate", `Associate ${u.name} inducted`, {
                   user: { ...u, lawyerId: chamberLawyerId },
                 })
+              }
+            />
+          )}
+
+          {name === "edit-associate" && (
+            <EditAssociateForm
+              associate={payload.associate}
+              onClose={closeModal}
+              onSubmit={(u: any) =>
+                handleMutation("updateUser", `Updated Associate ${u.name}`, u)
               }
             />
           )}
@@ -1048,19 +1060,24 @@ function EditClientForm({ client, onClose, onSubmit }: any) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSetDefaultPassword = () => {
-    setPassword("LD_password@1234");
+  const [copiedPass, setCopiedPass] = useState(false);
+
+  const clientPermanentPassword = client.accessCode || (client.id === "u-client" ? "client123" : "LD" + client.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase());
+
+  const handleCopyPassword = () => {
+    navigator.clipboard.writeText(clientPermanentPassword);
+    setCopiedPass(true);
+    setTimeout(() => setCopiedPass(false), 2000);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim()) return;
+    if (!name.trim() || !phone.trim() || !email.trim()) return;
     onSubmit({
       userId: client.id,
       name: name.trim(),
-      email: email.trim(),
+      email: email.trim().toLowerCase(),
       phone: phone.trim(),
-      password: password.trim() || undefined,
     });
   };
 
@@ -1116,47 +1133,59 @@ function EditClientForm({ client, onClose, onSubmit }: any) {
 
           <div>
             <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
-              Email ID / Username
+              Email ID <span className="text-[#d9541e]">*</span> <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Mandatory for Login)</span>
             </label>
             <input
-              type="text"
+              type="email"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="client@chambers.in or client_username"
+              placeholder="client@chambers.in"
               className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
             />
           </div>
         </div>
 
+        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] font-serif text-amber-900 dark:text-amber-300">
+          <strong>Portal Login Requirement:</strong> A valid email ID is mandatory when editing a client profile so the litigant can authenticate and log into their LexDaily client portal.
+        </div>
+
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60">
-              Reset Password <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Leave blank to keep unchanged)</span>
+              Permanent Litigant Access Password
             </label>
+            <span className="text-[10px] text-amber-700 dark:text-amber-400 font-serif italic">
+              System-Generated · Immutable
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-[#111111]/5 dark:bg-[#181818] font-mono font-bold text-xs tracking-wider text-[#111111] dark:text-[#f3eee3] flex items-center justify-between">
+              <span>{clientPermanentPassword}</span>
+              <span className="text-[10px] font-sans font-normal text-[#111111]/50 dark:text-[#f3eee3]/50">Universal Passcode</span>
+            </div>
             <button
               type="button"
-              onClick={handleSetDefaultPassword}
-              className="text-[11px] font-mono text-[#d9541e] hover:underline flex items-center gap-1 font-bold cursor-pointer"
+              onClick={handleCopyPassword}
+              className="px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:border-[#d9541e] hover:text-[#d9541e] transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Copy password to clipboard"
             >
-              Default (LD_password@1234)
+              {copiedPass ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-600">Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Copy</span>
+                </>
+              )}
             </button>
           </div>
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter new password or click Default above"
-              className="w-full px-3.5 py-2.5 pr-20 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10.5px] font-cinzel font-bold text-[#111111]/60 dark:text-[#f3eee3]/60 hover:text-[#d9541e] cursor-pointer"
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
+          <p className="text-[10.5px] font-serif italic text-[#111111]/50 dark:text-[#f3eee3]/50 mt-1.5">
+            This password is auto-generated and immutable across all chambers. Litigants use their email and this permanent password to log into their unified portal.
+          </p>
         </div>
       </div>
 
@@ -1171,6 +1200,217 @@ function EditClientForm({ client, onClose, onSubmit }: any) {
         <button
           type="submit"
           className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] transition-all shadow-md"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function EditAssociateForm({ associate, onClose, onSubmit }: any) {
+  const [name, setName] = useState(associate?.name || "");
+  const [designation, setDesignation] = useState(associate?.designation || "Associate Advocate");
+  const [email, setEmail] = useState(associate?.email || "");
+  const [phone, setPhone] = useState(associate?.phone || "");
+  const [password, setPassword] = useState(associate?.accessCode || (associate?.id === "u-assoc" ? "assoc123" : "assoc123"));
+  const [showPassword, setShowPassword] = useState(false);
+  const [copiedPass, setCopiedPass] = useState(false);
+
+  const handleCopyPassword = () => {
+    navigator.clipboard.writeText(password || "assoc123");
+    setCopiedPass(true);
+    setTimeout(() => setCopiedPass(false), 2000);
+  };
+
+  const handleSetDefaultPassword = () => {
+    setPassword("assoc123");
+  };
+
+  const handleGeneratePassword = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let code = "Assoc@";
+    for (let i = 0; i < 4; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setPassword(code);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) return;
+    onSubmit({
+      userId: associate.id,
+      name: name.trim(),
+      designation: designation.trim(),
+      email: email.trim().toLowerCase(),
+      phone: phone.trim(),
+      password: password.trim() || undefined,
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="p-5 sm:p-6 bg-[#f3eee3]/10 dark:bg-[#111111] text-[#111111] dark:text-[#f3eee3] flex items-center justify-between border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">
+            Edit Associate Advocate Profile
+          </h3>
+          <p className="text-[11px] font-serif italic text-[#111111]/60 dark:text-[#f3eee3]/60 mt-0.5">
+            Modify chamber credentials, phone, email &amp; login password
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-1 rounded-lg text-[#111111]/60 hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="p-6 space-y-4 text-xs font-serif overflow-y-auto max-h-[70vh]">
+        {/* Full Name */}
+        <div>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+            Associate Full Name <span className="text-[#d9541e]">*</span>
+          </label>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Adv. Priya Sharma"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+          />
+        </div>
+
+        {/* Designation & Phone */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Chamber Designation
+            </label>
+            <input
+              type="text"
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
+              placeholder="e.g. Senior Associate Advocate"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Contact Phone <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(10 digits)</span>
+            </label>
+            <input
+              type="tel"
+              maxLength={15}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+91 98110 20003"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+            />
+          </div>
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+            Chamber Email <span className="text-[#d9541e]">*</span> <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Mandatory for Login)</span>
+          </label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="associate@chambers.in"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+          />
+        </div>
+
+        {/* Password Management */}
+        <div className="pt-2 border-t border-[#111111]/10 dark:border-[#f3eee3]/10">
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60">
+              Chamber Login Password
+            </label>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleSetDefaultPassword}
+                className="text-[10.5px] font-mono text-[#d9541e] hover:underline cursor-pointer font-bold"
+                title="Reset to standard assoc123"
+              >
+                Default (assoc123)
+              </button>
+              <span className="text-[#111111]/30 dark:text-[#f3eee3]/30">·</span>
+              <button
+                type="button"
+                onClick={handleGeneratePassword}
+                className="text-[10.5px] font-mono text-[#d9541e] hover:underline cursor-pointer font-bold"
+                title="Generate secure memorable password"
+              >
+                Generate
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password..."
+                className="w-full px-3.5 py-2.5 pr-14 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-mono font-bold tracking-wider text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-cinzel font-bold text-[#111111]/60 dark:text-[#f3eee3]/60 hover:text-[#d9541e] cursor-pointer"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCopyPassword}
+              className="px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] hover:border-[#d9541e] hover:text-[#d9541e] transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Copy password to clipboard"
+            >
+              {copiedPass ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-600">Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Copy</span>
+                </>
+              )}
+            </button>
+          </div>
+          <p className="text-[10.5px] font-serif italic text-[#111111]/50 dark:text-[#f3eee3]/50 mt-1.5">
+            The associate can use this email and password to access cause lists, draft hearing outcomes, and research chamber briefs.
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 sm:p-5 bg-[#f3eee3]/10 dark:bg-[#111111] border-t border-[#111111]/15 dark:border-[#f3eee3]/20 flex justify-end gap-2.5">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/60 dark:text-[#f3eee3]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] transition-all shadow-md cursor-pointer"
         >
           Save Changes
         </button>

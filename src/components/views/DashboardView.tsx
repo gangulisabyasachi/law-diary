@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Scale,
   Calendar,
@@ -26,6 +27,7 @@ import {
 } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 import { Case } from "@/types";
+import { ClientDashboardView } from "./ClientDashboardView";
 
 export function DashboardView() {
   const {
@@ -40,6 +42,11 @@ export function DashboardView() {
   const [dateFilter, setDateFilter] = useState<"all" | "today" | "tomorrow">("all");
 
   if (!currentUser || !state) return null;
+
+  // Render dedicated litigant portal when authenticated user is a client
+  if (currentUser.role === "client") {
+    return <ClientDashboardView />;
+  }
 
   // Filter cases strictly belonging to this chamber
   const visibleCases = state.cases.filter((c) => {
@@ -134,8 +141,14 @@ export function DashboardView() {
       {/* Real Litigation Status Header Bar */}
       <div className="p-5 sm:p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111] dark:text-[#f3eee3] flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-xs transition-all">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#111111] border border-[#111111]/50 dark:border-[#f3eee3]/50 flex items-center justify-center text-[#111111] dark:text-[#f3eee3] shadow-sm flex-shrink-0 group">
-            <Gavel className="w-5 h-5 transition-transform group-hover:scale-110" />
+          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1e1e1e] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center shadow-sm flex-shrink-0 group overflow-hidden p-1">
+            <Image
+              src="/favicon.png"
+              alt="LexDaily Emblem"
+              width={42}
+              height={42}
+              className="w-full h-full object-contain transition-transform group-hover:scale-105"
+            />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
@@ -175,8 +188,8 @@ export function DashboardView() {
             </div>
             <p className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">{visibleCases.length}</p>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center font-bold shadow-xs">
-            <Scale className="w-5 h-5" />
+          <div className="w-11 h-11 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center overflow-hidden p-1 shadow-xs">
+            <Image src="/favicon.png" width={36} height={36} alt="LD" className="w-full h-full object-contain" />
           </div>
         </div>
 

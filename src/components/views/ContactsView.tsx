@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { Scale, Mail, Phone, Building, UserCheck, ShieldCheck } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
@@ -43,8 +44,8 @@ export function ContactsView() {
       {/* Senior Advocate Card */}
       <div className="p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:border-[#111111] dark:hover:border-[#f3eee3]/50 transition-all">
         <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#111111] dark:bg-[#f3eee3] text-[#f3eee3] dark:text-[#111111] font-bold text-sm flex items-center justify-center flex-shrink-0 shadow-md shadow-[#f3eee3]/20 dark:shadow-[#f3eee3]/20">
-            <Scale className="w-7 h-7" />
+          <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden p-1">
+            <Image src="/favicon.png" width={48} height={48} alt="LD Chamber Crest" className="w-full h-full object-contain" />
           </div>
           <div>
             <span className="text-[10px] uppercase tracking-widest text-[#111111]/70 dark:text-[#f3eee3] font-bold font-cinzel block">

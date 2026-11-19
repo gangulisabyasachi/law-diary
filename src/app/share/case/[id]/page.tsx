@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Scale,
   Building,
@@ -142,8 +143,8 @@ export default function PublicCaseDocketPage() {
       <header className="sticky top-0 z-30 bg-[#faf8f5]/90 dark:bg-[#0c0c0c]/90 backdrop-blur-md border-b border-[#111111]/10 dark:border-[#f3eee3]/10 print:hidden">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-[#d9541e] text-white flex items-center justify-center shadow-sm">
-              <Scale className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl overflow-hidden border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] flex items-center justify-center shadow-sm p-0.5">
+              <Image src="/favicon.png" width={32} height={32} alt="LexDaily Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <span className="font-cinzel font-bold text-sm tracking-wider text-[#111111] dark:text-[#f3eee3]">

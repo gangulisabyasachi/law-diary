@@ -8,6 +8,7 @@ export interface User {
   phone?: string;
   designation?: string;
   lawyerId?: string;
+  accessCode?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -35,6 +36,8 @@ export interface ClientQuery {
   ts: string;
   answered: boolean;
   reply?: string;
+  replyBy?: string;
+  replyTs?: string;
 }
 
 export interface FeeReceipt {

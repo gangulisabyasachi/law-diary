@@ -99,6 +99,15 @@ export function ClientsView() {
                     <Phone className="w-3.5 h-3.5 text-[#111111]/60 dark:text-[#f3eee3] flex-shrink-0" />
                     <span>{cl.phone || "—"}</span>
                   </p>
+                  {(() => {
+                    const code = cl.accessCode || (cl.id === "u-client" ? "client123" : "LD" + cl.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase());
+                    return (
+                      <div className="pt-2 flex items-center justify-between text-[11px] font-mono border-t border-[#111111]/8 dark:border-[#f3eee3]/8">
+                        <span className="text-[#111111]/55 dark:text-[#f3eee3]/55 font-serif">Universal Passcode:</span>
+                        <span className="font-bold text-[#d9541e] tracking-wider">{code}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 

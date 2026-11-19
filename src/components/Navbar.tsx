@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import {
   Search,
@@ -25,7 +26,21 @@ export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const pendingCount = state?.approvals?.length || 0;
+  const pendingCount = (state?.approvals || []).filter((a) => {
+    if (currentUser?.role === "admin") return true;
+    if (currentUser?.role === "associate") return a.by === currentUser.id;
+    if (currentUser?.role === "lawyer") {
+      if (a.by === currentUser.id) return true;
+      const cId = a.payload?.caseId || a.payload?.case?.id;
+      if (cId && (state?.cases || []).some((c) => c.id === cId && (c.lawyerId || "u-lawyer") === currentUser.id)) return true;
+      if (a.payload?.case?.lawyerId === currentUser.id) return true;
+      const submitter = (state?.users || []).find((u) => u.id === a.by);
+      if (submitter && (submitter.lawyerId || "u-lawyer") === currentUser.id) return true;
+      if (currentUser.id === "u-lawyer" || !submitter?.lawyerId) return true;
+      return false;
+    }
+    return false;
+  }).length;
 
   // Determine Page Title & Subtitle from Pathname
   const getPageMeta = () => {
@@ -65,7 +80,16 @@ export function Navbar() {
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between px-6 py-3.5 bg-white/95 dark:bg-[#111111]/95 backdrop-blur-md border-b border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs">
         {/* Left: Page Title & Subtitle */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <div className="md:hidden flex items-center shrink-0">
+            <Image
+              src="/favicon.png"
+              alt="LexDaily LD Logo"
+              width={34}
+              height={34}
+              className="w-8 h-8 rounded-xl object-contain border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
+            />
+          </div>
           <div>
             <h1 className="text-sm font-semibold font-cinzel text-[#111111] dark:text-[#f3eee3] tracking-wide flex items-center gap-2">
               {meta.title}

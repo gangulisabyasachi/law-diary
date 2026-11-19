@@ -9,6 +9,7 @@ export interface IUserDocument extends Document {
   phone?: string;
   designation?: string;
   lawyerId?: string;
+  accessCode?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,6 +35,7 @@ const UserSchema = new Schema<IUserDocument>(
     phone: { type: String, default: "" },
     designation: { type: String, default: "" },
     lawyerId: { type: String, default: "" },
+    accessCode: { type: String, default: "" },
   },
   { timestamps: true }
 );

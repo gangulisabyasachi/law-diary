@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { CalendarDays, Scale, ArrowRight, Building, Gavel } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
@@ -141,7 +142,9 @@ export function CalendarView() {
 
         {allHearings.length === 0 && (
           <div className="p-16 text-center bg-white dark:bg-[#181818] rounded-3xl border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
-            <Scale className="w-10 h-10 mx-auto mb-3 text-[#111111]/40 dark:text-[#f3eee3]/60" />
+            <div className="w-14 h-14 mx-auto mb-3.5 rounded-2xl overflow-hidden border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] p-2 shadow-2xs opacity-75">
+              <Image src="/favicon.png" width={48} height={48} alt="LD" className="w-full h-full object-contain" />
+            </div>
             <p className="text-sm font-semibold font-cinzel text-[#111111] dark:text-[#f3eee3]">No hearings on chamber register.</p>
             <p className="text-xs text-[#111111]/50 dark:text-[#f3eee3]/50 font-serif italic mt-1">Matters listed in cause lists will appear here automatically.</p>
           </div>

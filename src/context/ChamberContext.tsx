@@ -226,11 +226,11 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password: pass }),
+        body: JSON.stringify({ email: email.trim(), password: pass.trim() }),
       });
       const data = await res.json();
       if (!res.ok) {
-        addToast(data.error || "Authentication failed", "error");
+        addToast(data.error || "Authentication failed. Please check your credentials.", "error");
         return false;
       }
 
@@ -330,6 +330,16 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
 
   const submitApproval = async (item: any): Promise<boolean> => {
     try {
+      const payloadItem = {
+        id: item?.id || `a-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        by: item?.by || currentUser?.id || "u-associate",
+        byName: item?.byName || currentUser?.name || "Associate Advocate",
+        ts: item?.ts || new Date().toISOString(),
+        type: item?.type,
+        label: item?.label || "Chamber Draft Submission",
+        payload: item?.payload || {},
+      };
+
       const res = await fetch("/api/approvals", {
         method: "POST",
         headers: {
@@ -337,7 +347,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
           ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
         },
-        body: JSON.stringify({ item }),
+        body: JSON.stringify(payloadItem),
       });
       const data = await res.json();
       if (!res.ok) {

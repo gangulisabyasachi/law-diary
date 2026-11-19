@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useId, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Scale,
@@ -395,6 +396,7 @@ interface ClientComboboxProps {
   label: string;
   clientId: string;
   onChange: (id: string) => void;
+  onSelectClient?: (client: { id: string; name: string; phone?: string; email?: string; designation?: string }) => void;
   clients: Array<{
     id: string;
     name: string;
@@ -409,22 +411,35 @@ function SearchableClientCombobox({
   label,
   clientId,
   onChange,
+  onSelectClient,
   clients,
   onAddNewContact,
 }: ClientComboboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [internalSelectedClient, setInternalSelectedClient] = useState<{
+    id: string;
+    name: string;
+    phone?: string;
+    email?: string;
+    designation?: string;
+  } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const selectedClient = clients.find((c) => c.id === clientId);
+  const [remoteLitigant, setRemoteLitigant] = useState<{ id: string; name: string; phone?: string; email?: string } | null>(null);
+
+  const selectedClient =
+    clients.find((c) => c.id === clientId) ||
+    (remoteLitigant && remoteLitigant.id === clientId ? remoteLitigant : null) ||
+    (internalSelectedClient && internalSelectedClient.id === clientId ? internalSelectedClient : null);
 
   useEffect(() => {
     if (selectedClient) {
       setSearchTerm(`${selectedClient.name}${selectedClient.phone ? ` (${selectedClient.phone})` : ""}`);
-    } else {
+    } else if (!clientId) {
       setSearchTerm("");
     }
-  }, [selectedClient]);
+  }, [selectedClient, clientId]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -432,17 +447,36 @@ function SearchableClientCombobox({
         setIsOpen(false);
         if (selectedClient) {
           setSearchTerm(`${selectedClient.name}${selectedClient.phone ? ` (${selectedClient.phone})` : ""}`);
-        } else {
+        } else if (!clientId) {
           setSearchTerm("");
         }
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [selectedClient]);
+  }, [selectedClient, clientId]);
 
   const cleanTerm = searchTerm.toLowerCase().trim();
   const cleanDigits = searchTerm.replace(/[^0-9]/g, "");
+
+  useEffect(() => {
+    if (cleanDigits.length === 10) {
+      let isSubscribed = true;
+      fetch(`/api/clients/lookup?phone=${cleanDigits}`)
+        .then((r) => r.json())
+        .then((res) => {
+          if (isSubscribed && res?.client) {
+            setRemoteLitigant(res.client);
+          }
+        })
+        .catch(() => {});
+      return () => {
+        isSubscribed = false;
+      };
+    } else {
+      setRemoteLitigant(null);
+    }
+  }, [cleanDigits]);
 
   const filtered = clients.filter((c) => {
     if (!cleanTerm) return true;
@@ -454,13 +488,21 @@ function SearchableClientCombobox({
     return nameMatch || emailMatch || phoneMatch;
   });
 
-  const handleSelect = (c: { id: string; name: string; phone?: string; email?: string }) => {
+  const comboboxItems = [
+    ...(remoteLitigant && !filtered.some((c) => c.id === remoteLitigant.id) ? [remoteLitigant] : []),
+    ...filtered,
+  ];
+
+  const handleSelect = (c: { id: string; name: string; phone?: string; email?: string; designation?: string }) => {
+    setInternalSelectedClient(c);
     onChange(c.id);
+    onSelectClient?.(c);
     setSearchTerm(`${c.name}${c.phone ? ` (${c.phone})` : ""}`);
     setIsOpen(false);
   };
 
   const handleClear = () => {
+    setInternalSelectedClient(null);
     onChange("");
     setSearchTerm("");
   };
@@ -525,24 +567,36 @@ function SearchableClientCombobox({
         <div className="absolute z-40 left-0 right-0 mt-1.5 max-h-64 overflow-y-auto rounded-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1a1816] shadow-2xl py-1.5 text-xs">
           <div className="px-3.5 py-1.5 border-b border-[#111111]/10 dark:border-[#f3eee3]/10 text-[10.5px] font-cinzel font-semibold uppercase tracking-wider text-[#111111]/50 dark:text-[#f3eee3]/50 flex items-center justify-between">
             <span>Search by Name, Phone, or Email</span>
-            <span>{filtered.length} found</span>
+            <span>{comboboxItems.length} found</span>
           </div>
 
-          {filtered.length > 0 ? (
-            filtered.map((cl) => {
+          {comboboxItems.length > 0 ? (
+            comboboxItems.map((cl) => {
               const isSelected = cl.id === clientId;
+              const isCrossChamber = remoteLitigant && cl.id === remoteLitigant.id && !clients.some((item) => item.id === cl.id);
               return (
                 <div
                   key={cl.id}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleSelect(cl);
+                  }}
                   onClick={() => handleSelect(cl)}
                   className={`px-3.5 py-2.5 hover:bg-[#f3eee3]/60 dark:hover:bg-[#282522] cursor-pointer transition-colors flex items-center justify-between border-b border-[#111111]/5 dark:border-[#f3eee3]/5 last:border-0 ${
                     isSelected ? "bg-[#d9541e]/10 dark:bg-[#d9541e]/15 text-[#d9541e]" : ""
                   }`}
                 >
                   <div className="min-w-0 pr-3">
-                    <p className="font-serif font-bold text-xs text-[#111111] dark:text-[#f3eee3] truncate">
-                      {cl.name}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-serif font-bold text-xs text-[#111111] dark:text-[#f3eee3] truncate">
+                        {cl.name}
+                      </p>
+                      {isCrossChamber && (
+                        <span className="text-[9px] px-2 py-0.2 rounded-full bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 font-sans font-bold border border-emerald-500/25">
+                          Universal Litigant
+                        </span>
+                      )}
+                    </div>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-[11px] font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">
                       {cl.phone && (
                         <span className="flex items-center gap-1 text-[#d9541e] font-semibold">
@@ -724,6 +778,49 @@ export function AddCaseView() {
   const [newContactName, setNewContactName] = useState("");
   const [newContactPhone, setNewContactPhone] = useState("");
   const [newContactEmail, setNewContactEmail] = useState("");
+  const [matchedCrossChamberClient, setMatchedCrossChamberClient] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    accessCode?: string;
+  } | null>(null);
+  const [isLookingUpPhone, setIsLookingUpPhone] = useState(false);
+
+  const handlePhoneLookup = async (phoneStr: string) => {
+    const clean = phoneStr.replace(/\D/g, "");
+    if (clean.length !== 10) {
+      setMatchedCrossChamberClient(null);
+      return;
+    }
+    // Check local clientUsers first
+    const local = (state?.users || []).find(
+      (u) => u.role === "client" && (u.phone || "").replace(/\D/g, "").slice(-10) === clean
+    );
+    if (local) {
+      setMatchedCrossChamberClient(local as any);
+      setNewContactName(local.name);
+      if (local.email) setNewContactEmail(local.email);
+      return;
+    }
+
+    try {
+      setIsLookingUpPhone(true);
+      const res = await fetch(`/api/clients/lookup?phone=${clean}`);
+      const data = await res.json();
+      if (data?.client) {
+        setMatchedCrossChamberClient(data.client);
+        setNewContactName(data.client.name);
+        if (data.client.email) setNewContactEmail(data.client.email);
+      } else {
+        setMatchedCrossChamberClient(null);
+      }
+    } catch (e) {
+      console.warn("Lookup failed:", e);
+    } finally {
+      setIsLookingUpPhone(false);
+    }
+  };
 
   // 3. Additional Information State
   const [timesheet, setTimesheet] = useState<TimesheetEntry[]>([]);
@@ -759,13 +856,27 @@ export function AddCaseView() {
       (currentUser?.role === "admin" || (u.lawyerId || "u-lawyer") === chamberLawyerId)
   );
 
+  // Cross-chamber client dynamically resolved via phone lookup
+  const [selectedRemoteClient, setSelectedRemoteClient] = useState<{
+    id: string;
+    name: string;
+    phone?: string;
+    email?: string;
+    designation?: string;
+  } | null>(null);
+
+  const availableClients = [
+    ...(selectedRemoteClient && !clientUsers.some((u) => u.id === selectedRemoteClient.id) ? [selectedRemoteClient] : []),
+    ...clientUsers,
+  ];
+
   // Track whether advocate manually modified title
   const [isTitleManual, setIsTitleManual] = useState(false);
 
   // Auto-generate title whenever client or opponent changes
   useEffect(() => {
     if (isTitleManual) return;
-    const selectedClient = clientUsers.find((c) => c.id === clientId);
+    const selectedClient = availableClients.find((c) => c.id === clientId);
     const cName = selectedClient ? selectedClient.name : "";
     const opp = opponentName.trim();
 
@@ -778,7 +889,7 @@ export function AddCaseView() {
     } else {
       setTitle("");
     }
-  }, [clientId, opponentName, clientUsers, isTitleManual]);
+  }, [clientId, opponentName, availableClients, isTitleManual]);
 
   // Financial calculations
   const parsedFeeAgreed = Number(feeAgreed) || 0;
@@ -883,6 +994,18 @@ export function AddCaseView() {
         addToast("Please enter a valid 10-digit mobile number for litigant contact", "error");
         return;
       }
+
+      if (matchedCrossChamberClient) {
+        setClientId(matchedCrossChamberClient.id);
+        addToast(`Existing Litigant Profile ${matchedCrossChamberClient.name} linked to this matter across chambers.`, "success");
+        setNewContactName("");
+        setNewContactPhone("");
+        setNewContactEmail("");
+        setMatchedCrossChamberClient(null);
+        setShowAddContactModal(false);
+        return;
+      }
+
       const newUserId = "c-" + Date.now().toString(36);
       const newClientUser = {
         id: newUserId,
@@ -991,7 +1114,7 @@ export function AddCaseView() {
       judge: judge.trim(),
       city: city.trim(),
       counselFor: counselFor.trim(),
-      clientId: clientId || clientUsers[0]?.id || "c-client",
+      clientId: clientId || availableClients[0]?.id || "c-client",
       opponentName: opponentName.trim(),
       opponentLawyer: opponentLawyer.trim(),
       limitationDate: limitationDate || "",
@@ -1059,7 +1182,7 @@ export function AddCaseView() {
     }
   };
 
-  const selectedClientUser = clientUsers.find((c) => c.id === clientId);
+  const selectedClientUser = availableClients.find((c) => c.id === clientId);
 
   return (
     <div className="space-y-8 pb-16">
@@ -1186,7 +1309,7 @@ export function AddCaseView() {
                     setIsTitleManual(nextMode);
                     if (!nextMode) {
                       // Reset to auto-synced title
-                      const selectedClient = clientUsers.find((c) => c.id === clientId);
+                      const selectedClient = availableClients.find((c) => c.id === clientId);
                       const cName = selectedClient ? selectedClient.name : "";
                       const opp = opponentName.trim();
                       if (cName || opp) {
@@ -1614,7 +1737,8 @@ export function AddCaseView() {
               label="Client Name"
               clientId={clientId}
               onChange={setClientId}
-              clients={clientUsers}
+              onSelectClient={setSelectedRemoteClient}
+              clients={availableClients}
               onAddNewContact={() => {
                 setNewContactTarget("client");
                 setShowAddContactModal(true);
@@ -2086,8 +2210,8 @@ export function AddCaseView() {
 
             <div className="flex items-center justify-between pb-3.5 border-b border-[#111111]/10 dark:border-[#f3eee3]/10">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-[#111111] text-[#f3eee3] dark:bg-[#f3eee3] dark:text-[#111111] flex items-center justify-center">
-                  <Scale className="w-3.5 h-3.5" />
+                <div className="w-6 h-6 rounded-lg overflow-hidden border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] flex items-center justify-center p-0.5 shadow-2xs">
+                  <Image src="/favicon.png" width={22} height={22} alt="LD" className="w-full h-full object-contain" />
                 </div>
                 <span className="text-xs font-cinzel font-bold uppercase tracking-wider text-[#111111] dark:text-[#f3eee3]">
                   Dossier Preview
@@ -2282,48 +2406,123 @@ export function AddCaseView() {
             </div>
 
             <form onSubmit={handleSaveQuickContact} className="space-y-3.5 text-xs font-serif">
-              <div>
-                <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
-                  Full Name <span className="text-[#d9541e]">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  autoFocus
-                  placeholder="e.g. Ramesh Chandra Sharma"
-                  value={newContactName}
-                  onChange={(e) => setNewContactName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
-                />
-              </div>
+              {newContactTarget === "client" ? (
+                <>
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80">
+                        Contact Mobile Phone <span className="text-[#d9541e]">*</span>
+                      </label>
+                      <span className="text-[10px] text-[#d9541e] font-serif italic">
+                        Type 10 digits to autofill
+                      </span>
+                    </div>
+                    <input
+                      type="tel"
+                      required
+                      autoFocus
+                      maxLength={10}
+                      placeholder="10-digit mobile number"
+                      value={newContactPhone}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                        setNewContactPhone(val);
+                        handlePhoneLookup(val);
+                      }}
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                    />
+                    {isLookingUpPhone && (
+                      <p className="text-[10px] text-amber-600 dark:text-amber-400 font-serif italic mt-1 animate-pulse">
+                        Checking LexDaily universal litigant database...
+                      </p>
+                    )}
+                    {matchedCrossChamberClient && (
+                      <div className="mt-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-[11px] text-emerald-900 dark:text-emerald-200 font-serif">
+                        <p className="font-bold font-cinzel text-emerald-800 dark:text-emerald-300">
+                          ✓ Existing Litigant Profile Detected across Chambers
+                        </p>
+                        <p className="text-[10.5px] mt-0.5">
+                          {matchedCrossChamberClient.name} is already registered in LexDaily. Full client details autofilled automatically. Their single universal login password will link all cases.
+                        </p>
+                      </div>
+                    )}
+                  </div>
 
-              <div>
-                <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
-                  Contact Phone <span className="text-[#d9541e]">*</span>
-                </label>
-                <input
-                  type="tel"
-                  required
-                  maxLength={10}
-                  placeholder="10-digit mobile number"
-                  value={newContactPhone}
-                  onChange={(e) => setNewContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
-                />
-              </div>
+                  <div>
+                    <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
+                      Full Client Name <span className="text-[#d9541e]">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Ramesh Chandra Sharma"
+                      value={newContactName}
+                      onChange={(e) => setNewContactName(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  placeholder="litigant@chamber.in"
-                  value={newContactEmail}
-                  onChange={(e) => setNewContactEmail(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
-                />
-              </div>
+                  <div>
+                    <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
+                      Email Address <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Optional)</span>
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="litigant@chamber.in (Optional for case intake)"
+                      value={newContactEmail}
+                      onChange={(e) => setNewContactEmail(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                    />
+                    <p className="text-[10px] font-serif italic text-[#111111]/50 dark:text-[#f3eee3]/50 mt-1">
+                      Email is optional while entering client details for a case. You can add it later via Edit Client in the Client Register when granting portal login.
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
+                      Full Name <span className="text-[#d9541e]">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      autoFocus
+                      placeholder="e.g. Ramesh Chandra Sharma"
+                      value={newContactName}
+                      onChange={(e) => setNewContactName(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
+                      Contact Phone
+                    </label>
+                    <input
+                      type="tel"
+                      maxLength={10}
+                      placeholder="10-digit mobile number"
+                      value={newContactPhone}
+                      onChange={(e) => setNewContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
+                      Email Address <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Optional)</span>
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="advocate@bar.in"
+                      value={newContactEmail}
+                      onChange={(e) => setNewContactEmail(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="flex justify-end gap-2 pt-2 border-t border-[#111111]/10 dark:border-[#f3eee3]/10">
                 <button

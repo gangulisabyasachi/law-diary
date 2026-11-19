@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Scale, Search, Plus, Download, Clock, ArrowRight, User, Copy, Check, Building, Gavel } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
@@ -159,7 +160,9 @@ export function CasesView() {
               {filteredCases.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-16 text-center text-[#111111]/65 dark:text-[#f3eee3]/60">
-                    <Scale className="w-8 h-8 mx-auto mb-2 text-[#111111] dark:text-[#f3eee3]" />
+                    <div className="w-12 h-12 mx-auto mb-2.5 rounded-2xl overflow-hidden border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] p-1.5 shadow-2xs opacity-75">
+                      <Image src="/favicon.png" width={40} height={40} alt="LD" className="w-full h-full object-contain" />
+                    </div>
                     <p className="font-bold font-cinzel text-sm text-[#111111] dark:text-[#f3eee3]">No registered court matters found.</p>
                     <p className="text-xs font-serif italic text-[#111111]/65 dark:text-[#f3eee3]/60 mt-1">Try modifying your search or filter criteria.</p>
                   </td>

@@ -76,6 +76,8 @@ export interface ICaseDocument extends Document {
     ts: string;
     answered: boolean;
     reply?: string;
+    replyBy?: string;
+    replyTs?: string;
   }>;
   createdAt: Date;
   updatedAt: Date;
@@ -110,6 +112,8 @@ const QuerySchema = new Schema(
     ts: { type: String, required: true },
     answered: { type: Boolean, default: false },
     reply: { type: String, default: "" },
+    replyBy: { type: String, default: "" },
+    replyTs: { type: String, default: "" },
   },
   { _id: false }
 );

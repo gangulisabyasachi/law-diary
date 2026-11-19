@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Briefcase, Plus, Mail, Phone, Scale, ArrowRight, UserCheck } from "lucide-react";
+import { Briefcase, Plus, Mail, Phone, Scale, ArrowRight, UserCheck, Edit3 } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function AssociatesView() {
@@ -75,9 +75,17 @@ export function AssociatesView() {
                         {pendingDrafts} in Review
                       </span>
                     )}
-                    <span className="text-[10px] font-semibold px-3 py-1 rounded-full bg-[#111111]/5 dark:bg-white/5 text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20">
-                      {assignedCases.length} Matters
-                    </span>
+                    {/* {assignedCases.length} Matters pill removed as of now */}
+                    {(currentUser.role === "lawyer" || currentUser.role === "admin" || currentUser.id === assoc.id) && (
+                      <button
+                        onClick={() => openModal("edit-associate", { associate: assoc })}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#d9541e] text-[10.5px] font-cinzel font-semibold text-[#111111] dark:text-[#f3eee3] transition-all hover:text-[#d9541e] cursor-pointer"
+                        title={currentUser.role === "associate" ? "Edit Profile & Credentials" : "Edit Associate Profile, Phone, Email & Password"}
+                      >
+                        <Edit3 className="w-3 h-3 text-[#d9541e]" />
+                        <span>Edit</span>
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -95,10 +103,19 @@ export function AssociatesView() {
                     <Phone className="w-3.5 h-3.5 text-[#111111]/60 dark:text-[#f3eee3] flex-shrink-0" />
                     <span>{assoc.phone || "—"}</span>
                   </p>
+                  {(() => {
+                    const code = assoc.accessCode || (assoc.id === "u-assoc" ? "assoc123" : "assoc123");
+                    return (
+                      <div className="pt-2 flex items-center justify-between text-[11px] font-mono border-t border-[#111111]/8 dark:border-[#f3eee3]/8">
+                        <span className="text-[#111111]/55 dark:text-[#f3eee3]/55 font-serif">Chamber Password:</span>
+                        <span className="font-bold text-[#d9541e] tracking-wider">{code}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
-              {/* Assigned Matters */}
+              {/* Assigned Matters — Commented out for now
               <div className="mt-6 pt-4 border-t border-[#111111]/10 dark:border-[#f3eee3]/10">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#111111]/50 dark:text-[#f3eee3]/40 mb-2.5 font-cinzel">
                   Assigned Dockets ({assignedCases.length})
@@ -128,6 +145,7 @@ export function AssociatesView() {
                   </div>
                 )}
               </div>
+              */}
             </div>
           );
         })}

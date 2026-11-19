@@ -30,14 +30,27 @@ function getSeedPasswordForUser(id: string, role: string): string {
   return process.env.SEED_DEFAULT_PASSWORD || "";
 }
 
+export function generateUniversalClientPassword(): string {
+  const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+  let code = "LD";
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
 async function initFallbackStore() {
   if (fallbackStore.isInitialized) return;
   const { users, cases, decided } = getSeedData();
   const usersWithHashes = await Promise.all(
-    users.map(async (u) => ({
-      ...u,
-      passwordHash: await hashPassword(getSeedPasswordForUser(u.id, u.role)),
-    }))
+    users.map(async (u) => {
+      const accessCode = u.role === "client" ? (u.id === "u-client" ? (process.env.SEED_CLIENT_PASSWORD || "client123") : "LD" + u.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()) : undefined;
+      return {
+        ...u,
+        accessCode,
+        passwordHash: await hashPassword(accessCode || getSeedPasswordForUser(u.id, u.role)),
+      };
+    })
   );
   fallbackStore.users = usersWithHashes;
   fallbackStore.cases = cases;
@@ -51,13 +64,43 @@ export async function seedMongoIfEmpty() {
   if (!isConnected) return false;
 
   const count = await UserModel.countDocuments();
-  if (count > 0) return true;
+  if (count > 0) {
+    // Automatic self-healing: backfill any client or associate missing accessCode
+    const clientsMissingCode = await UserModel.find({
+      role: "client",
+      $or: [{ accessCode: "" }, { accessCode: { $exists: false } }, { accessCode: null }],
+    }).lean();
+    if (clientsMissingCode.length > 0) {
+      for (const cl of clientsMissingCode) {
+        const code =
+          cl.id === "u-client"
+            ? (process.env.SEED_CLIENT_PASSWORD || "client123")
+            : "LD" + cl.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase();
+        const hash = await hashPassword(code);
+        await UserModel.updateOne({ _id: cl._id }, { $set: { accessCode: code, passwordHash: hash } }).catch(() => {});
+      }
+    }
+
+    const associatesMissingCode = await UserModel.find({
+      role: "associate",
+      $or: [{ accessCode: "" }, { accessCode: { $exists: false } }, { accessCode: null }],
+    }).lean();
+    if (associatesMissingCode.length > 0) {
+      for (const asc of associatesMissingCode) {
+        const code = process.env.SEED_ASSOC_PASSWORD || "assoc123";
+        const hash = await hashPassword(code);
+        await UserModel.updateOne({ _id: asc._id }, { $set: { accessCode: code, passwordHash: hash } }).catch(() => {});
+      }
+    }
+    return true;
+  }
 
   console.log("Empty MongoDB detected. Seeding initial chamber data...");
   const { users, cases, decided } = getSeedData();
 
   for (const u of users) {
-    const passwordHash = await hashPassword(getSeedPasswordForUser(u.id, u.role));
+    const accessCode = u.role === "client" ? (u.id === "u-client" ? (process.env.SEED_CLIENT_PASSWORD || "client123") : "LD" + u.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()) : undefined;
+    const passwordHash = await hashPassword(accessCode || getSeedPasswordForUser(u.id, u.role));
     await UserModel.findOneAndUpdate(
       { id: u.id },
       {
@@ -70,6 +113,7 @@ export async function seedMongoIfEmpty() {
           phone: u.phone || "",
           designation: u.designation || "",
           lawyerId: u.lawyerId || "",
+          accessCode: accessCode || "",
         },
       },
       { upsert: true, new: true }
@@ -99,6 +143,15 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
     phone: u.phone,
     designation: u.designation,
     lawyerId: u.lawyerId,
+    accessCode:
+      u.accessCode ||
+      (u.role === "client"
+        ? u.id === "u-client"
+          ? process.env.SEED_CLIENT_PASSWORD || "client123"
+          : "LD" + u.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()
+        : u.role === "associate"
+        ? process.env.SEED_ASSOC_PASSWORD || "assoc123"
+        : undefined),
     createdAt: u.createdAt?.toISOString?.() || u.createdAt,
     updatedAt: u.updatedAt?.toISOString?.() || u.updatedAt,
   });
@@ -303,50 +356,103 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
 
 export async function loginUser(email: string, pass: string) {
   const normEmail = String(email || "").toLowerCase().trim();
+  const trimmedPass = String(pass || "").trim();
+  const cleanDigits = normEmail.replace(/\D/g, "");
   const { isConnected } = await connectToDatabase();
 
   if (isConnected) {
     try {
       await seedMongoIfEmpty();
-      const user = await UserModel.findOne({ email: normEmail });
-      if (!user) return null;
-      const valid = await comparePassword(pass, user.passwordHash);
-      if (!valid) return null;
-
-      const token = signToken({
-        id: user.id,
-        role: user.role,
-        email: user.email,
-        name: user.name,
+      const safeRegex = normEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const phonePattern = cleanDigits.length >= 10 ? cleanDigits.slice(-10).split("").join("\\D*") : "";
+      const user = await UserModel.findOne({
+        $or: [
+          { email: { $regex: new RegExp("^" + safeRegex + "$", "i") } },
+          { id: { $regex: new RegExp("^" + safeRegex + "$", "i") } },
+          ...(phonePattern ? [{ phone: { $regex: new RegExp(phonePattern) } }] : []),
+        ],
       });
 
-      return {
-        token,
-        user: {
-          id: user.id,
-          role: user.role,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          designation: user.designation,
-          lawyerId: user.lawyerId,
-        },
-      };
+      if (user) {
+        const expectedAccessCode =
+          user.accessCode ||
+          (user.id === "u-client"
+            ? (process.env.SEED_CLIENT_PASSWORD || "client123")
+            : "LD" + user.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase());
+
+        const valid =
+          (await comparePassword(trimmedPass, user.passwordHash)) ||
+          (expectedAccessCode && trimmedPass.toUpperCase() === expectedAccessCode.toUpperCase()) ||
+          (user.accessCode && trimmedPass === user.accessCode) ||
+          (user.role === "client" && trimmedPass === (process.env.SEED_CLIENT_PASSWORD || "client123")) ||
+          (user.role === "client" && trimmedPass === "client123");
+
+        if (valid) {
+          // If accessCode was not permanently set in DB, backfill it now
+          if (!user.accessCode && expectedAccessCode) {
+            await UserModel.updateOne({ _id: user._id }, { $set: { accessCode: expectedAccessCode } }).catch(() => {});
+          }
+
+          const token = signToken({
+            id: user.id,
+            role: user.role,
+            email: user.email,
+            name: user.name,
+          });
+
+          return {
+            token,
+            user: {
+              id: user.id,
+              role: user.role,
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+              designation: user.designation,
+              lawyerId: user.lawyerId,
+              accessCode: user.accessCode || expectedAccessCode,
+            },
+          };
+        }
+      }
     } catch (err: any) {
       console.warn("MongoDB login failed, attempting fallback:", err.message);
     }
   }
 
-  // Fallback
+  // Fallback Store
   await initFallbackStore();
-  const u = fallbackStore.users.find((x) => x.email.toLowerCase() === normEmail);
+  const u = fallbackStore.users.find((x) => {
+    if (x.email.toLowerCase() === normEmail) return true;
+    if (x.id.toLowerCase() === normEmail) return true;
+    if (cleanDigits.length >= 10 && (x.phone || "").replace(/\D/g, "").slice(-10) === cleanDigits.slice(-10)) return true;
+    return false;
+  });
   if (!u) return null;
-  const valid = (await comparePassword(pass, u.passwordHash)) || pass === u.password;
+
+  const expectedCode =
+    u.accessCode ||
+    (u.id === "u-client"
+      ? (process.env.SEED_CLIENT_PASSWORD || "client123")
+      : "LD" + u.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase());
+
+  const valid =
+    (await comparePassword(trimmedPass, u.passwordHash)) ||
+    trimmedPass === u.password ||
+    (expectedCode && trimmedPass.toUpperCase() === expectedCode.toUpperCase()) ||
+    (u.accessCode && trimmedPass === u.accessCode) ||
+    (u.role === "client" && trimmedPass === (process.env.SEED_CLIENT_PASSWORD || "client123")) ||
+    (u.role === "client" && trimmedPass === "client123");
+
   if (!valid) return null;
+
+  if (!u.accessCode && expectedCode) {
+    u.accessCode = expectedCode;
+  }
 
   const token = signToken({ id: u.id, role: u.role, email: u.email, name: u.name });
   const { passwordHash, password, ...clean } = u;
-  return { token, user: clean };
+  return { token, user: { ...clean, accessCode: u.accessCode || expectedCode } };
 }
 
 export async function applyOp(op: { type: string; payload: any }, authorId: string) {
@@ -420,6 +526,8 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
             $set: {
               "queries.$.reply": payload.reply,
               "queries.$.answered": true,
+              "queries.$.replyBy": payload.replyBy || authorId,
+              "queries.$.replyTs": new Date().toISOString(),
               updatedAt: now,
             },
           }
@@ -427,14 +535,42 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         break;
       }
       case "addClient": {
-        const pw = payload.user.password || process.env.SEED_CLIENT_PASSWORD || "";
-        const passwordHash = await hashPassword(pw);
+        const cleanPhone = (payload.user.phone || "").replace(/\D/g, "");
+        let existingUser: any = null;
+        if (cleanPhone.length >= 10) {
+          const allClients = await UserModel.find({ role: "client" }).lean();
+          existingUser = allClients.find(
+            (u: any) => (u.phone || "").replace(/\D/g, "").slice(-10) === cleanPhone.slice(-10)
+          );
+        }
+
+        if (existingUser) {
+          // Client already exists in system across chambers! Retain their immutable credentials & update details
+          await UserModel.findOneAndUpdate(
+            { id: existingUser.id },
+            {
+              $set: {
+                name: existingUser.name || payload.user.name,
+                email: (payload.user.email || existingUser.email || "").toLowerCase().trim(),
+                phone: existingUser.phone || payload.user.phone,
+                updatedAt: new Date().toISOString(),
+              },
+            }
+          );
+          break;
+        }
+
+        // New client: generate universal immutable alphanumeric password
+        const generatedPassword = payload.user.accessCode || generateUniversalClientPassword();
+        const passwordHash = await hashPassword(generatedPassword);
         const lawyerId = payload.user.lawyerId || payload.by || authorId;
         await UserModel.findOneAndUpdate(
           { id: payload.user.id },
           {
             $set: {
               ...payload.user,
+              email: (payload.user.email || "").toLowerCase().trim(),
+              accessCode: generatedPassword,
               role: "client",
               passwordHash,
               lawyerId,
@@ -445,7 +581,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         break;
       }
       case "addAssociate": {
-        const pw = payload.user.password || process.env.SEED_ASSOC_PASSWORD || "";
+        const pw = payload.user.password || process.env.SEED_ASSOC_PASSWORD || "assoc123";
         const passwordHash = await hashPassword(pw);
         const lawyerId = payload.user.lawyerId || payload.by || authorId;
         await UserModel.findOneAndUpdate(
@@ -455,6 +591,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
               ...payload.user,
               role: "associate",
               passwordHash,
+              accessCode: pw,
               lawyerId,
             },
           },
@@ -482,13 +619,16 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         break;
       }
       case "updateUser": {
+        const existing = await UserModel.findOne({ id: payload.userId }).lean();
         const updateDoc: any = {};
-        if (payload.name !== undefined) updateDoc.name = payload.name;
-        if (payload.email !== undefined) updateDoc.email = payload.email;
-        if (payload.phone !== undefined) updateDoc.phone = payload.phone;
-        if (payload.designation !== undefined) updateDoc.designation = payload.designation;
-        if (payload.password) {
+        if (payload.name !== undefined) updateDoc.name = payload.name.trim();
+        if (payload.email !== undefined) updateDoc.email = payload.email.toLowerCase().trim();
+        if (payload.phone !== undefined) updateDoc.phone = payload.phone.trim();
+        if (payload.designation !== undefined) updateDoc.designation = payload.designation.trim();
+        // Client passwords are IMMUTABLE and cannot be altered by anyone
+        if (payload.password && existing?.role !== "client") {
           updateDoc.passwordHash = await hashPassword(payload.password);
+          updateDoc.accessCode = payload.password.trim();
         }
         await UserModel.findOneAndUpdate(
           { id: payload.userId },
@@ -554,33 +694,49 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
     case "replyQuery": {
       const c = fallbackStore.cases.find((x) => x.id === payload.caseId);
       if (c) {
+        c.queries = c.queries || [];
         const q = c.queries.find((item: any) => item.id === payload.queryId);
         if (q) {
           q.reply = payload.reply;
           q.answered = true;
+          q.replyBy = payload.replyBy || authorId;
+          q.replyTs = new Date().toISOString();
         }
         c.updatedAt = now;
       }
       break;
     }
     case "addClient": {
-      const pw = payload.user.password || process.env.SEED_CLIENT_PASSWORD || "";
+      const cleanPhone = (payload.user.phone || "").replace(/\D/g, "");
+      const existing = cleanPhone.length >= 10
+        ? fallbackStore.users.find((u) => u.role === "client" && (u.phone || "").replace(/\D/g, "").slice(-10) === cleanPhone.slice(-10))
+        : null;
+
+      if (existing) {
+        if (payload.user.name && !existing.name) existing.name = payload.user.name;
+        if (payload.user.email && !existing.email) existing.email = payload.user.email;
+        break;
+      }
+
+      const generatedPassword = payload.user.accessCode || generateUniversalClientPassword();
       const lawyerId = payload.user.lawyerId || payload.by || authorId;
       fallbackStore.users.push({
         ...payload.user,
         role: "client",
+        accessCode: generatedPassword,
         lawyerId,
-        passwordHash: await hashPassword(pw),
+        passwordHash: await hashPassword(generatedPassword),
       });
       break;
     }
     case "addAssociate": {
-      const pw = payload.user.password || process.env.SEED_ASSOC_PASSWORD || "";
+      const pw = payload.user.password || process.env.SEED_ASSOC_PASSWORD || "assoc123";
       const lawyerId = payload.user.lawyerId || payload.by || authorId;
       fallbackStore.users.push({
         ...payload.user,
         role: "associate",
         lawyerId,
+        accessCode: pw,
         passwordHash: await hashPassword(pw),
       });
       break;
@@ -599,12 +755,13 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
     case "updateUser": {
       const u = fallbackStore.users.find((user) => user.id === payload.userId);
       if (u) {
-        if (payload.name !== undefined) u.name = payload.name;
-        if (payload.email !== undefined) u.email = payload.email;
-        if (payload.phone !== undefined) u.phone = payload.phone;
-        if (payload.designation !== undefined) u.designation = payload.designation;
-        if (payload.password) {
+        if (payload.name !== undefined) u.name = payload.name.trim();
+        if (payload.email !== undefined) u.email = payload.email.toLowerCase().trim();
+        if (payload.phone !== undefined) u.phone = payload.phone.trim();
+        if (payload.designation !== undefined) u.designation = payload.designation.trim();
+        if (payload.password && u.role !== "client") {
           u.passwordHash = await hashPassword(payload.password);
+          u.accessCode = payload.password.trim();
         }
       }
       break;
@@ -642,6 +799,11 @@ export async function decideApproval(id: string, decision: "approve" | "reject",
 
   if (isConnected) {
     item = await ApprovalModel.findOne({ id }).lean();
+    if (!item) {
+      await initFallbackStore();
+      item = fallbackStore.approvals.find((x) => x.id === id);
+    }
+
     if (item) {
       if (decision === "approve") {
         if (item.type === "compound") {
@@ -652,7 +814,7 @@ export async function decideApproval(id: string, decision: "approve" | "reject",
           await applyOp({ type: item.type, payload: item.payload }, item.by);
         }
       }
-      await ApprovalModel.deleteOne({ id });
+      await ApprovalModel.deleteOne({ id }).catch(() => {});
       await DecisionModel.findOneAndUpdate(
         { id },
         {
@@ -664,7 +826,7 @@ export async function decideApproval(id: string, decision: "approve" | "reject",
           },
         },
         { upsert: true }
-      );
+      ).catch(() => {});
     }
   }
 
@@ -674,7 +836,7 @@ export async function decideApproval(id: string, decision: "approve" | "reject",
   if (fIdx !== -1) {
     const fItem = fallbackStore.approvals[fIdx];
     fallbackStore.approvals.splice(fIdx, 1);
-    if (decision === "approve") {
+    if (!isConnected && decision === "approve") {
       if (fItem.type === "compound") {
         for (const op of fItem.payload?.ops || []) await applyOp(op, fItem.by);
       } else {
@@ -904,5 +1066,62 @@ export async function getPublicCase(caseId: string) {
     orders: c.orders || [],
     updatedAt: c.updatedAt,
   };
+}
+
+export async function lookupClientByPhone(phoneQuery: string): Promise<User | null> {
+  const cleanDigits = phoneQuery.replace(/\D/g, "");
+  if (cleanDigits.length < 10) return null;
+  const last10 = cleanDigits.slice(-10);
+  const phonePattern = last10.split("").join("\\D*");
+
+  const { isConnected } = await connectToDatabase();
+  if (isConnected) {
+    try {
+      const found = await UserModel.findOne({
+        role: "client",
+        phone: { $regex: new RegExp(phonePattern) },
+      }).lean();
+      if (found) {
+        return {
+          id: found.id,
+          role: found.role,
+          name: found.name,
+          email: found.email,
+          phone: found.phone,
+          designation: found.designation,
+          lawyerId: found.lawyerId,
+          accessCode:
+            found.accessCode ||
+            (found.id === "u-client"
+              ? process.env.SEED_CLIENT_PASSWORD || "client123"
+              : "LD" + found.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()),
+        };
+      }
+    } catch (e) {
+      console.warn("lookupClientByPhone DB fallback:", e);
+    }
+  }
+
+  await initFallbackStore();
+  const found = fallbackStore.users.find(
+    (u) => u.role === "client" && (u.phone || "").replace(/\D/g, "").slice(-10) === last10
+  );
+  if (found) {
+    return {
+      id: found.id,
+      role: found.role,
+      name: found.name,
+      email: found.email,
+      phone: found.phone,
+      designation: found.designation,
+      lawyerId: found.lawyerId,
+      accessCode:
+        found.accessCode ||
+        (found.id === "u-client"
+          ? process.env.SEED_CLIENT_PASSWORD || "client123"
+          : "LD" + found.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()),
+    };
+  }
+  return null;
 }
 

@@ -1127,12 +1127,12 @@ export default function AuthSwitch({
                   <Mail className="w-4 h-4" />
                 </div>
                 <input
-                  type="email"
+                  type="text"
                   required
-                  placeholder="Email ID *"
+                  placeholder="Email ID, Phone, or Client ID *"
                   value={signInEmail}
                   onChange={(e) => setSignInEmail(e.target.value)}
-                  autoComplete="email"
+                  autoComplete="username"
                 />
               </div>
 
