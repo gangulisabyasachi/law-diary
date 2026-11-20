@@ -1,9 +1,14 @@
 "use client";
 
-import React from "react";
-import { CaseDetailView } from "@/components/views/CaseDetailView";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AdminSingleCasePage({ params }: { params: { id: string } }) {
-  return <CaseDetailView caseId={params.id} />;
+export default function AdminCaseDetailRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/admin");
+  }, [router]);
+
+  return null;
 }
-

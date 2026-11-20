@@ -1,9 +1,14 @@
 "use client";
 
-import React from "react";
-import { UsersView } from "@/components/views/UsersView";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AdminUsersPage() {
-  return <UsersView />;
+export default function AdminUsersRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/admin");
+  }, [router]);
+
+  return null;
 }
-

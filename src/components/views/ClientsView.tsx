@@ -76,7 +76,7 @@ export function ClientsView() {
                       <button
                         onClick={() => openModal("edit-client", { client: cl })}
                         className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#d9541e] text-[10.5px] font-cinzel font-semibold text-[#111111] dark:text-[#f3eee3] transition-all hover:text-[#d9541e] cursor-pointer"
-                        title={currentUser.role === "associate" ? "Edit Client (Submits for Senior Advocate approval)" : "Edit Client Details & Password"}
+                        title={currentUser.role === "associate" ? "Edit Client (Submits for Advocate approval)" : "Edit Client Details & Password"}
                       >
                         <Edit3 className="w-3 h-3 text-[#d9541e]" />
                         <span>Edit</span>

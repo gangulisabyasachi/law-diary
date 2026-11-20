@@ -42,14 +42,14 @@ export default function PricingPage() {
       ],
       notIncluded: [
         "Junior Associate Accounts",
-        "Senior Verification Desk",
+        "Advocate Verification Desk",
         "Limitation Act 1963 Radar",
         "Dedicated Database Clusters",
       ],
     },
     {
       name: "Chamber Pro",
-      tagline: "For Senior Advocates collaborating with briefing associates and juniors.",
+      tagline: "For Advocates collaborating with briefing associates and juniors.",
       price: "₹1,499",
       period: "/ month per chamber",
       cta: "Sign Up",
@@ -58,7 +58,7 @@ export default function PricingPage() {
       features: [
         "Unlimited Active Matters & Dossiers",
         "Up to 5 Advocates & Briefing Associates",
-        "Senior Advocate Verification Desk",
+        "Advocate Verification Desk",
         "Limitation Act 1963 Statutory Radar",
         "Certified Judicial Orders & Citations",
         "Litigant Fee Accounting & Receipts",
@@ -72,7 +72,7 @@ export default function PricingPage() {
     },
     {
       name: "Enterprise Chambers",
-      tagline: "Full-scale deployment for prominent senior advocates and multi-advocate law firms.",
+      tagline: "Full-scale deployment for prominent advocates and multi-advocate law firms.",
       price: "Custom",
       period: "/ tailored deployment",
       cta: "Inquire with Registrar",
@@ -97,7 +97,7 @@ export default function PricingPage() {
     { feature: "Daily Cause List Generator", solo: true, pro: true, enterprise: true },
     { feature: "Printable Court Bag Cause List", solo: true, pro: true, enterprise: true },
     { feature: "Associate & Junior Seats", solo: "1 Advocate", pro: "Up to 5", enterprise: "Unlimited" },
-    { feature: "Senior Advocate Verification Desk", solo: false, pro: true, enterprise: true },
+    { feature: "Advocate Verification Desk", solo: false, pro: true, enterprise: true },
     { feature: "Limitation Act 1963 Radar", solo: false, pro: true, enterprise: true },
     { feature: "Certified Court Orders & Citations", solo: "Basic", pro: "Advanced", enterprise: "Custom Repository" },
     { feature: "Client Fee Ledgers & Receipts", solo: false, pro: true, enterprise: true },

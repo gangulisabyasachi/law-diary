@@ -13,10 +13,10 @@ export function getSeedData() {
     {
       id: "u-admin",
       role: "admin",
-      name: "Devika Nair",
+      name: "System Administrator",
       email: "admin@chambers.in",
-      phone: "+91 98110 20001",
-      designation: "Chamber Administrator & Registrar",
+      phone: "+91 98000 00000",
+      designation: "Platform Super Administrator",
     },
     {
       id: "u-lawyer",
@@ -24,7 +24,7 @@ export function getSeedData() {
       name: "Adv. Arjun Mehta",
       email: "lawyer@chambers.in",
       phone: "+91 98110 20002",
-      designation: "Senior Advocate & Chamber Head (D/1482/2012)",
+      designation: "Advocate & Chamber Head (D/1482/2012)",
     },
     {
       id: "u-assoc",
@@ -69,7 +69,7 @@ export function getSeedData() {
       name: "Adv. Rajeshwari Sen",
       email: "sen@chambers.in",
       phone: "+91 98110 30001",
-      designation: "Senior Advocate & Managing Partner (D/2210/2015)",
+      designation: "Advocate & Managing Partner (D/2210/2015)",
     },
     {
       id: "u-assoc-sen",
@@ -149,7 +149,7 @@ export function getSeedData() {
         {
           date: "2026-10-22",
           purpose: "Plaintiff Evidence — Examination-in-Chief of PW-1",
-          outcome: "PW-1 tendered affidavit of evidence; Exhibits A-1 to A-7 marked; deferred for cross-examination by defendant's senior advocate.",
+          outcome: "PW-1 tendered affidavit of evidence; Exhibits A-1 to A-7 marked; deferred for cross-examination by defendant's advocate.",
           by: "u-assoc",
         },
         {
@@ -301,7 +301,7 @@ export function getSeedData() {
         {
           date: "2026-10-09",
           title: "Order on Record: Judgment Reserved",
-          text: "Heard learned Senior Advocate for the Appellant and learned ASG for the Union of India. Judgment reserved. Liberty granted to file brief notes of written arguments within 3 days.",
+          text: "Heard learned Advocate for the Appellant and learned ASG for the Union of India. Judgment reserved. Liberty granted to file brief notes of written arguments within 3 days.",
           citation: "2026:DHC:7944-DB",
           addedBy: "u-lawyer",
         },
@@ -538,7 +538,7 @@ export function getSeedData() {
           date: "2025-11-15",
           amount: 350000,
           mode: "RTGS",
-          note: "Senior Advocate Supreme Court Retainer Fee",
+          note: "Advocate Supreme Court Retainer Fee",
         },
       ],
       hearings: [
@@ -562,7 +562,7 @@ export function getSeedData() {
         {
           id: "q-sen-1",
           by: "u-client",
-          text: "Senior Advocate Sir, has NHAI deposited the 50% arbitral amount in the Supreme Court Registry?",
+          text: "Advocate Sir, has NHAI deposited the 50% arbitral amount in the Supreme Court Registry?",
           ts: "2026-11-10T10:00:00Z",
           answered: true,
           reply: "Yes Rahul, the Registrar Judicial has confirmed deposit of ₹1.45 Cr in interest-bearing fixed deposit under Supreme Court custody.",

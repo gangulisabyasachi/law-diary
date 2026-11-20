@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { AppState, User, Case, Approval, Decision } from "@/types";
+import { AppState, User, Case, Approval, Decision, ErrorLog } from "@/types";
 import type { InkTheme } from "@/components/ui/ink-spill-theme-switch";
 
 export interface ToastItem {
@@ -55,6 +55,15 @@ interface ChamberContextType {
   openCase: (caseId: string) => void;
   resetData: () => Promise<void>;
   deleteUser: (userId: string) => Promise<void>;
+  deleteChamber: (chamberId: string) => Promise<boolean>;
+  toggleUserStatus: (userId: string, disabled?: boolean) => Promise<boolean>;
+  adminUpdateUser: (userId: string, data: any) => Promise<boolean>;
+  updateBroadcast: (active: boolean, message: string) => Promise<boolean>;
+  refreshErrorLogs: () => Promise<void>;
+  resolveErrorLog: (logId: string, resolved: boolean) => Promise<boolean>;
+  deleteErrorLog: (logId: string) => Promise<boolean>;
+  clearErrorLogs: () => Promise<boolean>;
+  logSystemError: (log: Partial<ErrorLog>) => Promise<boolean>;
 }
 
 const ChamberContext = createContext<ChamberContextType | null>(null);
@@ -354,7 +363,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         addToast(data.error || "Submission failed", "error");
         return false;
       }
-      addToast("Submitted for Senior Advocate verification", "info");
+      addToast("Submitted for Advocate verification", "info");
       await refreshState();
       return true;
     } catch (err: any) {
@@ -451,6 +460,243 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const deleteChamber = async (chamberId: string): Promise<boolean> => {
+    try {
+      const res = await sendOps([
+        {
+          type: "deleteChamber",
+          payload: { chamberId },
+        },
+      ]);
+      if (res) {
+        addToast("Chamber workspace and all associated records permanently purged.", "success");
+        await refreshState();
+      }
+      return res;
+    } catch (e: any) {
+      addToast(e.message || "Failed to delete chamber", "error");
+      return false;
+    }
+  };
+
+  const toggleUserStatus = async (userId: string, disabled?: boolean): Promise<boolean> => {
+    try {
+      const res = await sendOps([
+        {
+          type: "toggleUserStatus",
+          payload: { userId, disabled },
+        },
+      ]);
+      if (res) {
+        addToast(disabled ? "User account has been disabled." : "User account has been activated.", "info");
+      }
+      return res;
+    } catch (e: any) {
+      addToast(e.message || "Failed to toggle status", "error");
+      return false;
+    }
+  };
+
+  const adminUpdateUser = async (userId: string, data: any): Promise<boolean> => {
+    try {
+      const res = await sendOps([
+        {
+          type: "adminUpdateUser",
+          payload: { userId, ...data },
+        },
+      ]);
+      if (res) {
+        addToast("User profile and credentials updated successfully.", "success");
+      }
+      return res;
+    } catch (e: any) {
+      addToast(e.message || "Failed to update user profile", "error");
+      return false;
+    }
+  };
+
+  const updateBroadcast = async (active: boolean, message: string): Promise<boolean> => {
+    try {
+      const res = await sendOps([
+        {
+          type: "updateBroadcast",
+          payload: { active, message },
+        },
+      ]);
+      if (res) {
+        addToast(
+          active
+            ? "Platform Broadcast Notice published live across all user sessions."
+            : "Platform Broadcast Notice deactivated.",
+          "info"
+        );
+      }
+      return res;
+    } catch (e: any) {
+      addToast(e.message || "Failed to update broadcast notice", "error");
+      return false;
+    }
+  };
+
+  const refreshErrorLogs = async (): Promise<void> => {
+    try {
+      const res = await fetch("/api/admin/logs", {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
+        },
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.logs)) {
+          setState((prev) => (prev ? { ...prev, errorLogs: data.logs } : prev));
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to refresh error logs:", e);
+    }
+  };
+
+  const resolveErrorLog = async (logId: string, resolved: boolean): Promise<boolean> => {
+    try {
+      // Optimistic state update
+      setState((prev) => {
+        if (!prev) return prev;
+        const updated = (prev.errorLogs || []).map((l) =>
+          l.id === logId
+            ? {
+                ...l,
+                resolved,
+                resolvedAt: resolved ? new Date().toISOString() : "",
+                resolvedBy: resolved ? currentUser?.name || "Platform Super Admin" : "",
+              }
+            : l
+        );
+        return { ...prev, errorLogs: updated };
+      });
+
+      const res = await fetch("/api/admin/logs", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
+        },
+        body: JSON.stringify({ logId, resolved }),
+      });
+
+      if (res.ok) {
+        addToast(resolved ? "Incident marked as resolved." : "Incident marked as active/unresolved.", "info");
+        return true;
+      }
+      return await sendOps([
+        {
+          type: "resolveErrorLog",
+          payload: { logId, resolved },
+        },
+      ]);
+    } catch (e: any) {
+      addToast(e.message || "Failed to update error log status", "error");
+      return false;
+    }
+  };
+
+  const deleteErrorLog = async (logId: string): Promise<boolean> => {
+    try {
+      // Optimistic state update
+      setState((prev) => {
+        if (!prev) return prev;
+        const filtered = (prev.errorLogs || []).filter((l) => l.id !== logId);
+        return { ...prev, errorLogs: filtered };
+      });
+
+      const res = await fetch(`/api/admin/logs?logId=${encodeURIComponent(logId)}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
+        },
+        body: JSON.stringify({ logId }),
+      });
+
+      if (res.ok) {
+        addToast("Error log purged from system.", "info");
+        return true;
+      }
+      return await sendOps([
+        {
+          type: "deleteErrorLog",
+          payload: { logId },
+        },
+      ]);
+    } catch (e: any) {
+      addToast(e.message || "Failed to delete error log", "error");
+      return false;
+    }
+  };
+
+  const clearErrorLogs = async (): Promise<boolean> => {
+    try {
+      // Optimistic state update
+      setState((prev) => (prev ? { ...prev, errorLogs: [] } : prev));
+
+      const res = await fetch("/api/admin/logs?all=true", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
+        },
+        body: JSON.stringify({ all: true }),
+      });
+
+      if (res.ok) {
+        addToast("All error and audit logs cleared.", "info");
+        return true;
+      }
+      return await sendOps([
+        {
+          type: "clearErrorLogs",
+          payload: {},
+        },
+      ]);
+    } catch (e: any) {
+      addToast(e.message || "Failed to clear error logs", "error");
+      return false;
+    }
+  };
+
+  const logSystemError = async (log: Partial<ErrorLog>): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/admin/logs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(currentUser ? { "x-user-id": currentUser.id, "x-user-role": currentUser.role } : {}),
+        },
+        body: JSON.stringify(log),
+      });
+
+      if (res.ok) {
+        await refreshErrorLogs();
+        addToast("Diagnostic incident recorded to platform audit stream.", "info");
+        return true;
+      }
+      return await sendOps([
+        {
+          type: "logSystemError",
+          payload: { log },
+        },
+      ]);
+    } catch (e: any) {
+      addToast(e.message || "Failed to record system error", "error");
+      return false;
+    }
+  };
+
   return (
     <ChamberContext.Provider
       value={{
@@ -488,6 +734,15 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         openCase,
         resetData,
         deleteUser,
+        deleteChamber,
+        toggleUserStatus,
+        adminUpdateUser,
+        updateBroadcast,
+        refreshErrorLogs,
+        resolveErrorLog,
+        deleteErrorLog,
+        clearErrorLogs,
+        logSystemError,
       }}
     >
       {children}

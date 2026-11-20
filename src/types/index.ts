@@ -9,6 +9,8 @@ export interface User {
   designation?: string;
   lawyerId?: string;
   accessCode?: string;
+  disabled?: boolean;
+  status?: "active" | "disabled";
   createdAt?: string;
   updatedAt?: string;
 }
@@ -146,11 +148,38 @@ export interface Decision {
   decidedBy: string;
 }
 
+export interface SystemBroadcast {
+  active: boolean;
+  message: string;
+  updatedAt?: string;
+}
+
+export interface ErrorLog {
+  id: string;
+  timestamp: string;
+  level: "error" | "warn" | "info" | "fatal";
+  category: "auth" | "database" | "network" | "validation" | "chamber_scoping" | "system";
+  message: string;
+  details?: string;
+  source?: string;
+  userId?: string;
+  userRole?: string;
+  path?: string;
+  ip?: string;
+  resolved: boolean;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface AppState {
   users: User[];
   cases: Case[];
   approvals: Approval[];
   decided: Decision[];
+  errorLogs?: ErrorLog[];
+  broadcast?: SystemBroadcast;
   dbConnected: boolean;
   dbType: "mongodb" | "in-memory-fallback";
 }

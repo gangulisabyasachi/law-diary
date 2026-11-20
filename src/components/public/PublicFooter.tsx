@@ -54,7 +54,7 @@ export function PublicFooter() {
                 Commission your sovereign chamber docket in under two minutes.
               </h3>
               <p className="text-sm sm:text-base font-serif italic text-[#111111]/75 dark:text-[#f3eee3]/70 leading-relaxed">
-                Purpose-built for High Court Senior Advocates, Arguing Advocates, and Briefing Associates. Instant voluntary enrolment with your official State Bar Council credentials.
+                Purpose-built for High Court Advocates, Arguing Advocates, and Briefing Associates. Instant voluntary enrolment with your official State Bar Council credentials.
               </p>
             </div>
 
@@ -101,7 +101,7 @@ export function PublicFooter() {
             </Link>
 
             <p className="text-xs sm:text-sm font-serif italic text-[#111111]/75 dark:text-[#f3eee3]/70 leading-relaxed max-w-sm">
-              A private, sovereign practice management system built specifically for Senior Advocates, Chamber Advocates, and Briefing Associates across the Supreme Court, High Courts, and Tribunals of India.
+              A private, sovereign practice management system built specifically for Advocates, Chamber Advocates, and Briefing Associates across the Supreme Court, High Courts, and Tribunals of India.
             </p>
 
             {/* Live Operational Status Node */}
@@ -178,7 +178,7 @@ export function PublicFooter() {
               </li>
               <li>
                 <Link href="/features" className="text-[#111111]/80 hover:text-[#d9541e] dark:text-[#f3eee3]/80 dark:hover:text-[#d9541e] transition-colors block py-0.5">
-                  Senior Verification Desk
+                  Advocate Verification Desk
                 </Link>
               </li>
               <li>

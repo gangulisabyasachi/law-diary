@@ -1165,7 +1165,7 @@ export function AddCaseView() {
           payload: { case: newCasePayload },
         };
         await submitApproval(approvalItem);
-        addToast("Case draft submitted for Senior Advocate verification.", "info");
+        addToast("Case draft submitted for Advocate verification.", "info");
         router.push("/dashboard/approvals");
       } else {
         await sendOps([{ type: "addCase", payload: { case: newCasePayload } }]);

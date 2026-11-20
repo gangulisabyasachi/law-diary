@@ -99,7 +99,7 @@ export function ApprovalsView() {
             </h3>
             <p className="text-xs text-[#111111]/60 dark:text-[#f3eee3]/50 font-serif italic mt-0.5">
               {currentUser.role === "associate"
-                ? "Your draft hearing outcomes and orders will be applied to the judicial docket once signed off by Senior Advocate."
+                ? "Your draft hearing outcomes and orders will be applied to the judicial docket once signed off by Advocate."
                 : "Verify and sanction junior associate draft entries before they alter official High Court and District Court records."}
             </p>
           </div>
@@ -212,7 +212,7 @@ export function ApprovalsView() {
                     </span>
                   </div>
                   <p className="text-[11px] text-[#111111]/60 dark:text-[#f3eee3]/50 mt-1 font-serif italic">
-                    Drafted by {d.byName} · Reviewed by {state.users.find((u) => u.id === d.decidedBy)?.name || "Senior Advocate"}
+                    Drafted by {d.byName} · Reviewed by {state.users.find((u) => u.id === d.decidedBy)?.name || "Advocate"}
                   </p>
                 </div>
                 <span className="text-[10px] font-mono text-[#111111]/50 dark:text-[#f3eee3]/40 flex-shrink-0 ml-4">

@@ -149,7 +149,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
     setSubmittingReply(true);
 
     if (currentUser.role === "associate") {
-      // Submits for Senior Advocate verification and sanction
+      // Submits for Advocate verification and sanction
       await submitApproval({
         id: "a-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
         by: currentUser.id,
@@ -170,7 +170,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       return;
     }
 
-    // Senior Advocate / Admin applies directly
+    // Advocate / Admin applies directly
     await sendOps([
       {
         type: "replyQuery",
@@ -215,7 +215,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
 
   const handleDeleteCase = async () => {
     if (currentUser.role !== "lawyer" && currentUser.role !== "admin") {
-      addToast("Only Senior Advocates (Lawyers) have clearance to delete case files", "error");
+      addToast("Only Advocates (Lawyers) have clearance to delete case files", "error");
       return;
     }
     setDeletingCase(true);
@@ -500,7 +500,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
               </div>
             )}
 
-            {/* Delete Case Option — STRICTLY for Senior Advocates (Lawyer login) */}
+            {/* Delete Case Option — STRICTLY for Advocates (Lawyer login) */}
             {(currentUser.role === "lawyer" || currentUser.role === "admin") && (
               <button
                 onClick={() => setShowDeleteConfirm(true)}
@@ -811,11 +811,11 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                         <div className="mt-3 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-xs text-amber-900 dark:text-amber-200 font-serif">
                           <div className="flex items-center gap-2 font-cinzel font-bold text-[11px] mb-1">
                             <Clock className="w-3.5 h-3.5 text-amber-600" />
-                            <span>Associate Draft Awaiting Senior Advocate Approval</span>
+                            <span>Associate Draft Awaiting Advocate Approval</span>
                           </div>
                           <p className="italic">&ldquo;{pendingDraft.payload?.reply}&rdquo;</p>
                           <p className="text-[10px] text-amber-700/80 dark:text-amber-300/80 mt-1.5">
-                            Drafted by {pendingDraft.byName}. Will be dispatched to litigant once sanctioned by Senior Advocate.
+                            Drafted by {pendingDraft.byName}. Will be dispatched to litigant once sanctioned by Advocate.
                           </p>
                         </div>
                       );
@@ -831,7 +831,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                                 onChange={(e) => setReplyText(e.target.value)}
                                 placeholder={
                                   currentUser.role === "associate"
-                                    ? "Draft legal advice (will be submitted to Senior Advocate for sign-off)..."
+                                    ? "Draft legal advice (will be submitted to Advocate for sign-off)..."
                                     : "Type advocate legal advice to client..."
                                 }
                                 className="w-full p-3.5 rounded-xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs text-[#111111] dark:text-[#f3eee3] font-serif"
@@ -845,7 +845,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                                   {submittingReply
                                     ? "Saving..."
                                     : currentUser.role === "associate"
-                                    ? "Submit for Senior Advocate Approval"
+                                    ? "Submit for Advocate Approval"
                                     : "Send Advice to Litigant"}
                                 </button>
                                 <button
@@ -1006,7 +1006,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
                   <label className="block text-[11px] font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1">Disbursement Note / Head of Fee</label>
                   <input
                     type="text"
-                    placeholder="e.g. 50% Advance Vakalatnama Retainer, Senior Counsel appearance charge..."
+                    placeholder="e.g. 50% Advance Vakalatnama Retainer, Advocate appearance charge..."
                     value={receiptNote}
                     onChange={(e) => setReceiptNote(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] text-xs text-[#111111] dark:text-[#f3eee3]"
@@ -1401,7 +1401,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
         </div>
       )}
 
-      {/* Senior Advocate Delete Case Confirmation Modal */}
+      {/* Advocate Delete Case Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div className="w-full max-w-md bg-white dark:bg-[#181818] rounded-3xl border border-[#111111]/20 dark:border-[#f3eee3]/20 p-6 shadow-2xl space-y-4">
@@ -1424,7 +1424,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
             </p>
 
             <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] font-serif text-amber-900 dark:text-amber-300">
-              <strong>Advocate Clearance:</strong> This action is strictly restricted to Senior Advocates (Lawyers) and cannot be reversed.
+              <strong>Advocate Clearance:</strong> This action is strictly restricted to Advocates (Lawyers) and cannot be reversed.
             </div>
 
             <div className="flex items-center justify-end gap-2.5 pt-2">

@@ -49,7 +49,7 @@ export default function SecurityPage() {
       title: "Multi-Tenant Role-Based Access Control",
       summary: "Strict isolation across Advocate, Associate, Litigant & Registrar.",
       details:
-        "Briefing Associates only see matters assigned to them. Clients only access their individual cases and fee receipts under Vakalatnama. Senior Advocates maintain total sovereign sign-off authority across all chamber records.",
+        "Briefing Associates only see matters assigned to them. Clients only access their individual cases and fee receipts under Vakalatnama. Advocates maintain total sovereign sign-off authority across all chamber records.",
     },
     {
       icon: Database,

@@ -19,6 +19,7 @@ import {
   FileCheck,
   Award,
   LogOut,
+  AlertOctagon,
 } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
@@ -76,10 +77,10 @@ export function Sidebar() {
       { id: "contacts", label: "Briefed Legal Advocate", href: "/dashboard/contacts", icon: PhoneCall },
     ],
     admin: [
-      { id: "dashboard", label: "Chamber Overview", href: "/admin", icon: LayoutDashboard, section: "REGISTRAR DESK" },
-      { id: "cases", label: "Master Case Register", href: "/admin/cases", icon: Scale },
-      { id: "users", label: "User Accounts & Roster", href: "/admin/users", icon: UserCheck },
-      { id: "approvals", label: "Decision Audit Trail", href: "/admin/approvals", icon: ShieldCheck },
+      { id: "users", label: "User Directory & Access", href: "/admin", icon: Users, section: "PLATFORM CONTROL" },
+      { id: "chambers", label: "Chamber Workspaces", href: "/admin/chambers", icon: Briefcase },
+      { id: "system", label: "System Health & Cloud DB", href: "/admin/system", icon: ShieldCheck },
+      { id: "logs", label: "Platform Error & Audit Logs", href: "/admin/logs", icon: AlertOctagon },
     ],
   };
 
@@ -89,7 +90,7 @@ export function Sidebar() {
     currentUser.role === "lawyer"
       ? (currentUser.name.toLowerCase().startsWith("adv") ? `Chambers of ${currentUser.name}` : `Chambers of Adv. ${currentUser.name}`)
       : currentUser.role === "admin"
-      ? "LexDaily Registrar Desk"
+      ? "LexDaily Master Platform"
       : currentUser.role === "client"
       ? "LexDaily Litigant Portal"
       : (() => {
@@ -120,7 +121,7 @@ export function Sidebar() {
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-[9.5px] uppercase font-cinzel tracking-widest text-[#111111]/80 dark:text-[#f3eee3]/90 font-bold truncate">
               {currentUser.role === "admin"
-                ? "Master Register"
+                ? "Platform Administration"
                 : currentUser.role === "client"
                 ? "Litigant Dossier"
                 : "Chamber Diary"}
@@ -181,6 +182,34 @@ export function Sidebar() {
         })}
       </nav>
 
+      {/* Platform Advisory Notice (Left Navbar - above the bottom-left credential medallion) */}
+      {(state?.broadcast?.active !== false) && (
+        <div className="relative mx-3 mb-1.5 rounded-2xl p-2.5 bg-gradient-to-br from-[#faf8f5] via-[#f7f2ea] to-[#eee6d8] dark:from-[#1c1a17] dark:via-[#161412] dark:to-[#100f0e] border border-[#d9541e]/25 dark:border-[#d9541e]/30 shadow-xs overflow-hidden group">
+          {/* Subtle Luxury Top Hairline Accent */}
+          <div className="absolute top-0 left-3 right-3 h-[1.5px] bg-gradient-to-r from-transparent via-[#d9541e]/50 dark:via-[#ea6026]/60 to-transparent" />
+
+          <div className="flex items-center justify-between gap-1.5 pb-1.5 mb-1.5 border-b border-[#111111]/8 dark:border-[#f3eee3]/10">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d9541e] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#d9541e]" />
+              </span>
+              <span className="text-[9px] font-cinzel font-bold tracking-[0.14em] text-[#d9541e] dark:text-[#ea6026] uppercase truncate">
+                Platform Advisory
+              </span>
+            </div>
+
+            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[8px] font-mono font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+              Online
+            </span>
+          </div>
+
+          <p className="text-[10.5px] font-serif leading-relaxed text-[#111111]/85 dark:text-[#f3eee3]/85 line-clamp-3">
+            {state?.broadcast?.message || "Scheduled platform maintenance window: System remaining online with full database replication."}
+          </p>
+        </div>
+      )}
+
       {/* Sovereign Advocate Credential Medallion */}
       <div className="relative m-3 rounded-2xl p-3 bg-gradient-to-b from-[#faf8f5] via-[#f5f0e8] to-[#eee7dc] dark:from-[#1c1a17] dark:via-[#161412] dark:to-[#100f0e] border border-[#111111]/12 dark:border-[#f3eee3]/15 shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden">
         {/* Subtle Luxury Top Hairline Accent */}
@@ -191,18 +220,18 @@ export function Sidebar() {
           <div className="flex items-center gap-1.5 min-w-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 ring-2 ring-emerald-500/20" />
             <span className="text-[9px] font-cinzel font-bold tracking-[0.14em] text-[#111111]/70 dark:text-[#f3eee3]/70 uppercase truncate">
-              {role === "client" ? "RETAINED LITIGANT" : "BAR COUNCIL ROLL"}
+              {role === "client" ? "RETAINED LITIGANT" : role === "admin" ? "SUPER ADMIN CONSOLE" : "BAR COUNCIL ROLL"}
             </span>
           </div>
 
           <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] font-cinzel font-bold tracking-wider uppercase whitespace-nowrap shrink-0 bg-[#d9541e]/10 text-[#d9541e] dark:bg-[#d9541e]/20 dark:text-[#ea6026] border border-[#d9541e]/25 shadow-2xs">
             {role === "lawyer"
-              ? "Senior Advocate"
+              ? "Advocate"
               : role === "associate"
               ? "Associate Advocate"
               : role === "client"
               ? "Litigant Client"
-              : "Registrar"}
+              : "Super Admin"}
           </span>
         </div>
 
@@ -219,7 +248,7 @@ export function Sidebar() {
                 .slice(0, 2)
                 .map((n) => n[0])
                 .join("")
-                .toUpperCase() || "AM"}
+                .toUpperCase() || "SA"}
             </span>
           </div>
 
@@ -230,12 +259,12 @@ export function Sidebar() {
             </p>
             <p className="text-[10px] text-[#111111]/60 dark:text-[#f3eee3]/60 font-serif italic truncate mt-0.5">
               {role === "lawyer"
-                ? (currentUser.designation || "Senior Advocate & Chamber Head")
+                ? (currentUser.designation || "Advocate & Chamber Head")
                 : role === "associate"
                 ? (currentUser.designation || "Briefing & Arguing Counsel")
                 : role === "client"
                 ? (currentUser.phone ? `Mob: ${currentUser.phone}` : "Retained Litigant Dossier")
-                : "Master Registrar"}
+                : (currentUser.designation || "Platform Super Administrator")}
             </p>
           </div>
         </div>
@@ -245,7 +274,7 @@ export function Sidebar() {
           <span className="inline-flex items-center gap-1 font-mono text-[#111111]/50 dark:text-[#f3eee3]/50 truncate">
             <ShieldCheck className="w-3 h-3 text-[#d9541e] shrink-0" />
             <span className="truncate">
-              {role === "client" ? "Vakalatnama Protected" : "Rule 36 BCI Verified"}
+              {role === "client" ? "Vakalatnama Protected" : role === "admin" ? "Root System Clearance" : "Rule 36 BCI Verified"}
             </span>
           </span>
 

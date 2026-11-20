@@ -1,8 +1,8 @@
 import { connectToDatabase, isDatabaseConnected, getSanitizedUri } from "./mongodb";
-import { UserModel, CaseModel, ApprovalModel, DecisionModel } from "@/models";
+import { UserModel, CaseModel, ApprovalModel, DecisionModel, SettingModel, ErrorLogModel } from "@/models";
 import { getSeedData } from "./seedData";
 import { hashPassword, comparePassword, signToken } from "./auth";
-import { AppState, Case, User, Approval, Decision } from "@/types";
+import { AppState, Case, User, Approval, Decision, SystemBroadcast, ErrorLog } from "@/types";
 
 // In-memory fallback if MongoDB is not yet started or being configured
 interface FallbackStore {
@@ -10,6 +10,8 @@ interface FallbackStore {
   cases: Array<any>;
   approvals: Array<any>;
   decided: Array<any>;
+  errorLogs: Array<any>;
+  broadcast?: SystemBroadcast;
   isInitialized: boolean;
 }
 
@@ -18,8 +20,17 @@ const fallbackStore: FallbackStore = {
   cases: [],
   approvals: [],
   decided: [],
+  errorLogs: [],
+  broadcast: {
+    active: true,
+    message: "Scheduled platform maintenance window: System remaining online with full database replication.",
+  },
   isInitialized: false,
 };
+
+export function getSeedErrorLogs(): ErrorLog[] {
+  return [];
+}
 
 function getSeedPasswordForUser(id: string, role: string): string {
   if (id === "u-admin") return process.env.SEED_ADMIN_PASSWORD || process.env.SEED_DEFAULT_PASSWORD || "";
@@ -56,6 +67,9 @@ async function initFallbackStore() {
   fallbackStore.cases = cases;
   fallbackStore.approvals = [];
   fallbackStore.decided = decided;
+  if (!fallbackStore.errorLogs) {
+    fallbackStore.errorLogs = [];
+  }
   fallbackStore.isInitialized = true;
 }
 
@@ -152,6 +166,8 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
         : u.role === "associate"
         ? process.env.SEED_ASSOC_PASSWORD || "assoc123"
         : undefined),
+    disabled: Boolean(u.disabled || u.status === "disabled"),
+    status: (u.disabled || u.status === "disabled") ? "disabled" : "active",
     createdAt: u.createdAt?.toISOString?.() || u.createdAt,
     updatedAt: u.updatedAt?.toISOString?.() || u.updatedAt,
   });
@@ -223,26 +239,56 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
     decidedBy: d.decidedBy,
   });
 
+  const sanitizeErrorLog = (e: any): ErrorLog => ({
+    id: e.id,
+    timestamp: e.timestamp || e.createdAt?.toISOString?.() || new Date().toISOString(),
+    level: e.level || "error",
+    category: e.category || "system",
+    message: e.message || "Unknown error",
+    details: e.details || "",
+    source: e.source || "api",
+    userId: e.userId || "",
+    userRole: e.userRole || "",
+    path: e.path || "",
+    ip: e.ip || "",
+    resolved: Boolean(e.resolved),
+    resolvedAt: e.resolvedAt || "",
+    resolvedBy: e.resolvedBy || "",
+    createdAt: e.createdAt?.toISOString?.() || e.createdAt || new Date().toISOString(),
+    updatedAt: e.updatedAt?.toISOString?.() || e.updatedAt || new Date().toISOString(),
+  });
+
   let rawUsers: User[] = [];
   let rawCases: Case[] = [];
   let rawApprovals: Approval[] = [];
   let rawDecided: Decision[] = [];
+  let rawErrorLogs: ErrorLog[] = [];
+  let broadcast: SystemBroadcast = {
+    active: true,
+    message: "Scheduled platform maintenance window: System remaining online with full database replication.",
+  };
   let dbConnected = false;
 
   if (isConnected) {
     try {
       await seedMongoIfEmpty();
-      const [users, cases, approvals, decided] = await Promise.all([
+      const [users, cases, approvals, decided, broadcastSetting, errorLogs] = await Promise.all([
         UserModel.find().lean(),
         CaseModel.find().lean(),
         ApprovalModel.find().sort({ createdAt: 1 }).lean(),
         DecisionModel.find().sort({ createdAt: -1 }).limit(50).lean(),
+        SettingModel.findOne({ key: "system_broadcast" }).lean(),
+        ErrorLogModel.find().sort({ timestamp: -1 }).limit(100).lean(),
       ]);
 
       rawUsers = users.map(sanitizeUser);
       rawCases = cases.map(sanitizeCase);
       rawApprovals = approvals.map(sanitizeApproval);
       rawDecided = decided.map(sanitizeDecision);
+      rawErrorLogs = (errorLogs || []).map(sanitizeErrorLog);
+      if (broadcastSetting?.value) {
+        broadcast = broadcastSetting.value;
+      }
       dbConnected = true;
     } catch (err: any) {
       console.error("Error reading from MongoDB, switching to fallback:", err.message);
@@ -255,6 +301,10 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
     rawCases = fallbackStore.cases.map(sanitizeCase);
     rawApprovals = fallbackStore.approvals.map(sanitizeApproval);
     rawDecided = fallbackStore.decided.map(sanitizeDecision);
+    rawErrorLogs = (fallbackStore.errorLogs || []).map(sanitizeErrorLog);
+    if (fallbackStore.broadcast) {
+      broadcast = fallbackStore.broadcast;
+    }
   }
 
   // If no user is specified (e.g. unauthenticated public landing page), return benchmark data
@@ -264,6 +314,8 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
       cases: rawCases,
       approvals: rawApprovals,
       decided: rawDecided,
+      errorLogs: [],
+      broadcast,
       dbConnected,
       dbType: dbConnected ? "mongodb" : "in-memory-fallback",
     };
@@ -337,7 +389,7 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
     filteredApprovals = [];
     filteredDecided = [];
   } else {
-    // Admin / Platform Registrar
+    // Admin / Platform Super Administrator
     filteredCases = rawCases;
     filteredUsers = rawUsers;
     filteredApprovals = rawApprovals;
@@ -349,6 +401,8 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
     cases: filteredCases,
     approvals: filteredApprovals,
     decided: filteredDecided,
+    errorLogs: role === "admin" ? rawErrorLogs : [],
+    broadcast,
     dbConnected,
     dbType: dbConnected ? "mongodb" : "in-memory-fallback",
   };
@@ -374,6 +428,20 @@ export async function loginUser(email: string, pass: string) {
       });
 
       if (user) {
+        if (user.disabled || user.status === "disabled") {
+          recordSystemErrorLog({
+            level: "error",
+            category: "auth",
+            message: `Disabled account access rejected: ${user.name} (${user.email})`,
+            details: `Authentication blocked for account '${user.id}' (role: ${user.role}). Account marked disabled by Platform Super Administrator.`,
+            source: "api/auth/login",
+            path: "/api/auth/login",
+            userId: user.id,
+            userRole: user.role,
+          }).catch(() => {});
+          throw new Error("This account has been disabled by platform administration. Please contact support.");
+        }
+
         const expectedAccessCode =
           user.accessCode ||
           (user.id === "u-client"
@@ -429,6 +497,20 @@ export async function loginUser(email: string, pass: string) {
     return false;
   });
   if (!u) return null;
+
+  if (u.disabled || u.status === "disabled") {
+    recordSystemErrorLog({
+      level: "error",
+      category: "auth",
+      message: `Disabled account access rejected: ${u.name} (${u.email})`,
+      details: `Authentication blocked for account '${u.id}' (role: ${u.role}). Account marked disabled by Platform Super Administrator.`,
+      source: "api/auth/login",
+      path: "/api/auth/login",
+      userId: u.id,
+      userRole: u.role,
+    }).catch(() => {});
+    throw new Error("This account has been disabled by platform administration. Please contact support.");
+  }
 
   const expectedCode =
     u.accessCode ||
@@ -618,6 +700,26 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         await UserModel.deleteOne({ id: payload.userId });
         break;
       }
+      case "deleteChamber": {
+        const { chamberId } = payload;
+        if (!chamberId || chamberId === "u-admin") {
+          throw new Error("Cannot delete administrator chamber.");
+        }
+        const chamberCases = await CaseModel.find({ lawyerId: chamberId }).lean();
+        const caseIds = chamberCases.map((c) => c.id);
+
+        await CaseModel.deleteMany({ lawyerId: chamberId });
+        await UserModel.deleteMany({ lawyerId: chamberId });
+        await UserModel.deleteOne({ id: chamberId });
+
+        if (caseIds.length > 0) {
+          await ApprovalModel.deleteMany({ "payload.caseId": { $in: caseIds } });
+          await DecisionModel.deleteMany({ "payload.caseId": { $in: caseIds } });
+        }
+        await ApprovalModel.deleteMany({ by: chamberId });
+        await DecisionModel.deleteMany({ by: chamberId });
+        break;
+      }
       case "updateUser": {
         const existing = await UserModel.findOne({ id: payload.userId }).lean();
         const updateDoc: any = {};
@@ -637,8 +739,103 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         );
         break;
       }
+      case "updateBroadcast": {
+        const { active, message } = payload;
+        const b = { active: Boolean(active), message: String(message || ""), updatedAt: now };
+        await SettingModel.findOneAndUpdate(
+          { key: "system_broadcast" },
+          { $set: { key: "system_broadcast", value: b } },
+          { upsert: true }
+        );
+        break;
+      }
+      case "toggleUserStatus": {
+        const target = await UserModel.findOne({ id: payload.userId });
+        if (target) {
+          const nextDisabled = payload.disabled !== undefined ? Boolean(payload.disabled) : !target.disabled;
+          await UserModel.updateOne(
+            { id: payload.userId },
+            { $set: { disabled: nextDisabled, status: nextDisabled ? "disabled" : "active", updatedAt: now } }
+          );
+        }
+        break;
+      }
+      case "adminUpdateUser": {
+        const updateDoc: any = { updatedAt: now };
+        if (payload.name !== undefined) updateDoc.name = payload.name.trim();
+        if (payload.email !== undefined) updateDoc.email = payload.email.toLowerCase().trim();
+        if (payload.phone !== undefined) updateDoc.phone = payload.phone.trim();
+        if (payload.designation !== undefined) updateDoc.designation = payload.designation.trim();
+        if (payload.role !== undefined) updateDoc.role = payload.role;
+        if (payload.lawyerId !== undefined) updateDoc.lawyerId = payload.lawyerId;
+        if (payload.disabled !== undefined) {
+          updateDoc.disabled = Boolean(payload.disabled);
+          updateDoc.status = payload.disabled ? "disabled" : "active";
+        }
+        if (payload.password && String(payload.password).trim()) {
+          const cleanPass = String(payload.password).trim();
+          updateDoc.passwordHash = await hashPassword(cleanPass);
+          updateDoc.accessCode = cleanPass;
+        }
+        await UserModel.findOneAndUpdate(
+          { id: payload.userId },
+          { $set: updateDoc },
+          { new: true }
+        );
+        break;
+      }
       case "deleteCase": {
         await CaseModel.deleteOne({ id: payload.caseId });
+        break;
+      }
+      case "provisionAdvocate": {
+        await registerLawyerUser(payload);
+        break;
+      }
+      case "resolveErrorLog": {
+        const { logId, resolved } = payload;
+        await ErrorLogModel.findOneAndUpdate(
+          { id: logId },
+          {
+            $set: {
+              resolved: Boolean(resolved),
+              resolvedAt: resolved ? now : "",
+              resolvedBy: resolved ? authorId : "",
+              updatedAt: now,
+            },
+          }
+        );
+        break;
+      }
+      case "deleteErrorLog": {
+        await ErrorLogModel.deleteOne({ id: payload.logId });
+        break;
+      }
+      case "clearErrorLogs": {
+        await ErrorLogModel.deleteMany({});
+        break;
+      }
+      case "logSystemError": {
+        const raw = payload.log || {};
+        const newLog = {
+          id: raw.id || "err-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+          timestamp: raw.timestamp || now,
+          level: raw.level || "error",
+          category: raw.category || "system",
+          message: raw.message || "Manual Diagnostic Incident",
+          details: raw.details || "",
+          source: raw.source || "platform-admin",
+          userId: raw.userId || authorId,
+          userRole: raw.userRole || "admin",
+          path: raw.path || "/admin/logs",
+          ip: raw.ip || "127.0.0.1",
+          resolved: Boolean(raw.resolved),
+          resolvedAt: raw.resolved ? now : "",
+          resolvedBy: raw.resolved ? authorId : "",
+          createdAt: now,
+          updatedAt: now,
+        };
+        await ErrorLogModel.create(newLog);
         break;
       }
     }
@@ -752,6 +949,29 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
     case "removeUser":
       fallbackStore.users = fallbackStore.users.filter((u) => u.id !== payload.userId);
       break;
+    case "deleteChamber": {
+      const { chamberId } = payload;
+      if (!chamberId || chamberId === "u-admin") {
+        throw new Error("Cannot delete administrator chamber.");
+      }
+      const caseIds = fallbackStore.cases
+        .filter((c) => (c.lawyerId || "u-lawyer") === chamberId)
+        .map((c) => c.id);
+
+      fallbackStore.cases = fallbackStore.cases.filter(
+        (c) => (c.lawyerId || "u-lawyer") !== chamberId
+      );
+      fallbackStore.users = fallbackStore.users.filter(
+        (u) => u.id !== chamberId && (u.lawyerId || "u-lawyer") !== chamberId
+      );
+      fallbackStore.approvals = fallbackStore.approvals.filter(
+        (a) => !caseIds.includes(a.payload?.caseId) && a.by !== chamberId
+      );
+      fallbackStore.decided = fallbackStore.decided.filter(
+        (d) => !caseIds.includes(d.payload?.caseId) && d.by !== chamberId
+      );
+      break;
+    }
     case "updateUser": {
       const u = fallbackStore.users.find((user) => user.id === payload.userId);
       if (u) {
@@ -766,9 +986,92 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
       }
       break;
     }
+    case "updateBroadcast": {
+      fallbackStore.broadcast = {
+        active: Boolean(payload.active),
+        message: String(payload.message || ""),
+        updatedAt: now,
+      };
+      break;
+    }
+    case "toggleUserStatus": {
+      const u = fallbackStore.users.find((user) => user.id === payload.userId);
+      if (u) {
+        const nextDisabled = payload.disabled !== undefined ? Boolean(payload.disabled) : !u.disabled;
+        u.disabled = nextDisabled;
+        u.status = nextDisabled ? "disabled" : "active";
+      }
+      break;
+    }
+    case "adminUpdateUser": {
+      const u = fallbackStore.users.find((user) => user.id === payload.userId);
+      if (u) {
+        if (payload.name !== undefined) u.name = payload.name.trim();
+        if (payload.email !== undefined) u.email = payload.email.toLowerCase().trim();
+        if (payload.phone !== undefined) u.phone = payload.phone.trim();
+        if (payload.designation !== undefined) u.designation = payload.designation.trim();
+        if (payload.role !== undefined) u.role = payload.role;
+        if (payload.lawyerId !== undefined) u.lawyerId = payload.lawyerId;
+        if (payload.disabled !== undefined) {
+          u.disabled = Boolean(payload.disabled);
+          u.status = payload.disabled ? "disabled" : "active";
+        }
+        if (payload.password && String(payload.password).trim()) {
+          const cleanPass = String(payload.password).trim();
+          u.passwordHash = await hashPassword(cleanPass);
+          u.accessCode = cleanPass;
+        }
+      }
+      break;
+    }
     case "deleteCase":
       fallbackStore.cases = fallbackStore.cases.filter((c) => c.id !== payload.caseId);
       break;
+    case "provisionAdvocate": {
+      if (!isConnected) {
+        await registerLawyerUser(payload);
+      }
+      break;
+    }
+    case "resolveErrorLog": {
+      const l = fallbackStore.errorLogs.find((x) => x.id === payload.logId);
+      if (l) {
+        l.resolved = Boolean(payload.resolved);
+        l.resolvedAt = payload.resolved ? now : "";
+        l.resolvedBy = payload.resolved ? authorId : "";
+        l.updatedAt = now;
+      }
+      break;
+    }
+    case "deleteErrorLog":
+      fallbackStore.errorLogs = fallbackStore.errorLogs.filter((x) => x.id !== payload.logId);
+      break;
+    case "clearErrorLogs":
+      fallbackStore.errorLogs = [];
+      break;
+    case "logSystemError": {
+      const raw = payload.log || {};
+      const newLog = {
+        id: raw.id || "err-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+        timestamp: raw.timestamp || now,
+        level: raw.level || "error",
+        category: raw.category || "system",
+        message: raw.message || "Manual Diagnostic Incident",
+        details: raw.details || "",
+        source: raw.source || "platform-admin",
+        userId: raw.userId || authorId,
+        userRole: raw.userRole || "admin",
+        path: raw.path || "/admin/logs",
+        ip: raw.ip || "127.0.0.1",
+        resolved: Boolean(raw.resolved),
+        resolvedAt: raw.resolved ? now : "",
+        resolvedBy: raw.resolved ? authorId : "",
+        createdAt: now,
+        updatedAt: now,
+      };
+      fallbackStore.errorLogs.unshift(newLog);
+      break;
+    }
   }
 }
 
@@ -891,8 +1194,8 @@ export async function registerLawyerUser(data: LawyerRegistrationData) {
   
   const barEnrollmentTrimmed = data.barEnrollment?.trim();
   const designation = barEnrollmentTrimmed
-    ? `Senior Advocate (${barEnrollmentTrimmed.toUpperCase()})${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`
-    : `Senior Advocate${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`;
+    ? `Advocate (${barEnrollmentTrimmed.toUpperCase()})${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`
+    : `Advocate${data.chamberName ? ` · ${data.chamberName.trim()}` : ""}`;
 
   const cleanName = data.name.trim();
   const displayName = cleanName.toLowerCase().startsWith("adv") ? cleanName : `Adv. ${cleanName}`;
@@ -1124,4 +1427,150 @@ export async function lookupClientByPhone(phoneQuery: string): Promise<User | nu
   }
   return null;
 }
+
+export async function recordSystemErrorLog(log: Partial<ErrorLog>) {
+  const now = new Date().toISOString();
+  const newLog: ErrorLog = {
+    id: log.id || "err-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+    timestamp: log.timestamp || now,
+    level: log.level || "error",
+    category: log.category || "system",
+    message: log.message || "System error",
+    details: log.details || "",
+    source: log.source || "system",
+    userId: log.userId || "",
+    userRole: log.userRole || "",
+    path: log.path || "",
+    ip: log.ip || "127.0.0.1",
+    resolved: Boolean(log.resolved),
+    resolvedAt: log.resolved ? now : "",
+    resolvedBy: log.resolvedBy || "",
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  const { isConnected } = await connectToDatabase();
+  if (isConnected) {
+    try {
+      await ErrorLogModel.create(newLog);
+    } catch (e) {
+      console.warn("Failed to persist error log in Mongo:", e);
+    }
+  }
+
+  await initFallbackStore();
+  fallbackStore.errorLogs.unshift(newLog);
+}
+
+export async function getAllErrorLogs(): Promise<ErrorLog[]> {
+  const { isConnected } = await connectToDatabase();
+  if (isConnected) {
+    try {
+      const logs = await ErrorLogModel.find().sort({ timestamp: -1 }).limit(200).lean();
+      return logs.map((l: any) => ({
+        id: l.id,
+        timestamp: l.timestamp,
+        level: l.level || "error",
+        category: l.category || "system",
+        message: l.message,
+        details: l.details || "",
+        source: l.source || "system",
+        userId: l.userId || "",
+        userRole: l.userRole || "",
+        path: l.path || "",
+        ip: l.ip || "127.0.0.1",
+        resolved: Boolean(l.resolved),
+        resolvedAt: l.resolvedAt || "",
+        resolvedBy: l.resolvedBy || "",
+        createdAt: l.createdAt ? new Date(l.createdAt).toISOString() : "",
+        updatedAt: l.updatedAt ? new Date(l.updatedAt).toISOString() : "",
+      }));
+    } catch (e: any) {
+      console.warn("getAllErrorLogs DB fallback:", e);
+    }
+  }
+
+  await initFallbackStore();
+  return (fallbackStore.errorLogs || []).map((l: any) => ({
+    id: l.id,
+    timestamp: l.timestamp,
+    level: l.level || "error",
+    category: l.category || "system",
+    message: l.message,
+    details: l.details || "",
+    source: l.source || "system",
+    userId: l.userId || "",
+    userRole: l.userRole || "",
+    path: l.path || "",
+    ip: l.ip || "127.0.0.1",
+    resolved: Boolean(l.resolved),
+    resolvedAt: l.resolvedAt || "",
+    resolvedBy: l.resolvedBy || "",
+  }));
+}
+
+export async function resolveSystemErrorLog(
+  logId: string,
+  resolved: boolean,
+  resolvedBy: string = "Platform Super Admin"
+) {
+  const now = new Date().toISOString();
+  const { isConnected } = await connectToDatabase();
+  if (isConnected) {
+    try {
+      await ErrorLogModel.findOneAndUpdate(
+        { id: logId },
+        {
+          $set: {
+            resolved: Boolean(resolved),
+            resolvedAt: resolved ? now : "",
+            resolvedBy: resolved ? resolvedBy : "",
+            updatedAt: new Date(),
+          },
+        }
+      );
+    } catch (e) {
+      console.warn("MongoDB resolveSystemErrorLog error:", e);
+    }
+  }
+
+  await initFallbackStore();
+  const local = fallbackStore.errorLogs.find((l: any) => l.id === logId);
+  if (local) {
+    local.resolved = Boolean(resolved);
+    local.resolvedAt = resolved ? now : "";
+    local.resolvedBy = resolved ? resolvedBy : "";
+    local.updatedAt = now;
+  }
+}
+
+export async function deleteSystemErrorLog(logId?: string, clearAll: boolean = false) {
+  const { isConnected } = await connectToDatabase();
+  if (clearAll) {
+    if (isConnected) {
+      try {
+        await ErrorLogModel.deleteMany({});
+      } catch (e) {
+        console.warn("MongoDB deleteSystemErrorLog clear error:", e);
+      }
+    }
+    await initFallbackStore();
+    fallbackStore.errorLogs = [];
+    return;
+  }
+
+  if (logId) {
+    if (isConnected) {
+      try {
+        await ErrorLogModel.deleteOne({ id: logId });
+      } catch (e) {
+        console.warn("MongoDB deleteSystemErrorLog error:", e);
+      }
+    }
+    await initFallbackStore();
+    fallbackStore.errorLogs = fallbackStore.errorLogs.filter((l: any) => l.id !== logId);
+  }
+}
+
+
 

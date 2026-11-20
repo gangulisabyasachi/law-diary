@@ -21,7 +21,7 @@ export function ContactsView() {
       name: "Adv. Arjun Mehta",
       email: "lawyer@chambers.in",
       phone: "+91 98110 20002",
-      designation: "Senior Advocate & Chamber Head (D/1482/2012)",
+      designation: "Advocate & Chamber Head (D/1482/2012)",
     };
 
   const associates = state.users.filter(
@@ -37,11 +37,11 @@ export function ContactsView() {
           <span>Retained Legal Advocate &amp; Chamber Contacts</span>
         </h3>
         <p className="text-xs text-[#111111]/60 dark:text-[#f3eee3]/50 font-serif italic mt-0.5">
-          Direct communication channels with your designated Senior Advocate, Briefing Associates, and Chamber Registrar.
+          Direct communication channels with your designated Advocate and Briefing Associates.
         </p>
       </div>
 
-      {/* Senior Advocate Card */}
+      {/* Advocate Card */}
       <div className="p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:border-[#111111] dark:hover:border-[#f3eee3]/50 transition-all">
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#202020] border border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-center flex-shrink-0 shadow-md overflow-hidden p-1">
@@ -95,16 +95,16 @@ export function ContactsView() {
         </div>
       </div>
 
-      {/* Chamber Registrar Notice */}
+      {/* Chamber Administrative Desk Notice */}
       <div className="p-6 rounded-3xl bg-[#111111]/5 dark:bg-white/5 border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-2 shadow-sm">
         <div className="flex items-center gap-2.5">
           <Building className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" />
           <p className="text-[#111111] dark:text-[#f3eee3] font-bold font-cinzel text-xs tracking-wider">
-            Chamber Registrar &amp; Registry Desk
+            Chamber Administrative Desk &amp; Registry
           </p>
         </div>
         <p className="text-xs text-[#111111]/70 dark:text-[#f3eee3]/70 font-serif leading-relaxed">
-          For urgent listing mentions, pass-over requests, or certified true copies, contact Chamber Registrar: <strong className="text-[#111111] dark:text-[#f3eee3] font-sans">{admin?.name || "Devika Nair"}</strong> ({admin?.phone || "+91 98110 20001"}).
+          For urgent listing mentions, pass-over requests, or certified true copies, contact the Advocate&apos;s chamber desk: <strong className="text-[#111111] dark:text-[#f3eee3] font-sans">{lawyer.name}</strong> ({lawyer.phone || "+91 98000 00000"}).
         </p>
       </div>
     </div>

@@ -1,9 +1,14 @@
 "use client";
 
-import React from "react";
-import { CasesView } from "@/components/views/CasesView";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AdminCasesPage() {
-  return <CasesView />;
+export default function AdminCasesRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/admin");
+  }, [router]);
+
+  return null;
 }
-

@@ -10,6 +10,8 @@ export interface IUserDocument extends Document {
   designation?: string;
   lawyerId?: string;
   accessCode?: string;
+  disabled?: boolean;
+  status?: "active" | "disabled";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,6 +38,8 @@ const UserSchema = new Schema<IUserDocument>(
     designation: { type: String, default: "" },
     lawyerId: { type: String, default: "" },
     accessCode: { type: String, default: "" },
+    disabled: { type: Boolean, default: false, index: true },
+    status: { type: String, enum: ["active", "disabled"], default: "active" },
   },
   { timestamps: true }
 );

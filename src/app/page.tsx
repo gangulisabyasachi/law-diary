@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { PublicLayout } from "@/components/public/PublicLayout";
 import Hero3 from "@/components/ui/hero-3";
 import {
@@ -15,6 +16,7 @@ import {
 import { useChamber } from "@/context/ChamberContext";
 
 export default function HomePage() {
+  const router = useRouter();
   const { currentUser, setAuthModal } = useChamber();
   const dashboardHref = currentUser?.role === "admin" ? "/admin" : "/dashboard";
 
@@ -39,7 +41,7 @@ export default function HomePage() {
     },
     {
       icon: FileCheck,
-      title: "Senior Advocate Verification Desk",
+      title: "Advocate Verification Desk",
       tagline: "Two-man sign-off rule",
       description: "Sanction junior associate draft entries and hearing outcomes before they alter official judicial chamber records.",
       link: "/features",
@@ -60,18 +62,26 @@ export default function HomePage() {
         brandName="LexDaily"
         navLinks={chamberNavLinks}
         signUpLabel={currentUser ? "Dashboard" : "Sign In"}
-        signUpHref={currentUser ? dashboardHref : "#"}
+        signUpHref={dashboardHref}
         onSignUpClick={() => {
-          if (!currentUser) setAuthModal("signin");
+          if (currentUser) {
+            router.push(dashboardHref);
+          } else {
+            setAuthModal("signin");
+          }
         }}
         eyebrowText="Sovereign Chamber Operating System"
         headingLine1="Building sovereign clarity"
         headingLine2="into Indian litigation."
-        description="From automated court cause lists and active case dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers."
+        description="From automated court cause lists and active case dockets to statutory Limitation Act radars. Engineered specifically for Advocates and modern private chambers."
         primaryCtaLabel={currentUser ? "Enter Dashboard" : "Sign Up"}
-        primaryCtaHref={currentUser ? dashboardHref : "#"}
+        primaryCtaHref={dashboardHref}
         onPrimaryCtaClick={() => {
-          if (!currentUser) setAuthModal("signup");
+          if (currentUser) {
+            router.push(dashboardHref);
+          } else {
+            setAuthModal("signup");
+          }
         }}
         secondaryCtaLabel="Chamber Security"
         secondaryCtaHref="/security"
@@ -165,7 +175,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Two-Man Senior Verification Required</span>
+                <span>Two-Man Advocate Verification Required</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />

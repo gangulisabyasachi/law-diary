@@ -241,7 +241,7 @@ export function LandingPage() {
           {/* Trust Seal Pill */}
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-cinzel font-semibold tracking-wider bg-[#ffffff] dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 mb-8 shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-[#111111] dark:text-[#f3eee3]" />
-            <span>ESTABLISHED FOR SENIOR ADVOCATES &amp; PRIVATE CHAMBERS</span>
+            <span>ESTABLISHED FOR ADVOCATES &amp; PRIVATE CHAMBERS</span>
           </div>
 
           {/* Main Headline */}
@@ -425,7 +425,7 @@ export function LandingPage() {
                           Arguments Stage
                         </span>
                         <span className="text-[10.5px] font-mono text-[#111111]/65 dark:text-[#f3eee3]/60 mt-1 block">
-                          Adv. R. Mukherjee (Senior)
+                          Adv. R. Mukherjee (Advocate)
                         </span>
                       </div>
                     </div>
@@ -634,10 +634,10 @@ export function LandingPage() {
               <Users className="w-5 h-5" />
             </div>
             <h3 className="text-base font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-              Senior Verification Desk &amp; Junior Briefs
+              Advocate Verification Desk &amp; Junior Briefs
             </h3>
             <p className="text-xs text-[#111111]/70 dark:text-[#f3eee3]/60 font-serif leading-relaxed mt-2.5">
-              Senior Advocates delegate matters to junior associates. Juniors draft hearing notes in the courtroom for senior verification before records are permanently stamped.
+              Advocates delegate matters to junior associates. Juniors draft hearing notes in the courtroom for advocate verification before records are permanently stamped.
             </p>
           </div>
 
@@ -814,7 +814,7 @@ export function LandingPage() {
                 <span className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60">/ monthly per chamber</span>
               </div>
               <p className="text-xs font-serif text-[#111111]/70 dark:text-[#f3eee3]/60 mt-2 leading-relaxed">
-                For Senior Advocates collaborating with briefing associates, juniors, and clerks.
+                For Advocates collaborating with briefing associates, juniors, and clerks.
               </p>
 
               <ul className="mt-6 space-y-3.5 text-xs text-[#111111]/85 dark:text-[#f3eee3]/85 font-serif">
@@ -828,7 +828,7 @@ export function LandingPage() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0" />
-                  <span>Senior Verification Desk</span>
+                  <span>Advocate Verification Desk</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-[#111111] dark:text-[#f3eee3] flex-shrink-0" />
@@ -852,14 +852,14 @@ export function LandingPage() {
                 Enterprise Chambers
               </span>
               <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3] mt-1">
-                Senior Advocate / Law Firm
+                Advocate / Law Firm
               </h3>
               <div className="mt-5 flex items-baseline gap-1.5">
                 <span className="text-3xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">Custom</span>
                 <span className="text-xs text-[#111111]/65 dark:text-[#f3eee3]/60">/ tailored deployment</span>
               </div>
               <p className="text-xs font-serif text-[#111111]/70 dark:text-[#f3eee3]/60 mt-2 leading-relaxed">
-                For designated Senior Advocates and large litigation practices across multiple high court benches.
+                For practicing Advocates and large litigation practices across multiple high court benches.
               </p>
 
               <ul className="mt-6 space-y-3.5 text-xs text-[#111111]/85 dark:text-[#f3eee3]/85 font-serif">
@@ -972,7 +972,7 @@ export function LandingPage() {
             },
             {
               q: "Can junior associates and chamber clerks submit hearing outcomes?",
-              a: "Yes. In the Chamber Pro plan, junior associates log verbatim court proceedings and propose the Next Date of Hearing. These submissions enter the Senior Advocate's Verification Desk for final sign-off.",
+              a: "Yes. In the Chamber Pro plan, junior associates log verbatim court proceedings and propose the Next Date of Hearing. These submissions enter the Advocate's Verification Desk for final sign-off.",
             },
             {
               q: "Does it support custom case tracking across all courts in India?",
@@ -1245,7 +1245,7 @@ export function LandingPage() {
               </h4>
               <ul className="space-y-2">
                 <li><button onClick={() => setAuthModal("signup")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Advocate Sign Up (Lawyers Only)</button></li>
-                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Senior Advocate Sign In</button></li>
+                <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Advocate Sign In</button></li>
                 <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Associate Briefing Desk</button></li>
                 <li><button onClick={() => setAuthModal("signin")} className="hover:text-[#111111] dark:hover:text-[#f3eee3] text-left">Litigant Client Access</button></li>
               </ul>

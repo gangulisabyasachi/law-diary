@@ -59,15 +59,15 @@ export default function FeaturesPage() {
       bullets: [
         "Categorized urgency levels: Active, Critical Window, and Condonation Required",
         "Detailed statutory computation based on Section 5 condonation rules",
-        "Automatic notifications delivered directly to the Senior Advocate desk",
+        "Automatic notifications delivered directly to the Advocate desk",
       ],
     },
     {
       icon: FileCheck,
-      title: "Senior Advocate Verification Desk",
+      title: "Advocate Verification Desk",
       tagline: "Two-man rule for junior associate drafting and court submissions.",
       description:
-        "Junior and briefing associates can prepare hearing notes, draft order summaries, and propose next dates. Every entry is placed on the Senior Advocate's verification desk for sign-off and approval before it alters the official chamber docket.",
+        "Junior and briefing associates can prepare hearing notes, draft order summaries, and propose next dates. Every entry is placed on the Advocate's verification desk for sign-off and approval before it alters the official chamber docket.",
       bullets: [
         "Prevents unvetted court notes or inaccurate business records from entering the master register",
         "Real-time pending queue with 1-click 'Sanction & Commit' or 'Reject Draft'",
@@ -118,8 +118,8 @@ export default function FeaturesPage() {
     },
     {
       step: "04",
-      title: "Senior Verification & Custody",
-      description: "Senior Advocate sanctions junior drafts, certified orders are committed to safe custody, and dockets remain spotless.",
+      title: "Advocate Verification & Custody",
+      description: "Advocate sanctions junior drafts, certified orders are committed to safe custody, and dockets remain spotless.",
     },
   ];
 

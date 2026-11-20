@@ -1,9 +1,14 @@
 "use client";
 
-import React from "react";
-import { ApprovalsView } from "@/components/views/ApprovalsView";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AdminApprovalsPage() {
-  return <ApprovalsView />;
+export default function AdminApprovalsRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/admin");
+  }, [router]);
+
+  return null;
 }
-

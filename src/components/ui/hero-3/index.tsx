@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ArrowRight, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useChamber } from '@/context/ChamberContext';
@@ -59,7 +59,7 @@ export default function Hero3({
     badgeText,
     headingLine1 = 'Building sovereign clarity',
     headingLine2 = 'into Indian litigation.',
-    description = 'From automated court cause lists and active case dockets to statutory Limitation Act radars. Engineered specifically for Senior Advocates and modern private chambers.',
+    description = 'From automated court cause lists and active case dockets to statutory Limitation Act radars. Engineered specifically for Advocates and modern private chambers.',
     primaryCtaLabel,
     primaryCtaHref = '#features-section',
     onPrimaryCtaClick,
@@ -74,6 +74,7 @@ export default function Hero3({
 }: Hero3Props) {
     const { currentUser, setAuthModal } = useChamber();
     const pathname = usePathname();
+    const router = useRouter();
     const dashboardHref = currentUser?.role === 'admin' ? '/admin' : '/dashboard';
 
     const defaultSignUpLabel = currentUser ? 'Dashboard' : 'Sign In';
@@ -172,14 +173,15 @@ export default function Hero3({
                                 </span>
                             </div>
                         ) : (
-                            <motion.a
-                                href={signUpHref || (currentUser ? dashboardHref : '#')}
+                            <motion.button
+                                type="button"
                                 onClick={(e) => {
-                                    if (onSignUpClick) {
-                                        e.preventDefault();
+                                    e.preventDefault();
+                                    if (currentUser) {
+                                        router.push(signUpHref || dashboardHref);
+                                    } else if (onSignUpClick) {
                                         onSignUpClick();
-                                    } else if (!currentUser) {
-                                        e.preventDefault();
+                                    } else {
                                         setAuthModal('signin');
                                     }
                                 }}
@@ -191,7 +193,7 @@ export default function Hero3({
                                 <span className="relative z-10 group-hover:text-[#f3eee3] dark:group-hover:text-[#111111] transition-colors duration-300">
                                     {resolvedSignUpLabel}
                                 </span>
-                            </motion.a>
+                            </motion.button>
                         )}
 
                         {/* Mobile Menu Hamburger */}
@@ -228,6 +230,24 @@ export default function Hero3({
                                 )}
                             </div>
                         ))}
+                        {!isSlice && (
+                            <div className="pt-2 border-t border-[#111111]/10 dark:border-[#f3eee3]/15">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setMobileMenuOpen(false);
+                                        if (currentUser) {
+                                            router.push(signUpHref || dashboardHref);
+                                        } else {
+                                            setAuthModal('signin');
+                                        }
+                                    }}
+                                    className="w-full py-2.5 rounded-xl bg-[#d9541e] text-white font-cinzel font-bold text-xs tracking-wider uppercase text-center"
+                                >
+                                    {currentUser ? "Open Dashboard" : "Sign In / Register"}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -272,17 +292,15 @@ export default function Hero3({
                                     </span>
                                 </div>
                             ) : (
-                                <motion.a
-                                    href={primaryCtaHref}
+                                <motion.button
+                                    type="button"
                                     onClick={(e) => {
-                                        if (onPrimaryCtaClick) {
-                                            e.preventDefault();
+                                        e.preventDefault();
+                                        if (currentUser) {
+                                            router.push(primaryCtaHref || dashboardHref);
+                                        } else if (onPrimaryCtaClick) {
                                             onPrimaryCtaClick();
-                                        } else if (!currentUser && primaryCtaHref === '#') {
-                                            e.preventDefault();
-                                            setAuthModal('signup');
                                         } else if (primaryCtaHref && primaryCtaHref.startsWith('#')) {
-                                            e.preventDefault();
                                             const id = primaryCtaHref.slice(1);
                                             const el = document.getElementById(id);
                                             if (el) {
@@ -291,6 +309,8 @@ export default function Hero3({
                                             } else {
                                                 window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
                                             }
+                                        } else {
+                                            setAuthModal('signup');
                                         }
                                     }}
                                     className="relative rounded-full p-px overflow-hidden group cursor-pointer shadow-md hover:shadow-xl transition-shadow"
@@ -301,7 +321,7 @@ export default function Hero3({
                                     <span className="relative z-10 block px-8 py-3.5 rounded-full bg-[#d9541e] text-white font-cinzel font-bold text-xs tracking-widest uppercase group-hover:bg-[#bf4513] transition-all duration-300">
                                         {resolvedPrimaryCtaLabel}
                                     </span>
-                                </motion.a>
+                                </motion.button>
                             )}
 
                             {/* Secondary CTA */}

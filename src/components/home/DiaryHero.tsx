@@ -31,7 +31,7 @@ export function DiaryHero() {
             className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-cinzel font-bold tracking-wider bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#d9541e]" />
-            <span>ESTABLISHED FOR SENIOR ADVOCATES &amp; PRIVATE CHAMBERS</span>
+            <span>ESTABLISHED FOR ADVOCATES &amp; PRIVATE CHAMBERS</span>
           </motion.div>
 
           {/* Grand Serene Headline with Staggered Kinetic Emergence */}

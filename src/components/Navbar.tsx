@@ -27,7 +27,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   const pendingCount = (state?.approvals || []).filter((a) => {
-    if (currentUser?.role === "admin") return true;
+    if (currentUser?.role === "admin") return false;
     if (currentUser?.role === "associate") return a.by === currentUser.id;
     if (currentUser?.role === "lawyer") {
       if (a.by === currentUser.id) return true;
@@ -44,6 +44,21 @@ export function Navbar() {
 
   // Determine Page Title & Subtitle from Pathname
   const getPageMeta = () => {
+    if (pathname.match(/^\/admin\/chambers\/.+/)) {
+      return { title: "Chamber Roster Dossier", subtitle: "Advocate practice workspace, junior roster & client retainers" };
+    }
+    if (pathname.startsWith("/admin/chambers")) {
+      return { title: "Chamber Workspaces Directory", subtitle: "Multi-tenant practice portfolio & advocate roster" };
+    }
+    if (pathname.startsWith("/admin/logs")) {
+      return { title: "Platform Error & Audit Logs", subtitle: "Diagnostic telemetry, exception traces & security anomaly monitoring" };
+    }
+    if (pathname.startsWith("/admin/system")) {
+      return { title: "Platform System Health & DB", subtitle: "MongoDB Atlas cluster status & infrastructure telemetry" };
+    }
+    if (pathname.startsWith("/admin")) {
+      return { title: "Platform Super Admin Console", subtitle: "User access control, account enable/disable & profile management" };
+    }
     if (pathname.endsWith("/cases")) {
       return { title: "Case Diary (Matters)", subtitle: "Active pleadings, vakalatnamas & judicial records" };
     }
@@ -63,13 +78,10 @@ export function Navbar() {
       return { title: "Chamber Associate Roster", subtitle: "Assigned drafting duties, hearings & research tasks" };
     }
     if (pathname.endsWith("/approvals")) {
-      return { title: "Senior Advocate Verification Desk", subtitle: "Cause list entries, fee notes & filings awaiting sign-off" };
+      return { title: "Advocate Verification Desk", subtitle: "Cause list entries, fee notes & filings awaiting sign-off" };
     }
     if (pathname.endsWith("/contacts")) {
-      return { title: "Briefed Legal Advocate", subtitle: "Direct hotline to Senior Advocate & chamber desk" };
-    }
-    if (pathname.endsWith("/users") || pathname === "/admin") {
-      return { title: "Chamber Administration", subtitle: "Advocate credentials, user roles & database control" };
+      return { title: "Briefed Legal Advocate", subtitle: "Direct hotline to Advocate & chamber desk" };
     }
     return { title: "Daily Board & Cause List", subtitle: "Court listings, calling order & daily hearing schedule" };
   };
@@ -117,10 +129,10 @@ export function Navbar() {
           {/* Animated Theme Toggle (21st.dev SolarSwitch) */}
           <AnimatedThemeToggle />
 
-          {/* Verification Queue (For Senior Advocate / Admin) */}
-          {(currentUser?.role === "lawyer" || currentUser?.role === "admin") && (
+          {/* Verification Queue (Strictly For Advocate reviewing associate drafts) */}
+          {currentUser?.role === "lawyer" && (
             <button
-              onClick={() => router.push(currentUser.role === "admin" ? "/admin/approvals" : "/dashboard/approvals")}
+              onClick={() => router.push("/dashboard/approvals")}
               className="relative p-2 rounded-xl bg-white dark:bg-[#181818] hover:bg-white/80 dark:hover:bg-[#202020] text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20 transition-colors shadow-xs"
               title="Advocate Verification Desk"
             >
@@ -137,10 +149,16 @@ export function Navbar() {
           <div className="flex items-center gap-2 pl-2 border-l border-[#111111]/15 dark:border-[#f3eee3]/20">
             <div className="hidden md:block text-right">
               <span className="block text-xs font-bold text-[#111111] dark:text-[#f3eee3] leading-tight font-sans">
-                {currentUser?.name || "Advocate"}
+                {currentUser?.name || "Administrator"}
               </span>
               <span className="text-[9.5px] font-cinzel font-bold tracking-widest text-[#111111]/80 dark:text-[#f3eee3]">
-                {currentUser?.role === "lawyer" ? "SENIOR ADVOCATE" : currentUser?.role === "associate" ? "ASSOCIATE ADVOCATE" : currentUser?.role === "client" ? "LITIGANT" : "REGISTRAR"}
+                {currentUser?.role === "admin"
+                  ? "SUPER ADMIN"
+                  : currentUser?.role === "lawyer"
+                  ? "ADVOCATE"
+                  : currentUser?.role === "associate"
+                  ? "ASSOCIATE ADVOCATE"
+                  : "LITIGANT"}
               </span>
             </div>
 

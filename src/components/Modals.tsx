@@ -2,14 +2,14 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { X, Scale, FileText, CheckCircle2, AlertCircle, Search, ChevronDown, ShieldAlert, Copy, Check } from "lucide-react";
+import { X, Scale, FileText, CheckCircle2, AlertCircle, Search, ChevronDown, ShieldAlert, Copy, Check, UserCheck, Power, Lock, RefreshCw, Key, ShieldCheck, AlertTriangle, Trash2, Eye, EyeOff } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 const STATUS_OPTIONS = ["Active", "Listed", "Reserved", "Adjourned", "Stayed", "Quashed", "Disposed", "Adjourned S.D."];
 
 export function Modals() {
-  const { activeModal, closeModal, state, currentUser, sendOps, submitApproval, addToast } = useChamber();
+  const { activeModal, closeModal, state, currentUser, sendOps, submitApproval, addToast, deleteChamber } = useChamber();
 
   if (!activeModal || !state || !currentUser) return null;
 
@@ -48,7 +48,9 @@ export function Modals() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 8 }}
           transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-lg overflow-hidden bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] rounded-3xl shadow-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 flex flex-col max-h-[90vh]"
+          className={`relative w-full ${
+            name === "provision-advocate" || name === "add-user" ? "max-w-2xl" : "max-w-lg"
+          } overflow-hidden bg-white dark:bg-[#181818] text-[#111111] dark:text-[#f3eee3] rounded-3xl shadow-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 flex flex-col max-h-[90vh]`}
         >
           {name === "add-case" && (
             <AddCaseForm
@@ -160,7 +162,7 @@ export function Modals() {
               onClose={closeModal}
               onSubmit={(u: any) =>
                 handleMutation("addClient", `Client ${u.name} enrolled`, {
-                  user: { ...u, lawyerId: chamberLawyerId },
+                  user: { ...u, lawyerId: payload?.lawyerId || chamberLawyerId },
                 })
               }
             />
@@ -181,7 +183,7 @@ export function Modals() {
               onClose={closeModal}
               onSubmit={(u: any) =>
                 handleMutation("addAssociate", `Associate ${u.name} inducted`, {
-                  user: { ...u, lawyerId: chamberLawyerId },
+                  user: { ...u, lawyerId: payload?.lawyerId || chamberLawyerId },
                 })
               }
             />
@@ -197,12 +199,44 @@ export function Modals() {
             />
           )}
 
-          {name === "add-user" && (
-            <AddUserForm
+          {(name === "provision-advocate" || name === "add-user") && (
+            <ProvisionAdvocateForm
               onClose={closeModal}
-              onSubmit={(u: any) =>
-                handleMutation("addUser", `User ${u.name} provisioned`, { user: u })
+              onSubmit={(formData: any) =>
+                handleMutation(
+                  "provisionAdvocate",
+                  `Advocate ${formData.name} Account & Chamber Workspace Commissioned`,
+                  formData
+                )
               }
+            />
+          )}
+
+          {name === "edit-user-admin" && (
+            <EditUserAdminForm
+              user={payload?.user}
+              lawyers={(state?.users || []).filter((u) => u.role === "lawyer")}
+              onClose={closeModal}
+              onSubmit={(updates: any) =>
+                handleMutation("adminUpdateUser", `User ${updates.name || payload?.user?.name} Profile Updated`, {
+                  userId: payload.user.id,
+                  ...updates,
+                })
+              }
+            />
+          )}
+
+          {name === "delete-chamber" && (
+            <DeleteChamberConfirmModal
+              lawyer={payload?.lawyer}
+              onClose={closeModal}
+              onConfirm={async () => {
+                if (payload?.onConfirm) {
+                  await payload.onConfirm();
+                } else if (payload?.lawyer?.id) {
+                  await deleteChamber(payload.lawyer.id);
+                }
+              }}
             />
           )}
         </motion.div>
@@ -1527,97 +1561,672 @@ function AddAssociateForm({ onClose, onSubmit }: any) {
   );
 }
 
-function AddUserForm({ onClose, onSubmit }: any) {
+function ProvisionAdvocateForm({ onClose, onSubmit }: any) {
+  const { addToast } = useChamber();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("lawyer");
-  const [password, setPassword] = useState("welcome123");
+  const [phone, setPhone] = useState("");
+  const [barEnrollment, setBarEnrollment] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleNameChange = (val: string) => {
+    setName(val);
+  };
+
+  // Password criteria check
+  const passCriteria = {
+    length: password.length >= 8,
+    upperLower: /[A-Z]/.test(password) && /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password),
+  };
+
+  const isPasswordSafe =
+    passCriteria.length &&
+    passCriteria.upperLower &&
+    passCriteria.number &&
+    passCriteria.special;
+
+  const confirmTouched = confirmPassword.length > 0;
+  const passwordsMatch = confirmTouched && confirmPassword === password;
+  const passwordsMismatch = confirmTouched && confirmPassword !== password;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email) return;
+    if (!name.trim()) {
+      addToast("Advocate Full Name is required", "error");
+      return;
+    }
+    if (!email.trim()) {
+      addToast("Chamber Email is required", "error");
+      return;
+    }
+    if (!phone.trim()) {
+      addToast("Official Mobile / Chamber Phone is required", "error");
+      return;
+    }
+    const cleanDigits = phone.replace(/\D/g, "");
+    if (cleanDigits.length < 10) {
+      addToast("Please provide a valid 10-digit mobile / chamber phone number", "error");
+      return;
+    }
+    if (!password) {
+      addToast("Password is required", "error");
+      return;
+    }
+    if (!isPasswordSafe) {
+      addToast("Password must meet all 4 security criteria (8+ chars, upper/lower, number, special symbol)", "error");
+      return;
+    }
+    if (password !== confirmPassword) {
+      addToast("Passwords do not match", "error");
+      return;
+    }
+
+    const cleanName = name.trim();
+    const finalChamberName = `Chambers of ${cleanName.toLowerCase().startsWith("adv") ? cleanName : `Adv. ${cleanName}`}`;
+
     onSubmit({
-      id: "u-" + Date.now(),
-      name: name.trim(),
-      email: email.trim(),
-      role,
+      name: cleanName,
+      email: email.trim().toLowerCase(),
       password,
+      phone: phone.trim(),
+      barEnrollment: barEnrollment.trim() || undefined,
+      chamberName: finalChamberName,
+      primaryCourt: "High Court of Delhi",
     });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="p-5 sm:p-6 bg-[#f3eee3]/10 dark:bg-[#111111] text-[#111111] dark:text-[#f3eee3] flex items-center justify-between border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
-        <div>
-          <h3 className="text-sm font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Provision Chamber Account</h3>
-          <p className="text-[11px] font-serif italic text-[#111111]/60 dark:text-[#f3eee3]/60 mt-0.5">Platform Registrar Administration</p>
-        </div>
-        <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#111111]/60 hover:text-[#111111] dark:hover:text-white transition-colors">
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-      <div className="p-6 space-y-4 text-xs font-serif">
-        <div>
-          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">Full Name *</label>
-          <input
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-3.5">
-          <div>
-            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">Chamber Email *</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
-            />
+    <form onSubmit={handleSubmit} className="flex flex-col max-h-[90vh]">
+      {/* Header */}
+      <div className="p-5 sm:p-6 bg-[#f3eee3]/10 dark:bg-[#111111] text-[#111111] dark:text-[#f3eee3] flex items-center justify-between border-b border-[#111111]/15 dark:border-[#f3eee3]/20 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-2xl bg-[#d9541e]/15 text-[#d9541e] dark:text-[#ea6026] border border-[#d9541e]/25">
+            <Scale className="w-5 h-5" />
           </div>
           <div>
-            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">Chamber Role *</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
-            >
-              <option value="lawyer">Lawyer (Senior Advocate)</option>
-              <option value="associate">Associate (Junior Advocate)</option>
-              <option value="client">Client (Litigant)</option>
-              <option value="admin">Site Admin (Registrar)</option>
-            </select>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">
+                Provision Advocate Account
+              </h3>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#d9541e]/15 text-[#d9541e] dark:text-[#ea6026] border border-[#d9541e]/30">
+                Advocate
+              </span>
+            </div>
+            <p className="text-[11px] font-serif italic text-[#111111]/60 dark:text-[#f3eee3]/60 mt-0.5">
+              Commission new advocate practice workspace &amp; judicial docket
+            </p>
           </div>
         </div>
-        <div>
-          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">Initial Password</label>
-          <input
-            type="text"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-mono text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
-          />
-        </div>
-      </div>
-      <div className="p-4 sm:p-5 bg-[#f3eee3]/10 dark:bg-[#111111] border-t border-[#111111]/15 dark:border-[#f3eee3]/20 flex justify-end gap-2.5">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/60 dark:text-[#f3eee3]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
+          className="p-1.5 rounded-xl text-[#111111]/50 hover:text-[#111111] dark:text-[#f3eee3]/50 dark:hover:text-white hover:bg-[#111111]/5 dark:hover:bg-[#f3eee3]/10 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Body / Scrollable Form */}
+      <div className="p-6 space-y-5 text-xs font-serif overflow-y-auto flex-1">
+        {/* Policy Advisory */}
+        <div className="p-3.5 rounded-2xl bg-[#d9541e]/5 dark:bg-[#d9541e]/10 border border-[#d9541e]/20 text-[11.5px] text-[#111111]/80 dark:text-[#f3eee3]/80 leading-relaxed flex items-start gap-2.5">
+          <ShieldCheck className="w-4 h-4 text-[#d9541e] shrink-0 mt-0.5" />
+          <span>
+            <strong>Chamber Provisioning Policy:</strong> You are creating a dedicated Advocate Chamber Workspace. All registration fields match public sign-up standards. Associate junior advocates and litigant clients can be added after chamber activation.
+          </span>
+        </div>
+
+        {/* Section 1: Advocate Identity */}
+        <div className="space-y-3.5">
+          <h4 className="text-[11px] font-cinzel font-bold uppercase tracking-wider text-[#d9541e] flex items-center gap-2">
+            <span>1. Advocate Identity &amp; Bar Credentials</span>
+          </h4>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+                Advocate Full Name *
+              </label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => handleNameChange(e.target.value)}
+                placeholder="e.g. Adv. Debanjan Roy"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+                Chamber Email Address *
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="adv.roy@chambers.in"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+                Bar Council Enrollment No.
+              </label>
+              <input
+                type="text"
+                value={barEnrollment}
+                onChange={(e) => setBarEnrollment(e.target.value)}
+                placeholder="e.g. D/1842/2016"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+                Official Mobile / Chamber Phone *
+              </label>
+              <input
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+91 98110 33001"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: Credentials */}
+        <div className="space-y-3.5 pt-2 border-t border-[#111111]/10 dark:border-[#f3eee3]/10">
+          <h4 className="text-[11px] font-cinzel font-bold uppercase tracking-wider text-[#d9541e] flex items-center gap-2">
+            <span>2. Initial Access Password</span>
+          </h4>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+                Password *
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Min 8 chars with upper, number, symbol"
+                  className="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-mono text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#111111]/40 hover:text-[#111111] dark:text-[#f3eee3]/40 dark:hover:text-white"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+                Confirm Password *
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter password"
+                  className={`w-full px-3.5 py-2.5 pr-10 rounded-xl border bg-white dark:bg-[#202020] text-xs font-mono text-[#111111] dark:text-[#f3eee3] focus:outline-none transition-colors ${
+                    passwordsMatch
+                      ? "border-emerald-500 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500"
+                      : passwordsMismatch
+                      ? "border-rose-500 focus:border-rose-600 focus:ring-1 focus:ring-rose-500"
+                      : "border-[#111111]/15 dark:border-[#f3eee3]/20 focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#111111]/40 hover:text-[#111111] dark:text-[#f3eee3]/40 dark:hover:text-white"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {passwordsMismatch && (
+                <p className="text-[10px] text-rose-500 mt-1">Passwords do not match</p>
+              )}
+              {passwordsMatch && (
+                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
+                  <Check className="w-3 h-3" /> Passwords match
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Security Criteria Indicators */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+            <div className={`p-2 rounded-lg border text-[11px] font-sans flex items-center gap-1.5 ${
+              passCriteria.length
+                ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-[#111111]/5 dark:bg-[#f3eee3]/5 border-[#111111]/10 dark:border-[#f3eee3]/10 text-[#111111]/60 dark:text-[#f3eee3]/60"
+            }`}>
+              <Check className={`w-3.5 h-3.5 ${passCriteria.length ? "text-emerald-600 dark:text-emerald-400" : "opacity-30"}`} />
+              <span>8+ Characters</span>
+            </div>
+
+            <div className={`p-2 rounded-lg border text-[11px] font-sans flex items-center gap-1.5 ${
+              passCriteria.upperLower
+                ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-[#111111]/5 dark:bg-[#f3eee3]/5 border-[#111111]/10 dark:border-[#f3eee3]/10 text-[#111111]/60 dark:text-[#f3eee3]/60"
+            }`}>
+              <Check className={`w-3.5 h-3.5 ${passCriteria.upperLower ? "text-emerald-600 dark:text-emerald-400" : "opacity-30"}`} />
+              <span>Upper &amp; Lower</span>
+            </div>
+
+            <div className={`p-2 rounded-lg border text-[11px] font-sans flex items-center gap-1.5 ${
+              passCriteria.number
+                ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-[#111111]/5 dark:bg-[#f3eee3]/5 border-[#111111]/10 dark:border-[#f3eee3]/10 text-[#111111]/60 dark:text-[#f3eee3]/60"
+            }`}>
+              <Check className={`w-3.5 h-3.5 ${passCriteria.number ? "text-emerald-600 dark:text-emerald-400" : "opacity-30"}`} />
+              <span>Number (0-9)</span>
+            </div>
+
+            <div className={`p-2 rounded-lg border text-[11px] font-sans flex items-center gap-1.5 ${
+              passCriteria.special
+                ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
+                : "bg-[#111111]/5 dark:bg-[#f3eee3]/5 border-[#111111]/10 dark:border-[#f3eee3]/10 text-[#111111]/60 dark:text-[#f3eee3]/60"
+            }`}>
+              <Check className={`w-3.5 h-3.5 ${passCriteria.special ? "text-emerald-600 dark:text-emerald-400" : "opacity-30"}`} />
+              <span>Special (!@#$)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="p-4 sm:p-5 bg-[#f3eee3]/10 dark:bg-[#111111] border-t border-[#111111]/15 dark:border-[#f3eee3]/20 flex items-center justify-between gap-3 shrink-0">
+        <div className="text-[11px] text-[#111111]/60 dark:text-[#f3eee3]/60 hidden sm:block">
+          Creates advocate account &amp; commissions initial judicial docket
+        </div>
+        <div className="flex items-center gap-2.5 ml-auto">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/60 dark:text-[#f3eee3]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!name.trim() || !email.trim() || !isPasswordSafe || !passwordsMatch}
+            className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          >
+            Commission &amp; Provision Advocate
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}
+
+function EditUserAdminForm({ user, lawyers = [], onClose, onSubmit }: any) {
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [role, setRole] = useState(user?.role || "lawyer");
+  const [designation, setDesignation] = useState(user?.designation || "");
+  const [lawyerId, setLawyerId] = useState(user?.lawyerId || "");
+  const [disabled, setDisabled] = useState(Boolean(user?.disabled || user?.status === "disabled"));
+  const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleGenerateCode = () => {
+    const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+    let code = "LD";
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewPassword(code);
+    setShowPassword(true);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    onSubmit({
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      role,
+      designation: designation.trim(),
+      lawyerId: (role === "associate" || role === "client") ? lawyerId : "",
+      disabled,
+      status: disabled ? "disabled" : "active",
+      ...(newPassword.trim() ? { password: newPassword.trim() } : {}),
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="max-h-[85vh] flex flex-col">
+      <div className="p-5 sm:p-6 bg-[#f3eee3]/10 dark:bg-[#111111] text-[#111111] dark:text-[#f3eee3] flex items-center justify-between border-b border-[#111111]/15 dark:border-[#f3eee3]/20 shrink-0">
+        <div>
+          <h3 className="text-sm font-cinzel font-bold text-[#111111] dark:text-[#f3eee3] flex items-center gap-2">
+            <UserCheck className="w-4 h-4 text-[#d9541e]" />
+            <span>Edit User Profile &amp; Platform Access</span>
+          </h3>
+          <p className="text-[11px] font-serif italic text-[#111111]/60 dark:text-[#f3eee3]/60 mt-0.5">
+            Admin console: manage profile details, credentials &amp; active status
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-1 rounded-lg text-[#111111]/60 hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="p-6 space-y-4 text-xs font-serif overflow-y-auto flex-1">
+        {/* Enable / Disable Account Status Banner */}
+        <div className={`p-4 rounded-2xl border transition-colors ${
+          disabled
+            ? "bg-rose-500/10 border-rose-500/30 text-rose-900 dark:text-rose-200"
+            : "bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-200"
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Power className={`w-4 h-4 ${disabled ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"}`} />
+              <div>
+                <p className="font-cinzel font-bold text-xs">
+                  Account Status: {disabled ? "Disabled / Revoked" : "Active & Permitted"}
+                </p>
+                <p className="text-[11px] font-serif opacity-80 mt-0.5">
+                  {disabled
+                    ? "Login is revoked. This user cannot authenticate into the platform."
+                    : "Account in good standing. Full authorized portal access is granted."}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDisabled(!disabled)}
+              className={`px-3 py-1.5 rounded-xl font-cinzel font-bold text-[11px] transition-all cursor-pointer shadow-xs ${
+                disabled
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  : "bg-rose-600 hover:bg-rose-700 text-white"
+              }`}
+            >
+              {disabled ? "Activate Account" : "Disable Account"}
+            </button>
+          </div>
+        </div>
+
+        {/* Name & Role */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Full Legal / Chamber Name *
+            </label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Platform Role *
+            </label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3]"
+            >
+              <option value="lawyer">Lawyer (Advocate / Chamber Head)</option>
+              <option value="associate">Associate Advocate (Briefing Counsel)</option>
+              <option value="client">Litigant (Client)</option>
+              <option value="admin">Platform Super Admin</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Email & Phone */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Contact / Login Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="e.g. advocate@chambers.in"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-mono text-[#111111] dark:text-[#f3eee3]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Phone Number
+            </label>
+            <input
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+91 98110 ..."
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-mono text-[#111111] dark:text-[#f3eee3]"
+            />
+          </div>
+        </div>
+
+        {/* Designation */}
+        <div>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+            Designation / Bar Council Enrolment Particulars
+          </label>
+          <input
+            type="text"
+            value={designation}
+            onChange={(e) => setDesignation(e.target.value)}
+            placeholder="e.g. Advocate (D/1482/2012) · High Court of Delhi"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3]"
+          />
+        </div>
+
+        {/* Assigned Chamber (For associates & clients) */}
+        {(role === "associate" || role === "client") && (
+          <div>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Attached Chamber (Supervising Advocate)
+            </label>
+            <select
+              value={lawyerId}
+              onChange={(e) => setLawyerId(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3]"
+            >
+              <option value="">No specific chamber attached (General)</option>
+              {lawyers.map((l: any) => (
+                <option key={l.id} value={l.id}>
+                  {l.name} {l.designation ? `(${l.designation})` : ""}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Reset Password / Access Code */}
+        <div className="p-4 rounded-2xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-[#f3eee3]/20 dark:bg-white/5 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 font-cinzel font-bold text-xs text-[#111111] dark:text-[#f3eee3]">
+              <Key className="w-3.5 h-3.5 text-[#d9541e]" />
+              <span>Reset Password / Access Code</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleGenerateCode}
+              className="inline-flex items-center gap-1 text-[11px] font-mono text-[#d9541e] hover:underline cursor-pointer"
+            >
+              <RefreshCw className="w-3 h-3" />
+              <span>Generate Alphanumeric</span>
+            </button>
+          </div>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Leave blank to keep existing password / code"
+              className="w-full px-3.5 py-2.5 pr-20 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#181818] text-xs font-mono text-[#111111] dark:text-[#f3eee3]"
+            />
+            {newPassword && (
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-[#111111]/60 dark:text-[#f3eee3]/60 hover:text-[#111111] dark:hover:text-white"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            )}
+          </div>
+          <p className="text-[10.5px] font-serif italic text-[#111111]/55 dark:text-[#f3eee3]/55">
+            Universal access codes allow associates &amp; clients to log in without complex credentials.
+          </p>
+        </div>
+      </div>
+
+      <div className="p-4 sm:p-5 bg-[#f3eee3]/10 dark:bg-[#111111] border-t border-[#111111]/15 dark:border-[#f3eee3]/20 flex justify-end gap-2.5 shrink-0">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2.5 text-xs font-cinzel font-semibold rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-[#111111]/60 dark:text-[#f3eee3]/60 hover:bg-[#f3efe6] dark:hover:bg-[#161820] transition-colors cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-5 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm transition-all shadow-md"
+          className="px-6 py-2.5 text-xs font-cinzel font-bold tracking-wider rounded-xl bg-[#d9541e] text-white hover:bg-[#bf4513] dark:bg-[#d9541e] dark:text-white dark:hover:bg-[#ea6026] shadow-sm transition-all shadow-md cursor-pointer"
         >
-          Provision User
+          Save User Profile
         </button>
       </div>
     </form>
+  );
+}
+
+function DeleteChamberConfirmModal({
+  lawyer,
+  onClose,
+  onConfirm,
+}: {
+  lawyer: any;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+}) {
+  const { state } = useChamber();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const chamberId = lawyer?.id;
+  const associates = (state?.users || []).filter((u) => u.role === "associate" && (u.lawyerId || "u-lawyer") === chamberId);
+  const clients = (state?.users || []).filter((u) => u.role === "client" && (u.lawyerId || "u-lawyer") === chamberId);
+  const cases = (state?.cases || []).filter((c) => (c.lawyerId || "u-lawyer") === chamberId);
+
+  const handlePurge = async () => {
+    setIsDeleting(true);
+    await onConfirm();
+    setIsDeleting(false);
+    onClose();
+  };
+
+  return (
+    <div className="p-6 sm:p-7 space-y-5 text-xs font-serif">
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0 border border-rose-500/20">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <div className="space-y-1">
+          <span className="px-2 py-0.5 rounded-full text-[9.5px] font-mono uppercase font-bold bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/25">
+            Irreversible Multi-Tenant Purge
+          </span>
+          <h3 className="text-base font-bold font-cinzel text-[#111111] dark:text-[#f3eee3]">
+            Delete Entire Chamber Workspace
+          </h3>
+          <p className="text-[11.5px] text-[#111111]/70 dark:text-[#f3eee3]/70 font-serif leading-relaxed">
+            You are about to permanently delete the entire practice workspace of{" "}
+            <strong className="text-rose-700 dark:text-rose-400 font-sans">{lawyer?.name}</strong>.
+          </p>
+        </div>
+      </div>
+
+      {/* Breakdown Box */}
+      <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 space-y-2.5">
+        <span className="text-[10px] font-mono uppercase text-rose-800 dark:text-rose-300 font-bold block">
+          Entities that will be permanently destroyed:
+        </span>
+        <ul className="space-y-1.5 text-xs text-rose-900/80 dark:text-rose-300/80 font-sans">
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+            <span><strong>1</strong> Advocate Account ({lawyer?.name} - {lawyer?.email})</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+            <span><strong>{associates.length}</strong> Junior Associate accounts attached to this chamber</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+            <span><strong>{clients.length}</strong> Retained Litigant client accounts and portal accesses</span>
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+            <span><strong>{cases.length}</strong> Registered Court Matters, pleadings, hearings, and order sheets</span>
+          </li>
+        </ul>
+      </div>
+
+      <div className="p-3 rounded-xl bg-[#111111]/5 dark:bg-white/5 border border-[#111111]/10 dark:border-[#f3eee3]/10 text-[11px] text-[#111111]/60 dark:text-[#f3eee3]/60 italic">
+        All associated login credentials will be immediately revoked and purged from the database. This action cannot be reversed.
+      </div>
+
+      {/* Buttons */}
+      <div className="pt-2 flex items-center justify-end gap-2.5 border-t border-[#111111]/10 dark:border-[#f3eee3]/10">
+        <button
+          type="button"
+          onClick={onClose}
+          disabled={isDeleting}
+          className="px-4 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 text-xs font-cinzel font-bold hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={handlePurge}
+          disabled={isDeleting}
+          className="px-5 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-cinzel font-bold hover:bg-rose-700 transition-colors shadow-sm flex items-center gap-2 cursor-pointer"
+        >
+          {isDeleting ? (
+            <span>Purging Chamber...</span>
+          ) : (
+            <>
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Confirm &amp; Delete Entire Chamber</span>
+            </>
+          )}
+        </button>
+      </div>
+    </div>
   );
 }

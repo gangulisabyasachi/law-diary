@@ -501,7 +501,7 @@ export function ClientDashboardView() {
                             Retained Legal Counsel
                           </span>
                           <p className="font-serif font-bold text-xs text-[#111111] dark:text-[#f3eee3] truncate">
-                            {advocate?.name || "Senior Chamber Advocate"}
+                            {advocate?.name || "Chamber Advocate"}
                           </p>
                           <p className="text-[10.5px] text-[#111111]/60 dark:text-[#f3eee3]/60 font-serif italic truncate">
                             {advocate?.designation || "Advocate on Record"}
@@ -749,7 +749,7 @@ export function ClientDashboardView() {
               </div>
 
               <div className="p-3 rounded-xl bg-[#f3eee3]/40 dark:bg-[#202020] border border-[#111111]/10 dark:border-[#f3eee3]/10 text-[10.5px] font-serif text-[#111111]/60 dark:text-[#f3eee3]/60 italic">
-                Your question will be delivered to the Senior Advocate handling your brief. Any reply prepared by an associate advocate requires senior counsel approval before being published here.
+                Your question will be delivered to the Advocate handling your brief. Any reply prepared by an associate advocate requires advocate approval before being published here.
               </div>
 
               <div className="flex justify-end gap-2.5 pt-2 border-t border-[#111111]/10 dark:border-[#f3eee3]/10">
