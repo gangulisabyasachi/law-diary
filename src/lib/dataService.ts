@@ -22,7 +22,7 @@ const fallbackStore: FallbackStore = {
   decided: [],
   errorLogs: [],
   broadcast: {
-    active: true,
+    active: false,
     message: "Scheduled platform maintenance window: System remaining online with full database replication.",
   },
   isInitialized: false,
@@ -264,7 +264,7 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
   let rawDecided: Decision[] = [];
   let rawErrorLogs: ErrorLog[] = [];
   let broadcast: SystemBroadcast = {
-    active: true,
+    active: false,
     message: "Scheduled platform maintenance window: System remaining online with full database replication.",
   };
   let dbConnected = false;

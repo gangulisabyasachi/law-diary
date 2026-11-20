@@ -12,7 +12,7 @@ export function BroadcastBanner() {
   const message =
     broadcast?.message?.trim() ||
     "Scheduled platform maintenance window: System remaining online with full database replication.";
-  const isActive = broadcast ? broadcast.active : true;
+  const isActive = Boolean(broadcast?.active);
 
   if (!isActive || dismissed) {
     return null;

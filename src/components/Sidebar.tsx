@@ -183,7 +183,7 @@ export function Sidebar() {
       </nav>
 
       {/* Platform Advisory Notice (Left Navbar - above the bottom-left credential medallion) */}
-      {(state?.broadcast?.active !== false) && (
+      {Boolean(state?.broadcast?.active) && (
         <div className="relative mx-3 mb-1.5 rounded-2xl p-2.5 bg-gradient-to-br from-[#faf8f5] via-[#f7f2ea] to-[#eee6d8] dark:from-[#1c1a17] dark:via-[#161412] dark:to-[#100f0e] border border-[#d9541e]/25 dark:border-[#d9541e]/30 shadow-xs overflow-hidden group">
           {/* Subtle Luxury Top Hairline Accent */}
           <div className="absolute top-0 left-3 right-3 h-[1.5px] bg-gradient-to-r from-transparent via-[#d9541e]/50 dark:via-[#ea6026]/60 to-transparent" />
