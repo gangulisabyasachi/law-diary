@@ -13,10 +13,10 @@ export function getSeedData() {
     {
       id: "u-admin",
       role: "admin",
-      name: "System Administrator",
+      name: "Site Admin",
       email: "admin@chambers.in",
       phone: "+91 98000 00000",
-      designation: "Platform Super Administrator",
+      designation: "Site Admin",
     },
     {
       id: "u-lawyer",

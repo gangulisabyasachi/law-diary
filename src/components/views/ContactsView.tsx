@@ -95,12 +95,12 @@ export function ContactsView() {
         </div>
       </div>
 
-      {/* Chamber Administrative Desk Notice */}
+      {/* Registry Desk Notice */}
       <div className="p-6 rounded-3xl bg-[#111111]/5 dark:bg-white/5 border border-[#111111]/15 dark:border-[#f3eee3]/20 space-y-2 shadow-sm">
         <div className="flex items-center gap-2.5">
           <Building className="w-4 h-4 text-[#111111] dark:text-[#f3eee3]" />
           <p className="text-[#111111] dark:text-[#f3eee3] font-bold font-cinzel text-xs tracking-wider">
-            Chamber Administrative Desk &amp; Registry
+            Chamber Registry Desk &amp; Office
           </p>
         </div>
         <p className="text-xs text-[#111111]/70 dark:text-[#f3eee3]/70 font-serif leading-relaxed">

@@ -81,7 +81,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const authUser = getAuthUser(req);
-    const resolvedBy = authUser?.name || "Platform Super Admin";
+    const resolvedBy = authUser?.name || "Site Admin";
 
     await resolveSystemErrorLog(logId, Boolean(resolved), resolvedBy);
     return NextResponse.json({ ok: true, logId, resolved: Boolean(resolved) });

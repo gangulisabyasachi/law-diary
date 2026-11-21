@@ -28,7 +28,7 @@ import { useChamber } from "@/context/ChamberContext";
 import { User, UserRole } from "@/types";
 
 export function UsersView() {
-  const { state, currentUser, openModal, deleteUser, toggleUserStatus, resetData, addToast } = useChamber();
+  const { state, currentUser, openModal, deleteUser, toggleUserStatus, unlockUser, resetData, addToast } = useChamber();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
@@ -307,6 +307,10 @@ export function UsersView() {
                 filteredUsers.map((u) => {
                   const badge = roleBadge[u.role] || roleBadge.lawyer;
                   const isDisabled = Boolean(u.disabled || u.status === "disabled");
+                  const isUserLocked = Boolean(u.lockedUntil && new Date() < new Date(u.lockedUntil));
+                  const lockRemainingMins = isUserLocked
+                    ? Math.max(1, Math.ceil((new Date(u.lockedUntil!).getTime() - Date.now()) / 60000))
+                    : 0;
                   const supervisingLawyer =
                     u.role === "associate" || u.role === "client"
                       ? lawyers.find((l) => l.id === (u.lawyerId || "u-lawyer"))
@@ -423,9 +427,29 @@ export function UsersView() {
                         </div>
                       </td>
 
-                      {/* Account Access Toggle (Enable / Disable) */}
+                      {/* Account Access Toggle (Enable / Disable / Locked) */}
                       <td className="py-4 px-4 text-center whitespace-nowrap">
-                        {u.id === currentUser.id ? (
+                        {isUserLocked ? (
+                          <div className="inline-flex flex-col items-center gap-1.5">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-cinzel font-bold bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
+                              <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                              </span>
+                              <Lock className="w-3 h-3 text-rose-600 dark:text-rose-400" />
+                              <span>Locked ({lockRemainingMins}m)</span>
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => unlockUser(u.id)}
+                              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[9.5px] font-cinzel font-bold bg-[#d9541e]/15 text-[#d9541e] hover:bg-[#d9541e]/25 border border-[#d9541e]/30 transition-all cursor-pointer shadow-2xs"
+                              title="Immediately clear lockout and restore access"
+                            >
+                              <ShieldCheck className="w-3 h-3" />
+                              <span>Unlock</span>
+                            </button>
+                          </div>
+                        ) : u.id === currentUser.id ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20">
                             Root Active
                           </span>

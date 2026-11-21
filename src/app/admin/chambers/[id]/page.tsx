@@ -23,13 +23,14 @@ import {
   Calendar,
   Layers,
   ChevronRight,
+  Lock,
 } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 import { User, Case } from "@/types";
 
 export default function ChamberDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { state, currentUser, openModal, toggleUserStatus, deleteUser, deleteChamber, addToast } = useChamber();
+  const { state, currentUser, openModal, toggleUserStatus, unlockUser, deleteUser, deleteChamber, addToast } = useChamber();
   const [activeTab, setActiveTab] = useState<"associates" | "clients" | "dockets">("associates");
   const [copiedCodeId, setCopiedCodeId] = useState<string | null>(null);
 
@@ -74,6 +75,10 @@ export default function ChamberDetailPage({ params }: { params: { id: string } }
   }
 
   const isLawyerDisabled = Boolean(lawyer.disabled || lawyer.status === "disabled");
+  const isLawyerLocked = Boolean(lawyer.lockedUntil && new Date() < new Date(lawyer.lockedUntil));
+  const lawyerLockMins = isLawyerLocked
+    ? Math.max(1, Math.ceil((new Date(lawyer.lockedUntil!).getTime() - Date.now()) / 60000))
+    : 0;
   const chamberAssociates = users.filter((u) => u.role === "associate" && (u.lawyerId || "u-lawyer") === lawyer.id);
   const chamberClients = users.filter((u) => u.role === "client" && (u.lawyerId || "u-lawyer") === lawyer.id);
   const chamberCases = cases.filter((c) => (c.lawyerId || "u-lawyer") === lawyer.id);
@@ -198,6 +203,17 @@ export default function ChamberDetailPage({ params }: { params: { id: string } }
 
           {/* Right: Quick Super Admin Controls */}
           <div className="flex items-center gap-2.5 flex-wrap pt-2 lg:pt-0 border-t lg:border-t-0 border-[#111111]/10 dark:border-[#f3eee3]/10">
+            {isLawyerLocked && (
+              <button
+                onClick={() => unlockUser(lawyer.id)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-cinzel font-bold bg-[#d9541e] text-white hover:bg-[#bf4513] transition-colors cursor-pointer shadow-md"
+                title={`Locked for ${lawyerLockMins}m. Click to immediately clear lockout and restore access`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Unlock Account ({lawyerLockMins}m)</span>
+              </button>
+            )}
+
             <button
               onClick={() => toggleUserStatus(lawyer.id, !isLawyerDisabled)}
               className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-cinzel font-bold border transition-colors cursor-pointer shadow-2xs ${
@@ -401,6 +417,10 @@ export default function ChamberDetailPage({ params }: { params: { id: string } }
                     <tbody className="divide-y divide-[#111111]/5 dark:divide-[#f3eee3]/5 font-serif">
                       {chamberAssociates.map((assoc) => {
                         const isAssocDisabled = Boolean(assoc.disabled || assoc.status === "disabled");
+                        const isAssocLocked = Boolean(assoc.lockedUntil && new Date() < new Date(assoc.lockedUntil));
+                        const assocLockMins = isAssocLocked
+                          ? Math.max(1, Math.ceil((new Date(assoc.lockedUntil!).getTime() - Date.now()) / 60000))
+                          : 0;
                         return (
                           <tr
                             key={assoc.id}
@@ -449,17 +469,38 @@ export default function ChamberDetailPage({ params }: { params: { id: string } }
                             </td>
 
                             <td className="py-3.5 px-4 text-center">
-                              <button
-                                onClick={() => toggleUserStatus(assoc.id, !isAssocDisabled)}
-                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-cinzel font-bold cursor-pointer ${
-                                  isAssocDisabled
-                                    ? "bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/25"
-                                    : "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25"
-                                }`}
-                              >
-                                <Power className="w-3 h-3" />
-                                <span>{isAssocDisabled ? "Disabled" : "Active"}</span>
-                              </button>
+                              {isAssocLocked ? (
+                                <div className="inline-flex flex-col items-center gap-1">
+                                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-cinzel font-bold bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
+                                    <span className="relative flex h-2 w-2">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                                    </span>
+                                    <Lock className="w-3 h-3 text-rose-600 dark:text-rose-400" />
+                                    <span>Locked ({assocLockMins}m)</span>
+                                  </span>
+                                  <button
+                                    onClick={() => unlockUser(assoc.id)}
+                                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[9.5px] font-cinzel font-bold bg-[#d9541e]/15 text-[#d9541e] hover:bg-[#d9541e]/25 border border-[#d9541e]/30 transition-all cursor-pointer shadow-2xs"
+                                    title="Unlock associate account"
+                                  >
+                                    <ShieldCheck className="w-3 h-3" />
+                                    <span>Unlock</span>
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => toggleUserStatus(assoc.id, !isAssocDisabled)}
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-cinzel font-bold cursor-pointer ${
+                                    isAssocDisabled
+                                      ? "bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/25"
+                                      : "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25"
+                                  }`}
+                                >
+                                  <Power className="w-3 h-3" />
+                                  <span>{isAssocDisabled ? "Disabled" : "Active"}</span>
+                                </button>
+                              )}
                             </td>
 
                             <td className="py-3.5 px-5 text-right">
@@ -530,6 +571,10 @@ export default function ChamberDetailPage({ params }: { params: { id: string } }
                     <tbody className="divide-y divide-[#111111]/5 dark:divide-[#f3eee3]/5 font-serif">
                       {chamberClients.map((cl) => {
                         const isClDisabled = Boolean(cl.disabled || cl.status === "disabled");
+                        const isClLocked = Boolean(cl.lockedUntil && new Date() < new Date(cl.lockedUntil));
+                        const clLockMins = isClLocked
+                          ? Math.max(1, Math.ceil((new Date(cl.lockedUntil!).getTime() - Date.now()) / 60000))
+                          : 0;
                         return (
                           <tr
                             key={cl.id}
@@ -578,17 +623,38 @@ export default function ChamberDetailPage({ params }: { params: { id: string } }
                             </td>
 
                             <td className="py-3.5 px-4 text-center">
-                              <button
-                                onClick={() => toggleUserStatus(cl.id, !isClDisabled)}
-                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-cinzel font-bold cursor-pointer ${
-                                  isClDisabled
-                                    ? "bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/25"
-                                    : "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25"
-                                }`}
-                              >
-                                <Power className="w-3 h-3" />
-                                <span>{isClDisabled ? "Disabled" : "Active"}</span>
-                              </button>
+                              {isClLocked ? (
+                                <div className="inline-flex flex-col items-center gap-1">
+                                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-cinzel font-bold bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
+                                    <span className="relative flex h-2 w-2">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                                    </span>
+                                    <Lock className="w-3 h-3 text-rose-600 dark:text-rose-400" />
+                                    <span>Locked ({clLockMins}m)</span>
+                                  </span>
+                                  <button
+                                    onClick={() => unlockUser(cl.id)}
+                                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[9.5px] font-cinzel font-bold bg-[#d9541e]/15 text-[#d9541e] hover:bg-[#d9541e]/25 border border-[#d9541e]/30 transition-all cursor-pointer shadow-2xs"
+                                    title="Unlock litigant client account"
+                                  >
+                                    <ShieldCheck className="w-3 h-3" />
+                                    <span>Unlock</span>
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => toggleUserStatus(cl.id, !isClDisabled)}
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-cinzel font-bold cursor-pointer ${
+                                    isClDisabled
+                                      ? "bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/25"
+                                      : "bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25"
+                                  }`}
+                                >
+                                  <Power className="w-3 h-3" />
+                                  <span>{isClDisabled ? "Disabled" : "Active"}</span>
+                                </button>
+                              )}
                             </td>
 
                             <td className="py-3.5 px-5 text-right">

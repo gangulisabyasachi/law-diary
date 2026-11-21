@@ -50,7 +50,7 @@ export default function ContactPage() {
         eyebrowText="Direct Chamber Registrar Desk"
         headingLine1="Direct advocate communication"
         headingLine2="and chamber onboarding."
-        description="Connect directly with the Chamber Administration Office for bespoke on-premise deployments, historical register migration, or team orientation across Indian jurisdictions."
+        description="Connect directly with the support team for bespoke on-premise deployments, historical register migration, or team orientation across Indian jurisdictions."
         primaryCtaLabel="Dispatch Communication"
         primaryCtaHref="#contact-form"
         secondaryCtaLabel="Call Advocate Hotline"
@@ -69,7 +69,7 @@ export default function ContactPage() {
             <div className="p-8 sm:p-10 rounded-3xl bg-white/70 dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-xs space-y-6">
               <div>
                 <h3 className="text-xl font-serif font-bold text-[#111111] dark:text-[#f3eee3]">
-                  Chamber Administration Office
+                  Support Team &amp; Registry Office
                 </h3>
                 <p className="text-xs font-serif italic text-[#111111]/75 dark:text-[#f3eee3]/70 mt-1">
                   Dedicated assistance for practicing advocates and chamber clerks.

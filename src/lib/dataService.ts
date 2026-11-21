@@ -168,6 +168,10 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
         : undefined),
     disabled: Boolean(u.disabled || u.status === "disabled"),
     status: (u.disabled || u.status === "disabled") ? "disabled" : "active",
+    failedLoginAttempts: Number(u.failedLoginAttempts || 0),
+    lockedUntil: u.lockedUntil ? (u.lockedUntil.toISOString?.() || u.lockedUntil) : null,
+    lockoutCount: Number(u.lockoutCount || 0),
+    lastFailedLoginAt: u.lastFailedLoginAt ? (u.lastFailedLoginAt.toISOString?.() || u.lastFailedLoginAt) : null,
     createdAt: u.createdAt?.toISOString?.() || u.createdAt,
     updatedAt: u.updatedAt?.toISOString?.() || u.updatedAt,
   });
@@ -408,11 +412,23 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
   };
 }
 
-export async function loginUser(email: string, pass: string) {
+export async function loginUser(email: string, pass: string, clientIp: string = "127.0.0.1") {
   const normEmail = String(email || "").toLowerCase().trim();
   const trimmedPass = String(pass || "").trim();
   const cleanDigits = normEmail.replace(/\D/g, "");
   const { isConnected } = await connectToDatabase();
+
+  const getCooldownMs = (lockoutTier: number) => {
+    if (lockoutTier <= 1) return 15 * 60 * 1000; // 15 mins
+    if (lockoutTier === 2) return 60 * 60 * 1000; // 60 mins
+    return 24 * 60 * 60 * 1000; // 24 hours
+  };
+
+  const formatCountdown = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
   if (isConnected) {
     try {
@@ -433,20 +449,62 @@ export async function loginUser(email: string, pass: string) {
             level: "error",
             category: "auth",
             message: `Disabled account access rejected: ${user.name} (${user.email})`,
-            details: `Authentication blocked for account '${user.id}' (role: ${user.role}). Account marked disabled by Platform Super Administrator.`,
+            details: `Authentication blocked for account '${user.id}' (role: ${user.role}). Account marked disabled by site admin.`,
             source: "api/auth/login",
             path: "/api/auth/login",
             userId: user.id,
             userRole: user.role,
+            ip: clientIp,
           }).catch(() => {});
-          throw new Error("This account has been disabled by platform administration. Please contact support.");
+          throw new Error("This account has been disabled by site admin. Contact the support team.");
+        }
+
+        const now = Date.now();
+        const lockedUntilTime = user.lockedUntil ? new Date(user.lockedUntil).getTime() : 0;
+
+        // 1. Check if user is currently locked out
+        if (user.lockedUntil && now < lockedUntilTime) {
+          const remainingSeconds = Math.ceil((lockedUntilTime - now) / 1000);
+          const timeFormatted = formatCountdown(remainingSeconds);
+          recordSystemErrorLog({
+            level: "warn",
+            category: "auth",
+            message: `Locked account access attempt rejected: ${user.name} (${user.email})`,
+            details: `Account currently locked under security cooldown policy. Remaining time: ${timeFormatted}. IP: ${clientIp}`,
+            source: "api/auth/login",
+            path: "/api/auth/login",
+            userId: user.id,
+            userRole: user.role,
+            ip: clientIp,
+          }).catch(() => {});
+
+          return {
+            locked: true,
+            remainingSeconds,
+            lockedUntil: user.lockedUntil,
+            error: `Account temporarily locked due to security policy. Please wait ${timeFormatted} before retrying. Contact the support team.`,
+          };
+        }
+
+        // 2. Cooldown expired: auto-reset lockout window
+        if (user.lockedUntil && now >= lockedUntilTime) {
+          await UserModel.updateOne(
+            { _id: user._id },
+            { $set: { lockedUntil: null, failedLoginAttempts: 0 } }
+          ).catch(() => {});
+          user.lockedUntil = null;
+          user.failedLoginAttempts = 0;
         }
 
         const expectedAccessCode =
           user.accessCode ||
-          (user.id === "u-client"
-            ? (process.env.SEED_CLIENT_PASSWORD || "client123")
-            : "LD" + user.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase());
+          (user.role === "client"
+            ? (user.id === "u-client"
+                ? (process.env.SEED_CLIENT_PASSWORD || "client123")
+                : "LD" + user.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase())
+            : user.role === "associate"
+            ? (process.env.SEED_ASSOC_PASSWORD || "assoc123")
+            : undefined);
 
         const valid =
           (await comparePassword(trimmedPass, user.passwordHash)) ||
@@ -456,10 +514,18 @@ export async function loginUser(email: string, pass: string) {
           (user.role === "client" && trimmedPass === "client123");
 
         if (valid) {
-          // If accessCode was not permanently set in DB, backfill it now
-          if (!user.accessCode && expectedAccessCode) {
-            await UserModel.updateOne({ _id: user._id }, { $set: { accessCode: expectedAccessCode } }).catch(() => {});
-          }
+          // Reset failed attempts and lockout count on successful authentication
+          await UserModel.updateOne(
+            { _id: user._id },
+            {
+              $set: {
+                failedLoginAttempts: 0,
+                lockedUntil: null,
+                lockoutCount: 0,
+                ...(!user.accessCode && expectedAccessCode ? { accessCode: expectedAccessCode } : {}),
+              },
+            }
+          ).catch(() => {});
 
           const token = signToken({
             id: user.id,
@@ -479,16 +545,102 @@ export async function loginUser(email: string, pass: string) {
               designation: user.designation,
               lawyerId: user.lawyerId,
               accessCode: user.accessCode || expectedAccessCode,
+              failedLoginAttempts: 0,
+              lockedUntil: null,
+              lockoutCount: 0,
             },
           };
+        } else {
+          // FAILED ATTEMPT: Apply Option A progressive counter
+          const attempts = (user.failedLoginAttempts || 0) + 1;
+          const currentLockoutCount = user.lockoutCount || 0;
+          const lastFailedAt = new Date().toISOString();
+
+          if (attempts >= 5) {
+            // Trigger progressive lockout
+            const newLockoutCount = currentLockoutCount + 1;
+            const cooldownMs = getCooldownMs(newLockoutCount);
+            const lockedUntil = new Date(Date.now() + cooldownMs).toISOString();
+
+            await UserModel.updateOne(
+              { _id: user._id },
+              {
+                $set: {
+                  failedLoginAttempts: attempts,
+                  lockedUntil,
+                  lockoutCount: newLockoutCount,
+                  lastFailedLoginAt: lastFailedAt,
+                },
+              }
+            ).catch(() => {});
+
+            const cooldownMins = Math.round(cooldownMs / 60000);
+            recordSystemErrorLog({
+              level: "error",
+              category: "auth",
+              message: `Account temporarily locked due to excessive failed password attempts: ${user.name} (${user.email})`,
+              details: `Failed login threshold reached (5 attempts). Cooldown active for ${cooldownMins} minutes until ${lockedUntil} (lockout tier #${newLockoutCount}). Origin IP: ${clientIp}`,
+              source: "api/auth/login",
+              path: "/api/auth/login",
+              userId: user.id,
+              userRole: user.role,
+              ip: clientIp,
+            }).catch(() => {});
+
+            const remainingSeconds = Math.ceil(cooldownMs / 1000);
+            const timeFormatted = formatCountdown(remainingSeconds);
+
+            return {
+              locked: true,
+              remainingSeconds,
+              lockedUntil,
+              error: `Account temporarily locked due to 5 failed attempts. Please wait ${timeFormatted} before retrying. Contact the support team.`,
+            };
+          } else {
+            // Under 5 attempts: increment and warn
+            const remainingAttempts = 5 - attempts;
+            await UserModel.updateOne(
+              { _id: user._id },
+              {
+                $set: {
+                  failedLoginAttempts: attempts,
+                  lastFailedLoginAt: lastFailedAt,
+                },
+              }
+            ).catch(() => {});
+
+            recordSystemErrorLog({
+              level: "warn",
+              category: "auth",
+              message: `Failed password challenge for ${user.name} (${user.email})`,
+              details: `Authentication challenge rejected. Attempt ${attempts} of 5. Remaining before temporary lockout: ${remainingAttempts}. Origin IP: ${clientIp}`,
+              source: "api/auth/login",
+              path: "/api/auth/login",
+              userId: user.id,
+              userRole: user.role,
+              ip: clientIp,
+            }).catch(() => {});
+
+            return {
+              invalid: true,
+              remainingAttempts,
+              error:
+                attempts >= 4
+                  ? `Invalid credentials. Warning: ${remainingAttempts} attempt remaining before your account is temporarily locked.`
+                  : "Invalid email or password",
+            };
+          }
         }
       }
     } catch (err: any) {
+      if (err.message && err.message.includes("disabled by platform administration")) {
+        throw err;
+      }
       console.warn("MongoDB login failed, attempting fallback:", err.message);
     }
   }
 
-  // Fallback Store
+  // Fallback Store Execution
   await initFallbackStore();
   const u = fallbackStore.users.find((x) => {
     if (x.email.toLowerCase() === normEmail) return true;
@@ -503,20 +655,46 @@ export async function loginUser(email: string, pass: string) {
       level: "error",
       category: "auth",
       message: `Disabled account access rejected: ${u.name} (${u.email})`,
-      details: `Authentication blocked for account '${u.id}' (role: ${u.role}). Account marked disabled by Platform Super Administrator.`,
+      details: `Authentication blocked for account '${u.id}' (role: ${u.role}). Account marked disabled by site admin.`,
       source: "api/auth/login",
       path: "/api/auth/login",
       userId: u.id,
       userRole: u.role,
+      ip: clientIp,
     }).catch(() => {});
-    throw new Error("This account has been disabled by platform administration. Please contact support.");
+    throw new Error("This account has been disabled by site admin. Contact the support team.");
+  }
+
+  const now = Date.now();
+  const lockedUntilTime = u.lockedUntil ? new Date(u.lockedUntil).getTime() : 0;
+
+  // Fallback lockout check
+  if (u.lockedUntil && now < lockedUntilTime) {
+    const remainingSeconds = Math.ceil((lockedUntilTime - now) / 1000);
+    const timeFormatted = formatCountdown(remainingSeconds);
+    return {
+      locked: true,
+      remainingSeconds,
+      lockedUntil: u.lockedUntil,
+      error: `Account temporarily locked due to security policy. Please wait ${timeFormatted} before retrying. Contact the support team.`,
+    };
+  }
+
+  // Fallback cooldown expiration
+  if (u.lockedUntil && now >= lockedUntilTime) {
+    u.lockedUntil = null;
+    u.failedLoginAttempts = 0;
   }
 
   const expectedCode =
     u.accessCode ||
-    (u.id === "u-client"
-      ? (process.env.SEED_CLIENT_PASSWORD || "client123")
-      : "LD" + u.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase());
+    (u.role === "client"
+      ? (u.id === "u-client"
+          ? (process.env.SEED_CLIENT_PASSWORD || "client123")
+          : "LD" + u.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase())
+      : u.role === "associate"
+      ? (process.env.SEED_ASSOC_PASSWORD || "assoc123")
+      : undefined);
 
   const valid =
     (await comparePassword(trimmedPass, u.passwordHash)) ||
@@ -526,15 +704,80 @@ export async function loginUser(email: string, pass: string) {
     (u.role === "client" && trimmedPass === (process.env.SEED_CLIENT_PASSWORD || "client123")) ||
     (u.role === "client" && trimmedPass === "client123");
 
-  if (!valid) return null;
+  if (valid) {
+    u.failedLoginAttempts = 0;
+    u.lockedUntil = null;
+    u.lockoutCount = 0;
+    if (!u.accessCode && expectedCode) {
+      u.accessCode = expectedCode;
+    }
+    const token = signToken({ id: u.id, role: u.role, email: u.email, name: u.name });
+    const { passwordHash, password, ...clean } = u;
+    return { token, user: { ...clean, accessCode: u.accessCode || expectedCode } };
+  } else {
+    // Fallback: Failed attempt progressive tracking
+    const attempts = (u.failedLoginAttempts || 0) + 1;
+    const currentLockoutCount = u.lockoutCount || 0;
+    const lastFailedAt = new Date().toISOString();
 
-  if (!u.accessCode && expectedCode) {
-    u.accessCode = expectedCode;
+    if (attempts >= 5) {
+      const newLockoutCount = currentLockoutCount + 1;
+      const cooldownMs = getCooldownMs(newLockoutCount);
+      const lockedUntil = new Date(Date.now() + cooldownMs).toISOString();
+
+      u.failedLoginAttempts = attempts;
+      u.lockedUntil = lockedUntil;
+      u.lockoutCount = newLockoutCount;
+      u.lastFailedLoginAt = lastFailedAt;
+
+      const remainingSeconds = Math.ceil(cooldownMs / 1000);
+      const timeFormatted = formatCountdown(remainingSeconds);
+
+      recordSystemErrorLog({
+        level: "error",
+        category: "auth",
+        message: `Account temporarily locked due to excessive failed password attempts: ${u.name} (${u.email})`,
+        details: `Failed login threshold reached (5 attempts). Cooldown active for ${Math.round(cooldownMs / 60000)} minutes until ${lockedUntil} (lockout tier #${newLockoutCount}). Origin IP: ${clientIp}`,
+        source: "api/auth/login",
+        path: "/api/auth/login",
+        userId: u.id,
+        userRole: u.role,
+        ip: clientIp,
+      }).catch(() => {});
+
+      return {
+        locked: true,
+        remainingSeconds,
+        lockedUntil,
+        error: `Account temporarily locked due to 5 failed attempts. Please wait ${timeFormatted} before retrying. Contact the support team.`,
+      };
+    } else {
+      const remainingAttempts = 5 - attempts;
+      u.failedLoginAttempts = attempts;
+      u.lastFailedLoginAt = lastFailedAt;
+
+      recordSystemErrorLog({
+        level: "warn",
+        category: "auth",
+        message: `Failed password challenge for ${u.name} (${u.email})`,
+        details: `Authentication challenge rejected. Attempt ${attempts} of 5. Remaining before temporary lockout: ${remainingAttempts}. Origin IP: ${clientIp}`,
+        source: "api/auth/login",
+        path: "/api/auth/login",
+        userId: u.id,
+        userRole: u.role,
+        ip: clientIp,
+      }).catch(() => {});
+
+      return {
+        invalid: true,
+        remainingAttempts,
+        error:
+          attempts >= 4
+            ? `Invalid credentials. Warning: ${remainingAttempts} attempt remaining before your account is temporarily locked.`
+            : "Invalid email or password",
+      };
+    }
   }
-
-  const token = signToken({ id: u.id, role: u.role, email: u.email, name: u.name });
-  const { passwordHash, password, ...clean } = u;
-  return { token, user: { ...clean, accessCode: u.accessCode || expectedCode } };
 }
 
 export async function applyOp(op: { type: string; payload: any }, authorId: string) {
@@ -757,6 +1000,33 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
             { id: payload.userId },
             { $set: { disabled: nextDisabled, status: nextDisabled ? "disabled" : "active", updatedAt: now } }
           );
+        }
+        break;
+      }
+      case "unlockUser": {
+        const target = await UserModel.findOne({ id: payload.userId });
+        if (target) {
+          await UserModel.updateOne(
+            { id: payload.userId },
+            {
+              $set: {
+                failedLoginAttempts: 0,
+                lockedUntil: null,
+                lockoutCount: 0,
+                updatedAt: now,
+              },
+            }
+          );
+          recordSystemErrorLog({
+            level: "info",
+            category: "auth",
+            message: `Account lockout cleared manually by site admin for ${target.name} (${target.email})`,
+            details: `Site admin cleared failed password lockout counter and restored access for account '${target.id}'.`,
+            source: "chamber/ops/unlockUser",
+            path: "/api/chamber/ops",
+            userId: target.id,
+            userRole: target.role,
+          }).catch(() => {});
         }
         break;
       }
@@ -1000,6 +1270,25 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         const nextDisabled = payload.disabled !== undefined ? Boolean(payload.disabled) : !u.disabled;
         u.disabled = nextDisabled;
         u.status = nextDisabled ? "disabled" : "active";
+      }
+      break;
+    }
+    case "unlockUser": {
+      const u = fallbackStore.users.find((user) => user.id === payload.userId);
+      if (u) {
+        u.failedLoginAttempts = 0;
+        u.lockedUntil = null;
+        u.lockoutCount = 0;
+        recordSystemErrorLog({
+          level: "info",
+          category: "auth",
+          message: `Account lockout cleared manually by site admin for ${u.name} (${u.email})`,
+          details: `Site admin cleared failed password lockout counter and restored access for account '${u.id}'.`,
+          source: "chamber/ops/unlockUser",
+          path: "/api/chamber/ops",
+          userId: u.id,
+          userRole: u.role,
+        }).catch(() => {});
       }
       break;
     }
@@ -1512,7 +1801,7 @@ export async function getAllErrorLogs(): Promise<ErrorLog[]> {
 export async function resolveSystemErrorLog(
   logId: string,
   resolved: boolean,
-  resolvedBy: string = "Platform Super Admin"
+  resolvedBy: string = "Site Admin"
 ) {
   const now = new Date().toISOString();
   const { isConnected } = await connectToDatabase();
@@ -1570,6 +1859,10 @@ export async function deleteSystemErrorLog(logId?: string, clearAll: boolean = f
     await initFallbackStore();
     fallbackStore.errorLogs = fallbackStore.errorLogs.filter((l: any) => l.id !== logId);
   }
+}
+
+export async function unlockUserAccount(userId: string) {
+  await applyOp({ type: "unlockUser", payload: { userId } }, "admin");
 }
 
 

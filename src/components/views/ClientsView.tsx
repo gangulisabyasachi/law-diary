@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Users, Plus, Mail, Phone, Scale, ArrowRight, Building, Edit3 } from "lucide-react";
+import { Users, Plus, Mail, Phone, Scale, ArrowRight, Building, Edit3, Lock, ShieldCheck } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function ClientsView() {
-  const { state, currentUser, openModal, openCase } = useChamber();
+  const { state, currentUser, openModal, openCase, unlockUser } = useChamber();
 
   if (!state || !currentUser) return null;
 
@@ -51,11 +51,19 @@ export function ClientsView() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {clients.map((cl) => {
           const clientCases = state.cases.filter((c) => c.clientId === cl.id);
+          const isClLocked = Boolean(cl.lockedUntil && new Date() < new Date(cl.lockedUntil));
+          const clLockMins = isClLocked
+            ? Math.max(1, Math.ceil((new Date(cl.lockedUntil!).getTime() - Date.now()) / 60000))
+            : 0;
 
           return (
             <div
               key={cl.id}
-              className="p-6 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#111111] dark:hover:border-[#f3eee3]/50 transition-all group"
+              className={`p-6 rounded-3xl bg-white dark:bg-[#181818] border shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col justify-between transition-all group ${
+                isClLocked
+                  ? "border-rose-400 dark:border-rose-800 bg-rose-50/10"
+                  : "border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#111111] dark:hover:border-[#f3eee3]/50"
+              }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -69,6 +77,26 @@ export function ClientsView() {
                       .toUpperCase()}
                   </div>
                   <div className="flex items-center gap-2">
+                    {isClLocked && (
+                      <span className="text-[10px] font-cinzel font-bold px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 flex items-center gap-1">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
+                        </span>
+                        <Lock className="w-2.5 h-2.5 text-rose-600" />
+                        <span>Locked ({clLockMins}m)</span>
+                      </span>
+                    )}
+                    {isClLocked && (currentUser.role === "lawyer" || currentUser.role === "admin") && (
+                      <button
+                        onClick={() => unlockUser(cl.id)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#d9541e]/15 hover:bg-[#d9541e]/25 text-[#d9541e] border border-[#d9541e]/30 text-[10px] font-cinzel font-bold transition-all cursor-pointer shadow-2xs"
+                        title="Unlock Litigant Client Credentials"
+                      >
+                        <ShieldCheck className="w-3 h-3" />
+                        <span>Unlock</span>
+                      </button>
+                    )}
                     <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#111111]/5 dark:bg-white/5 text-[#111111] dark:text-[#f3eee3] border border-[#111111]/15 dark:border-[#f3eee3]/20">
                       {clientCases.length} {clientCases.length === 1 ? "Matter" : "Matters"}
                     </span>

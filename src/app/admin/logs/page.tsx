@@ -744,7 +744,7 @@ export default function AdminLogsPage() {
               <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                  Resolved by <strong>{inspectingLog.resolvedBy || "Administrator"}</strong> at{" "}
+                  Resolved by <strong>{inspectingLog.resolvedBy || "Site Admin"}</strong> at{" "}
                   {formatTimestamp(inspectingLog.resolvedAt || inspectingLog.timestamp)}
                 </span>
               </div>
@@ -760,7 +760,7 @@ export default function AdminLogsPage() {
                     ...inspectingLog,
                     resolved: newStatus,
                     resolvedAt: newStatus ? new Date().toISOString() : "",
-                    resolvedBy: newStatus ? currentUser?.name || "Platform Super Admin" : "",
+                    resolvedBy: newStatus ? currentUser?.name || "Site Admin" : "",
                   });
                 }}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-cinzel font-bold border transition-all cursor-pointer ${

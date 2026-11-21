@@ -11,6 +11,10 @@ export interface User {
   accessCode?: string;
   disabled?: boolean;
   status?: "active" | "disabled";
+  failedLoginAttempts?: number;
+  lockedUntil?: string | null;
+  lockoutCount?: number;
+  lastFailedLoginAt?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

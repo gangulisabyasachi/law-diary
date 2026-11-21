@@ -57,7 +57,7 @@ export function Navbar() {
       return { title: "Platform System Health & DB", subtitle: "MongoDB Atlas cluster status & infrastructure telemetry" };
     }
     if (pathname.startsWith("/admin")) {
-      return { title: "Platform Super Admin Console", subtitle: "User access control, account enable/disable & profile management" };
+      return { title: "Site Admin Console", subtitle: "User access control, account enable/disable & profile management" };
     }
     if (pathname.endsWith("/cases")) {
       return { title: "Case Diary (Matters)", subtitle: "Active pleadings, vakalatnamas & judicial records" };
@@ -149,11 +149,11 @@ export function Navbar() {
           <div className="flex items-center gap-2 pl-2 border-l border-[#111111]/15 dark:border-[#f3eee3]/20">
             <div className="hidden md:block text-right">
               <span className="block text-xs font-bold text-[#111111] dark:text-[#f3eee3] leading-tight font-sans">
-                {currentUser?.name || "Administrator"}
+                {currentUser?.name || "Site Admin"}
               </span>
               <span className="text-[9.5px] font-cinzel font-bold tracking-widest text-[#111111]/80 dark:text-[#f3eee3]">
                 {currentUser?.role === "admin"
-                  ? "SUPER ADMIN"
+                  ? "SITE ADMIN"
                   : currentUser?.role === "lawyer"
                   ? "ADVOCATE"
                   : currentUser?.role === "associate"

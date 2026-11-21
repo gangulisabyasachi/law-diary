@@ -264,7 +264,7 @@ export function Sidebar() {
                 ? (currentUser.designation || "Briefing & Arguing Counsel")
                 : role === "client"
                 ? (currentUser.phone ? `Mob: ${currentUser.phone}` : "Retained Litigant Dossier")
-                : (currentUser.designation || "Platform Super Administrator")}
+                : (currentUser.designation || "Site Admin")}
             </p>
           </div>
         </div>

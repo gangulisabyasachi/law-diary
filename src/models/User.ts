@@ -12,6 +12,10 @@ export interface IUserDocument extends Document {
   accessCode?: string;
   disabled?: boolean;
   status?: "active" | "disabled";
+  failedLoginAttempts?: number;
+  lockedUntil?: string | null;
+  lockoutCount?: number;
+  lastFailedLoginAt?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,6 +44,10 @@ const UserSchema = new Schema<IUserDocument>(
     accessCode: { type: String, default: "" },
     disabled: { type: Boolean, default: false, index: true },
     status: { type: String, enum: ["active", "disabled"], default: "active" },
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockedUntil: { type: String, default: null },
+    lockoutCount: { type: Number, default: 0 },
+    lastFailedLoginAt: { type: String, default: null },
   },
   { timestamps: true }
 );

@@ -22,18 +22,40 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
 
-    const result = await loginUser(email, password);
-    if (!result) {
+    const result: any = await loginUser(email, password, clientIp);
+    if (!result || result.notFound) {
       recordSystemErrorLog({
         level: "warn",
         category: "auth",
         message: `Authentication challenge rejected for '${email}'`,
-        details: "Supplied password or access code did not match credentials on record.",
+        details: "Supplied email does not match any registered advocate, associate, or litigant record.",
         source: "api/auth/login",
         path: "/api/auth/login",
         ip: clientIp,
       }).catch(() => {});
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+    }
+
+    if (result.locked) {
+      return NextResponse.json(
+        {
+          error: result.error,
+          locked: true,
+          remainingSeconds: result.remainingSeconds,
+          lockedUntil: result.lockedUntil,
+        },
+        { status: 423 }
+      );
+    }
+
+    if (result.invalid) {
+      return NextResponse.json(
+        {
+          error: result.error,
+          remainingAttempts: result.remainingAttempts,
+        },
+        { status: 401 }
+      );
     }
 
     return NextResponse.json(result);

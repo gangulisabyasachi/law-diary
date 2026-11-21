@@ -2001,7 +2001,7 @@ function EditUserAdminForm({ user, lawyers = [], onClose, onSubmit }: any) {
               <option value="lawyer">Lawyer (Advocate / Chamber Head)</option>
               <option value="associate">Associate Advocate (Briefing Counsel)</option>
               <option value="client">Litigant (Client)</option>
-              <option value="admin">Platform Super Admin</option>
+              <option value="admin">Site Admin</option>
             </select>
           </div>
         </div>

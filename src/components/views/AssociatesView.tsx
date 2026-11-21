@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { Briefcase, Plus, Mail, Phone, Scale, ArrowRight, UserCheck, Edit3 } from "lucide-react";
+import { Briefcase, Plus, Mail, Phone, Scale, ArrowRight, UserCheck, Edit3, Lock, ShieldCheck } from "lucide-react";
 import { useChamber } from "@/context/ChamberContext";
 
 export function AssociatesView() {
-  const { state, currentUser, openModal, openCase } = useChamber();
+  const { state, currentUser, openModal, openCase, unlockUser } = useChamber();
 
   if (!state || !currentUser) return null;
 
@@ -52,11 +52,19 @@ export function AssociatesView() {
         {associates.map((assoc) => {
           const assignedCases = state.cases.filter((c) => c.associateIds.includes(assoc.id));
           const pendingDrafts = state.approvals.filter((a) => a.by === assoc.id).length;
+          const isAssocLocked = Boolean(assoc.lockedUntil && new Date() < new Date(assoc.lockedUntil));
+          const assocLockMins = isAssocLocked
+            ? Math.max(1, Math.ceil((new Date(assoc.lockedUntil!).getTime() - Date.now()) / 60000))
+            : 0;
 
           return (
             <div
               key={assoc.id}
-              className="p-6 rounded-3xl bg-white dark:bg-[#181818] border border-[#111111]/15 dark:border-[#f3eee3]/20 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:border-[#111111] dark:hover:border-[#f3eee3]/50 transition-all group"
+              className={`p-6 rounded-3xl bg-white dark:bg-[#181818] border shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col justify-between transition-all group ${
+                isAssocLocked
+                  ? "border-rose-400 dark:border-rose-800 bg-rose-50/10"
+                  : "border-[#111111]/15 dark:border-[#f3eee3]/20 hover:border-[#111111] dark:hover:border-[#f3eee3]/50"
+              }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -70,12 +78,31 @@ export function AssociatesView() {
                       .toUpperCase()}
                   </div>
                   <div className="flex items-center gap-2">
+                    {isAssocLocked && (
+                      <span className="text-[10px] font-cinzel font-bold px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 flex items-center gap-1">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
+                        </span>
+                        <Lock className="w-2.5 h-2.5 text-rose-600" />
+                        <span>Locked ({assocLockMins}m)</span>
+                      </span>
+                    )}
+                    {isAssocLocked && (currentUser.role === "lawyer" || currentUser.role === "admin") && (
+                      <button
+                        onClick={() => unlockUser(assoc.id)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#d9541e]/15 hover:bg-[#d9541e]/25 text-[#d9541e] border border-[#d9541e]/30 text-[10px] font-cinzel font-bold transition-all cursor-pointer shadow-2xs"
+                        title="Unlock Associate Credentials"
+                      >
+                        <ShieldCheck className="w-3 h-3" />
+                        <span>Unlock</span>
+                      </button>
+                    )}
                     {pendingDrafts > 0 && (
                       <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#f3eee3]/20 text-[#111111] dark:bg-[#f3eee3]/20 dark:text-[#f3eee3] border border-[#111111]/40 dark:border-[#f3eee3]/30">
                         {pendingDrafts} in Review
                       </span>
                     )}
-                    {/* {assignedCases.length} Matters pill removed as of now */}
                     {(currentUser.role === "lawyer" || currentUser.role === "admin" || currentUser.id === assoc.id) && (
                       <button
                         onClick={() => openModal("edit-associate", { associate: assoc })}

@@ -11,6 +11,15 @@ export interface ToastItem {
   type: "success" | "error" | "info";
 }
 
+export interface LoginResult {
+  success: boolean;
+  error?: string;
+  locked?: boolean;
+  remainingSeconds?: number;
+  lockedUntil?: string | null;
+  remainingAttempts?: number;
+}
+
 interface ChamberContextType {
   state: AppState | null;
   loading: boolean;
@@ -37,7 +46,7 @@ interface ChamberContextType {
   openModal: (name: string, payload?: any) => void;
   closeModal: () => void;
   addToast: (message: string, type?: "success" | "error" | "info") => void;
-  login: (email: string, pass: string) => Promise<boolean>;
+  login: (email: string, pass: string) => Promise<LoginResult>;
   signupLawyer: (data: {
     name: string;
     email: string;
@@ -57,6 +66,7 @@ interface ChamberContextType {
   deleteUser: (userId: string) => Promise<void>;
   deleteChamber: (chamberId: string) => Promise<boolean>;
   toggleUserStatus: (userId: string, disabled?: boolean) => Promise<boolean>;
+  unlockUser: (userId: string) => Promise<boolean>;
   adminUpdateUser: (userId: string, data: any) => Promise<boolean>;
   updateBroadcast: (active: boolean, message: string) => Promise<boolean>;
   refreshErrorLogs: () => Promise<void>;
@@ -230,7 +240,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     refreshState(u, t);
   }, []);
 
-  const login = async (email: string, pass: string): Promise<boolean> => {
+  const login = async (email: string, pass: string): Promise<LoginResult> => {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -240,7 +250,14 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
       const data = await res.json();
       if (!res.ok) {
         addToast(data.error || "Authentication failed. Please check your credentials.", "error");
-        return false;
+        return {
+          success: false,
+          error: data.error,
+          locked: data.locked,
+          remainingSeconds: data.remainingSeconds,
+          lockedUntil: data.lockedUntil,
+          remainingAttempts: data.remainingAttempts,
+        };
       }
 
       setToken(data.token);
@@ -255,10 +272,10 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
       } else {
         router.push("/dashboard");
       }
-      return true;
+      return { success: true };
     } catch (err: any) {
       addToast(err.message || "Login error", "error");
-      return false;
+      return { success: false, error: err.message || "Login error" };
     }
   };
 
@@ -497,6 +514,24 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const unlockUser = async (userId: string): Promise<boolean> => {
+    try {
+      const res = await sendOps([
+        {
+          type: "unlockUser",
+          payload: { userId },
+        },
+      ]);
+      if (res) {
+        addToast("Account unlocked successfully. User may now sign in.", "success");
+      }
+      return res;
+    } catch (e: any) {
+      addToast(e.message || "Failed to unlock account", "error");
+      return false;
+    }
+  };
+
   const adminUpdateUser = async (userId: string, data: any): Promise<boolean> => {
     try {
       const res = await sendOps([
@@ -569,7 +604,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
                 ...l,
                 resolved,
                 resolvedAt: resolved ? new Date().toISOString() : "",
-                resolvedBy: resolved ? currentUser?.name || "Platform Super Admin" : "",
+                resolvedBy: resolved ? currentUser?.name || "Site Admin" : "",
               }
             : l
         );
@@ -736,6 +771,7 @@ export function ChamberProvider({ children }: { children: React.ReactNode }) {
         deleteUser,
         deleteChamber,
         toggleUserStatus,
+        unlockUser,
         adminUpdateUser,
         updateBroadcast,
         refreshErrorLogs,

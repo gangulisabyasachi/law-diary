@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback, type FormEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Mail,
@@ -15,6 +16,8 @@ import {
   Sparkles,
   RotateCw,
   ShieldCheck,
+  AlertTriangle,
+  ShieldAlert,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useChamber } from "@/context/ChamberContext";
@@ -375,6 +378,39 @@ export default function AuthSwitch({
   const [signInCaptchaCode, setSignInCaptchaCode] = useState("7K4WP");
   const [signingIn, setSigningIn] = useState(false);
 
+  // Option A Lockout & Security Cooldown State
+  const [isLocked, setIsLocked] = useState(false);
+  const [lockoutRemainingSeconds, setLockoutRemainingSeconds] = useState(0);
+  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
+
+  // Live countdown timer for temporary lockout
+  useEffect(() => {
+    if (!isLocked || lockoutRemainingSeconds <= 0) return;
+    const interval = setInterval(() => {
+      setLockoutRemainingSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setIsLocked(false);
+          setRemainingAttempts(null);
+          addToast("Lockout cooldown elapsed. You may now attempt to sign in.", "info");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isLocked, lockoutRemainingSeconds, addToast]);
+
+  const formatLockoutTimer = (totalSeconds: number) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    if (hours > 0) {
+      return `${hours}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
   const refreshSignInCaptcha = useCallback(() => {
     setSignInCaptchaCode(generateCaptchaCode(5));
     setSignInCaptcha("");
@@ -429,6 +465,13 @@ export default function AuthSwitch({
 
   const handleSignIn = async (e: FormEvent) => {
     e.preventDefault();
+    if (isLocked) {
+      addToast(
+        `Security lockout active. Please wait ${formatLockoutTimer(lockoutRemainingSeconds)} before retrying.`,
+        "error"
+      );
+      return;
+    }
     if (!signInEmail || !signInPassword) {
       addToast("Please provide both email and password.", "error");
       return;
@@ -444,15 +487,25 @@ export default function AuthSwitch({
     }
     setSigningIn(true);
     try {
-      const success = await login(signInEmail, signInPassword);
+      const res = await login(signInEmail, signInPassword);
       setSigningIn(false);
-      if (success) {
+      if (res.success) {
+        setIsLocked(false);
+        setLockoutRemainingSeconds(0);
+        setRemainingAttempts(null);
         addToast("Welcome back to your chamber diary.", "success");
         onSuccess?.();
         onClose?.();
         router.push("/dashboard");
       } else {
         refreshSignInCaptcha();
+        if (res.locked) {
+          setIsLocked(true);
+          setLockoutRemainingSeconds(res.remainingSeconds || 900);
+          setRemainingAttempts(0);
+        } else if (res.remainingAttempts !== undefined) {
+          setRemainingAttempts(res.remainingAttempts);
+        }
       }
     } catch {
       setSigningIn(false);
@@ -1122,6 +1175,54 @@ export default function AuthSwitch({
               <h2 className="as-title">Sign In</h2>
               <p className="as-subtitle">Authenticate credentials to enter private chamber diary</p>
 
+              {/* Option A: Progressive Lockout Banner */}
+              {isLocked ? (
+                <div className="w-full max-w-[380px] mb-2.5 p-3.5 rounded-2xl bg-rose-500/10 dark:bg-rose-950/40 border border-rose-500/30 text-rose-900 dark:text-rose-200 text-xs space-y-2 animate-in fade-in slide-in-from-top-1">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                      </span>
+                      <span className="font-cinzel font-bold text-rose-800 dark:text-rose-300 tracking-wider uppercase text-[10.5px] flex items-center gap-1.5">
+                        <ShieldAlert className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+                        <span>Security Lockout Active</span>
+                      </span>
+                    </div>
+                    <div className="font-mono font-bold text-xs text-[#d9541e] dark:text-[#ea6026] bg-[#d9541e]/10 dark:bg-[#d9541e]/20 px-2 py-0.5 rounded-md border border-[#d9541e]/20">
+                      {formatLockoutTimer(lockoutRemainingSeconds)}
+                    </div>
+                  </div>
+                  <p className="text-[11px] font-serif text-rose-800/80 dark:text-rose-300/80 leading-snug">
+                    Too many unsuccessful sign-in attempts. Authentication is temporarily suspended.
+                  </p>
+                  <div className="pt-1.5 border-t border-rose-500/20 text-[10px] font-serif text-rose-700/80 dark:text-rose-300/70 flex items-center justify-between">
+                    <span>Auto-unlocks when timer reaches 0:00</span>
+                    <Link
+                      href="/contact"
+                      onClick={() => {
+                        onClose?.();
+                      }}
+                      className="italic underline hover:text-[#d9541e] transition-colors"
+                    >
+                      Contact the support team.
+                    </Link>
+                  </div>
+                </div>
+              ) : remainingAttempts !== null && remainingAttempts <= 2 ? (
+                <div className="w-full max-w-[380px] mb-2.5 px-3.5 py-2 rounded-xl bg-amber-500/10 dark:bg-amber-950/30 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-xs flex items-start gap-2 animate-in fade-in slide-in-from-top-1">
+                  <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+                  <div className="leading-tight text-[11px] font-serif">
+                    <span className="font-bold font-sans">Warning: </span>
+                    {remainingAttempts === 1 ? (
+                      <span><strong>1 attempt remaining</strong> before temporary 15-minute account lockout.</span>
+                    ) : (
+                      <span><strong>{remainingAttempts} attempts remaining</strong> before account lockout.</span>
+                    )}
+                  </div>
+                </div>
+              ) : null}
+
               <div className="as-input-field">
                 <div className="as-input-icon">
                   <Mail className="w-4 h-4" />
@@ -1129,6 +1230,7 @@ export default function AuthSwitch({
                 <input
                   type="text"
                   required
+                  disabled={isLocked || signingIn}
                   placeholder="Email ID, Phone, or Client ID *"
                   value={signInEmail}
                   onChange={(e) => setSignInEmail(e.target.value)}
@@ -1143,6 +1245,7 @@ export default function AuthSwitch({
                 <input
                   type={showSignInPassword ? "text" : "password"}
                   required
+                  disabled={isLocked || signingIn}
                   placeholder="Password *"
                   value={signInPassword}
                   onChange={(e) => setSignInPassword(e.target.value)}
@@ -1176,11 +1279,20 @@ export default function AuthSwitch({
 
               <button
                 type="submit"
-                disabled={signingIn}
+                disabled={signingIn || isLocked}
                 className="as-btn solid"
               >
-                <span>{signingIn ? "Signing In..." : "Sign In"}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                {isLocked ? (
+                  <>
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Locked ({formatLockoutTimer(lockoutRemainingSeconds)})</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{signingIn ? "Signing In..." : "Sign In"}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
               </button>
             </form>
 
