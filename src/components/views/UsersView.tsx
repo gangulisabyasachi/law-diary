@@ -395,6 +395,12 @@ export function UsersView() {
 
                       {/* Contact */}
                       <td className="py-4 px-4 whitespace-nowrap">
+                        {u.aadhaarNumber && (
+                          <p className="font-mono text-[10.5px] text-[#d9541e] dark:text-[#ea6026] font-semibold flex items-center gap-1.5 mb-1">
+                            <ShieldCheck className="w-3 h-3 text-[#d9541e] dark:text-[#ea6026] shrink-0" />
+                            <span>UID: {u.aadhaarNumber.replace(/(\d{4})(?=\d)/g, "$1 ").trim()}</span>
+                          </p>
+                        )}
                         <p className="font-mono text-[11px] text-[#111111] dark:text-[#f3eee3] flex items-center gap-1.5">
                           <Mail className="w-3 h-3 text-[#111111]/50 dark:text-[#f3eee3]/50 shrink-0" />
                           <span>{u.email || "—"}</span>

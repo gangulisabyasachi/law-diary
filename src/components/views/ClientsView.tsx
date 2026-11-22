@@ -119,9 +119,15 @@ export function ClientsView() {
                 </p>
 
                 <div className="mt-4 space-y-2 text-xs text-[#111111]/70 dark:text-[#f3eee3]/70">
+                  {cl.aadhaarNumber && (
+                    <p className="flex items-center gap-2 font-mono text-[11px] text-[#d9541e] dark:text-[#ea6026] font-semibold">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#d9541e] dark:text-[#ea6026] flex-shrink-0" />
+                      <span>UID: {cl.aadhaarNumber.replace(/(\d{4})(?=\d)/g, "$1 ").trim()}</span>
+                    </p>
+                  )}
                   <p className="flex items-center gap-2 truncate font-mono text-[11px]">
                     <Mail className="w-3.5 h-3.5 text-[#111111]/60 dark:text-[#f3eee3] flex-shrink-0" />
-                    <span>{cl.email}</span>
+                    <span>{cl.email || "—"}</span>
                   </p>
                   <p className="flex items-center gap-2 font-mono text-[11px]">
                     <Phone className="w-3.5 h-3.5 text-[#111111]/60 dark:text-[#f3eee3] flex-shrink-0" />

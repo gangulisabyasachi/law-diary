@@ -4,6 +4,7 @@ export interface RawUserSeed {
   name: string;
   email: string;
   phone?: string;
+  aadhaarNumber?: string;
   designation?: string;
   lawyerId?: string;
 }
@@ -50,6 +51,7 @@ export function getSeedData() {
       name: "Rahul Verma",
       email: "client@chambers.in",
       phone: "+91 98110 20004",
+      aadhaarNumber: "542189023415",
       designation: "Managing Director, Verma Infra LLP",
       lawyerId: "u-lawyer",
     },
@@ -59,6 +61,7 @@ export function getSeedData() {
       name: "Sunrise Textiles Pvt. Ltd.",
       email: "sunrise@chambers.in",
       phone: "+91 98110 20005",
+      aadhaarNumber: "789123456789",
       designation: "Corporate Litigant (Through Director)",
       lawyerId: "u-lawyer",
     },
@@ -86,6 +89,7 @@ export function getSeedData() {
       name: "Sen Infra Projects Pvt. Ltd.",
       email: "seninfra@chambers.in",
       phone: "+91 98110 30002",
+      aadhaarNumber: "912345678901",
       designation: "Corporate Petitioner (Through Director)",
       lawyerId: "u-lawyer2",
     },

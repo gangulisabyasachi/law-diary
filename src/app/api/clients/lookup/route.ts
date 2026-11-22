@@ -1,18 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { lookupClientByPhone } from "@/lib/dataService";
+import { lookupClientByAadhaar, lookupClientByPhone } from "@/lib/dataService";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    const aadhaar = searchParams.get("aadhaar");
     const phone = searchParams.get("phone");
 
-    if (!phone) {
-      return NextResponse.json({ client: null, error: "Phone number is required" }, { status: 400 });
+    if (!aadhaar && !phone) {
+      return NextResponse.json({ client: null, error: "Aadhaar or phone number is required" }, { status: 400 });
     }
 
-    const client = await lookupClientByPhone(phone);
+    let client = null;
+    if (aadhaar) {
+      client = await lookupClientByAadhaar(aadhaar);
+    } else if (phone) {
+      client = await lookupClientByPhone(phone);
+    }
     return NextResponse.json({ client });
   } catch (err: any) {
     console.error("Client lookup error:", err);

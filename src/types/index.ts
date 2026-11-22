@@ -6,6 +6,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  aadhaarNumber?: string;
   designation?: string;
   lawyerId?: string;
   accessCode?: string;

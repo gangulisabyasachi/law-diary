@@ -125,6 +125,7 @@ export async function seedMongoIfEmpty() {
           email: u.email.toLowerCase().trim(),
           passwordHash,
           phone: u.phone || "",
+          aadhaarNumber: u.aadhaarNumber || "",
           designation: u.designation || "",
           lawyerId: u.lawyerId || "",
           accessCode: accessCode || "",
@@ -146,15 +147,14 @@ export async function seedMongoIfEmpty() {
   return true;
 }
 
-export async function getChamberState(filterUser?: { id: string; role: string; lawyerId?: string }): Promise<AppState> {
-  const { isConnected } = await connectToDatabase();
-
-  const sanitizeUser = (u: any): User => ({
+function sanitizeUser(u: any): User {
+  return {
     id: u.id,
     role: u.role,
     name: u.name,
     email: u.email,
     phone: u.phone,
+    aadhaarNumber: u.aadhaarNumber || "",
     designation: u.designation,
     lawyerId: u.lawyerId,
     accessCode:
@@ -174,7 +174,11 @@ export async function getChamberState(filterUser?: { id: string; role: string; l
     lastFailedLoginAt: u.lastFailedLoginAt ? (u.lastFailedLoginAt.toISOString?.() || u.lastFailedLoginAt) : null,
     createdAt: u.createdAt?.toISOString?.() || u.createdAt,
     updatedAt: u.updatedAt?.toISOString?.() || u.updatedAt,
-  });
+  };
+}
+
+export async function getChamberState(filterUser?: { id: string; role: string; lawyerId?: string }): Promise<AppState> {
+  const { isConnected } = await connectToDatabase();
 
   const sanitizeCase = (c: any): Case => ({
     id: c.id,
@@ -434,11 +438,13 @@ export async function loginUser(email: string, pass: string, clientIp: string = 
     try {
       await seedMongoIfEmpty();
       const safeRegex = normEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const aadhaarDigits = cleanDigits.length === 12 ? cleanDigits : "";
       const phonePattern = cleanDigits.length >= 10 ? cleanDigits.slice(-10).split("").join("\\D*") : "";
       const user = await UserModel.findOne({
         $or: [
           { email: { $regex: new RegExp("^" + safeRegex + "$", "i") } },
           { id: { $regex: new RegExp("^" + safeRegex + "$", "i") } },
+          ...(aadhaarDigits ? [{ aadhaarNumber: aadhaarDigits }] : []),
           ...(phonePattern ? [{ phone: { $regex: new RegExp(phonePattern) } }] : []),
         ],
       });
@@ -645,6 +651,7 @@ export async function loginUser(email: string, pass: string, clientIp: string = 
   const u = fallbackStore.users.find((x) => {
     if (x.email.toLowerCase() === normEmail) return true;
     if (x.id.toLowerCase() === normEmail) return true;
+    if (cleanDigits.length === 12 && (x.aadhaarNumber || "").replace(/\D/g, "") === cleanDigits) return true;
     if (cleanDigits.length >= 10 && (x.phone || "").replace(/\D/g, "").slice(-10) === cleanDigits.slice(-10)) return true;
     return false;
   });
@@ -860,12 +867,12 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         break;
       }
       case "addClient": {
-        const cleanPhone = (payload.user.phone || "").replace(/\D/g, "");
+        const cleanAadhaar = (payload.user.aadhaarNumber || "").replace(/\D/g, "").slice(0, 12);
         let existingUser: any = null;
-        if (cleanPhone.length >= 10) {
+        if (cleanAadhaar.length === 12) {
           const allClients = await UserModel.find({ role: "client" }).lean();
           existingUser = allClients.find(
-            (u: any) => (u.phone || "").replace(/\D/g, "").slice(-10) === cleanPhone.slice(-10)
+            (u: any) => (u.aadhaarNumber || "").replace(/\D/g, "") === cleanAadhaar
           );
         }
 
@@ -875,9 +882,10 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
             { id: existingUser.id },
             {
               $set: {
-                name: existingUser.name || payload.user.name,
+                name: payload.user.name || existingUser.name,
                 email: (payload.user.email || existingUser.email || "").toLowerCase().trim(),
-                phone: existingUser.phone || payload.user.phone,
+                phone: payload.user.phone || existingUser.phone,
+                aadhaarNumber: cleanAadhaar || existingUser.aadhaarNumber,
                 updatedAt: new Date().toISOString(),
               },
             }
@@ -895,6 +903,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
             $set: {
               ...payload.user,
               email: (payload.user.email || "").toLowerCase().trim(),
+              aadhaarNumber: cleanAadhaar,
               accessCode: generatedPassword,
               role: "client",
               passwordHash,
@@ -969,6 +978,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         if (payload.name !== undefined) updateDoc.name = payload.name.trim();
         if (payload.email !== undefined) updateDoc.email = payload.email.toLowerCase().trim();
         if (payload.phone !== undefined) updateDoc.phone = payload.phone.trim();
+        if (payload.aadhaarNumber !== undefined) updateDoc.aadhaarNumber = payload.aadhaarNumber.replace(/\D/g, "").slice(0, 12);
         if (payload.designation !== undefined) updateDoc.designation = payload.designation.trim();
         // Client passwords are IMMUTABLE and cannot be altered by anyone
         if (payload.password && existing?.role !== "client") {
@@ -1035,6 +1045,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         if (payload.name !== undefined) updateDoc.name = payload.name.trim();
         if (payload.email !== undefined) updateDoc.email = payload.email.toLowerCase().trim();
         if (payload.phone !== undefined) updateDoc.phone = payload.phone.trim();
+        if (payload.aadhaarNumber !== undefined) updateDoc.aadhaarNumber = payload.aadhaarNumber.replace(/\D/g, "").slice(0, 12);
         if (payload.designation !== undefined) updateDoc.designation = payload.designation.trim();
         if (payload.role !== undefined) updateDoc.role = payload.role;
         if (payload.lawyerId !== undefined) updateDoc.lawyerId = payload.lawyerId;
@@ -1174,14 +1185,16 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
       break;
     }
     case "addClient": {
-      const cleanPhone = (payload.user.phone || "").replace(/\D/g, "");
-      const existing = cleanPhone.length >= 10
-        ? fallbackStore.users.find((u) => u.role === "client" && (u.phone || "").replace(/\D/g, "").slice(-10) === cleanPhone.slice(-10))
+      const cleanAadhaar = (payload.user.aadhaarNumber || "").replace(/\D/g, "").slice(0, 12);
+      const existing = cleanAadhaar.length === 12
+        ? fallbackStore.users.find((u) => u.role === "client" && (u.aadhaarNumber || "").replace(/\D/g, "") === cleanAadhaar)
         : null;
 
       if (existing) {
-        if (payload.user.name && !existing.name) existing.name = payload.user.name;
-        if (payload.user.email && !existing.email) existing.email = payload.user.email;
+        if (payload.user.name) existing.name = payload.user.name;
+        if (payload.user.email) existing.email = payload.user.email;
+        if (payload.user.phone) existing.phone = payload.user.phone;
+        existing.aadhaarNumber = cleanAadhaar;
         break;
       }
 
@@ -1190,6 +1203,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
       fallbackStore.users.push({
         ...payload.user,
         role: "client",
+        aadhaarNumber: cleanAadhaar,
         accessCode: generatedPassword,
         lawyerId,
         passwordHash: await hashPassword(generatedPassword),
@@ -1248,6 +1262,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         if (payload.name !== undefined) u.name = payload.name.trim();
         if (payload.email !== undefined) u.email = payload.email.toLowerCase().trim();
         if (payload.phone !== undefined) u.phone = payload.phone.trim();
+        if (payload.aadhaarNumber !== undefined) u.aadhaarNumber = payload.aadhaarNumber.replace(/\D/g, "").slice(0, 12);
         if (payload.designation !== undefined) u.designation = payload.designation.trim();
         if (payload.password && u.role !== "client") {
           u.passwordHash = await hashPassword(payload.password);
@@ -1298,6 +1313,7 @@ export async function applyOp(op: { type: string; payload: any }, authorId: stri
         if (payload.name !== undefined) u.name = payload.name.trim();
         if (payload.email !== undefined) u.email = payload.email.toLowerCase().trim();
         if (payload.phone !== undefined) u.phone = payload.phone.trim();
+        if (payload.aadhaarNumber !== undefined) u.aadhaarNumber = payload.aadhaarNumber.replace(/\D/g, "").slice(0, 12);
         if (payload.designation !== undefined) u.designation = payload.designation.trim();
         if (payload.role !== undefined) u.role = payload.role;
         if (payload.lawyerId !== undefined) u.lawyerId = payload.lawyerId;
@@ -1660,6 +1676,38 @@ export async function getPublicCase(caseId: string) {
   };
 }
 
+export async function lookupClientByAadhaar(aadhaarQuery: string): Promise<User | null> {
+  const cleanDigits = (aadhaarQuery || "").replace(/\D/g, "").slice(0, 12);
+  if (cleanDigits.length !== 12) return null;
+
+  const { isConnected } = await connectToDatabase();
+  if (isConnected) {
+    try {
+      const found = await UserModel.findOne({
+        role: "client",
+        $or: [
+          { aadhaarNumber: cleanDigits },
+          { aadhaarNumber: { $regex: new RegExp(cleanDigits.split("").join("\\D*")) } },
+        ],
+      }).lean();
+      if (found) {
+        return sanitizeUser(found as any);
+      }
+    } catch (e) {
+      console.warn("lookupClientByAadhaar DB fallback:", e);
+    }
+  }
+
+  await initFallbackStore();
+  const found = fallbackStore.users.find(
+    (u) => u.role === "client" && (u.aadhaarNumber || "").replace(/\D/g, "") === cleanDigits
+  );
+  if (found) {
+    return sanitizeUser(found);
+  }
+  return null;
+}
+
 export async function lookupClientByPhone(phoneQuery: string): Promise<User | null> {
   const cleanDigits = phoneQuery.replace(/\D/g, "");
   if (cleanDigits.length < 10) return null;
@@ -1674,20 +1722,7 @@ export async function lookupClientByPhone(phoneQuery: string): Promise<User | nu
         phone: { $regex: new RegExp(phonePattern) },
       }).lean();
       if (found) {
-        return {
-          id: found.id,
-          role: found.role,
-          name: found.name,
-          email: found.email,
-          phone: found.phone,
-          designation: found.designation,
-          lawyerId: found.lawyerId,
-          accessCode:
-            found.accessCode ||
-            (found.id === "u-client"
-              ? process.env.SEED_CLIENT_PASSWORD || "client123"
-              : "LD" + found.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()),
-        };
+        return sanitizeUser(found as any);
       }
     } catch (e) {
       console.warn("lookupClientByPhone DB fallback:", e);
@@ -1699,20 +1734,7 @@ export async function lookupClientByPhone(phoneQuery: string): Promise<User | nu
     (u) => u.role === "client" && (u.phone || "").replace(/\D/g, "").slice(-10) === last10
   );
   if (found) {
-    return {
-      id: found.id,
-      role: found.role,
-      name: found.name,
-      email: found.email,
-      phone: found.phone,
-      designation: found.designation,
-      lawyerId: found.lawyerId,
-      accessCode:
-        found.accessCode ||
-        (found.id === "u-client"
-          ? process.env.SEED_CLIENT_PASSWORD || "client123"
-          : "LD" + found.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase()),
-    };
+    return sanitizeUser(found);
   }
   return null;
 }

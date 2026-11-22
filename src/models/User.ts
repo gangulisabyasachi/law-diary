@@ -7,6 +7,7 @@ export interface IUserDocument extends Document {
   email: string;
   passwordHash: string;
   phone?: string;
+  aadhaarNumber?: string;
   designation?: string;
   lawyerId?: string;
   accessCode?: string;
@@ -39,6 +40,7 @@ const UserSchema = new Schema<IUserDocument>(
     },
     passwordHash: { type: String, default: "" },
     phone: { type: String, default: "" },
+    aadhaarNumber: { type: String, default: "", index: true },
     designation: { type: String, default: "" },
     lawyerId: { type: String, default: "" },
     accessCode: { type: String, default: "" },

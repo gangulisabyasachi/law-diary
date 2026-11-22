@@ -988,20 +988,79 @@ function EditCaseForm({ caseItem, clients, associates, onClose, onSubmit }: any)
   );
 }
 
+function formatAadhaar(val: string): string {
+  const digits = (val || "").replace(/\D/g, "").slice(0, 12);
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+}
+
 function AddClientForm({ onClose, onSubmit }: any) {
+  const [aadhaar, setAadhaar] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [isLookingUp, setIsLookingUp] = useState(false);
+  const [matchedClient, setMatchedClient] = useState<any>(null);
+  const [aadhaarError, setAadhaarError] = useState("");
+
+  const triggerAadhaarLookup = async (rawAadhaar: string) => {
+    const cleanDigits = (rawAadhaar || "").replace(/\D/g, "").slice(0, 12);
+    if (cleanDigits.length !== 12) {
+      setMatchedClient(null);
+      return;
+    }
+    setIsLookingUp(true);
+    try {
+      const res = await fetch(`/api/clients/lookup?aadhaar=${cleanDigits}`);
+      const data = await res.json();
+      if (data?.client) {
+        setMatchedClient(data.client);
+        if (data.client.name) setName(data.client.name);
+        if (data.client.phone) setPhone(data.client.phone);
+        if (data.client.email) setEmail(data.client.email);
+        setAadhaarError("");
+      } else {
+        setMatchedClient(null);
+      }
+    } catch (err) {
+      console.warn("Aadhaar lookup error:", err);
+    } finally {
+      setIsLookingUp(false);
+    }
+  };
+
+  const handleAadhaarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatAadhaar(e.target.value);
+    setAadhaar(formatted);
+    const clean = formatted.replace(/\D/g, "");
+    if (clean.length === 12) {
+      triggerAadhaarLookup(clean);
+      setAadhaarError("");
+    } else {
+      if (matchedClient) setMatchedClient(null);
+      if (clean.length > 0 && clean.length < 12) {
+        setAadhaarError("Aadhaar number must be exactly 12 digits");
+      } else {
+        setAadhaarError("");
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim()) return;
+    const cleanAadhaar = aadhaar.replace(/\D/g, "").slice(0, 12);
+    if (!cleanAadhaar || cleanAadhaar.length !== 12) {
+      setAadhaarError("Aadhaar number is super mandatory. Please enter exactly 12 digits.");
+      return;
+    }
+    if (!name.trim()) return;
+
     onSubmit({
-      id: "u-" + Date.now(),
+      id: matchedClient?.id || "u-" + Date.now(),
       name: name.trim(),
+      aadhaarNumber: cleanAadhaar,
       email: email.trim() || "",
-      phone: phone.trim(),
+      phone: phone.trim() || "",
       password: password.trim() || "",
     });
   };
@@ -1011,35 +1070,90 @@ function AddClientForm({ onClose, onSubmit }: any) {
       <div className="p-5 sm:p-6 bg-[#f3eee3]/10 dark:bg-[#111111] text-[#111111] dark:text-[#f3eee3] flex items-center justify-between border-b border-[#111111]/15 dark:border-[#f3eee3]/20">
         <div>
           <h3 className="text-sm font-cinzel font-bold text-[#111111] dark:text-[#f3eee3]">Enroll Litigant Client</h3>
-          <p className="text-[11px] font-serif italic text-[#111111]/60 dark:text-[#f3eee3]/60 mt-0.5">Confidential Client Dossier & Record</p>
+          <p className="text-[11px] font-serif italic text-[#111111]/60 dark:text-[#f3eee3]/60 mt-0.5">Confidential Client Dossier & Universal Cross-Chamber Record</p>
         </div>
         <button type="button" onClick={onClose} className="p-1 rounded-lg text-[#111111]/60 hover:text-[#111111] dark:hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
       </div>
       <div className="p-6 space-y-4 text-xs font-serif">
+        {/* Super Mandatory Aadhaar Field */}
         <div>
-          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">Client Name / Corporate Entity *</label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-xs font-cinzel font-semibold text-[#111111] dark:text-[#f3eee3]">
+              Aadhaar Number <span className="text-[#d9541e] font-bold">* (Super Mandatory)</span>
+            </label>
+            <span className="text-[10px] text-[#d9541e] font-serif italic">
+              12-Digit Litigant Unique Key
+            </span>
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              required
+              autoFocus
+              maxLength={14}
+              value={aadhaar}
+              onChange={handleAadhaarChange}
+              onBlur={() => {
+                const clean = aadhaar.replace(/\D/g, "").slice(0, 12);
+                if (clean.length === 12) triggerAadhaarLookup(clean);
+              }}
+              placeholder="XXXX XXXX XXXX"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#d9541e]/50 dark:border-[#d9541e]/60 bg-white dark:bg-[#202020] text-xs font-mono font-bold tracking-widest text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+            />
+            {isLookingUp && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-amber-600 dark:text-amber-400 font-serif italic animate-pulse">
+                Checking registry...
+              </div>
+            )}
+          </div>
+          {aadhaarError && (
+            <p className="text-[10.5px] text-rose-600 dark:text-rose-400 mt-1 font-serif">
+              {aadhaarError}
+            </p>
+          )}
+          {matchedClient && (
+            <div className="mt-2.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-[11px] text-emerald-900 dark:text-emerald-200 font-serif">
+              <div className="flex items-center gap-1.5 font-bold font-cinzel text-emerald-800 dark:text-emerald-300">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span>Existing Litigant Profile Detected across Chambers</span>
+              </div>
+              <p className="text-[10.5px] mt-1">
+                Found litigant <strong>{matchedClient.name}</strong> linked to this Aadhaar ID. Particulars autofilled automatically. Their single universal login passcode will link all chamber matters.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Mandatory Name */}
+        <div>
+          <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+            Client Name / Corporate Entity <span className="text-[#d9541e]">*</span>
+          </label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Rahul Verma or Sunrise Textiles Pvt. Ltd."
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
           />
         </div>
-        <div className="grid grid-cols-2 gap-3.5">
+
+        {/* Recommended Mobile & Optional Email */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
-            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">Phone Number *</label>
+            <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
+              Mobile Number <span className="font-sans font-normal text-[#111111]/60 dark:text-[#f3eee3]/60">(Recommended)</span>
+            </label>
             <input
               type="tel"
-              required
               maxLength={10}
               value={phone}
               onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
               placeholder="10-digit mobile number"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
             />
           </div>
           <div>
@@ -1051,10 +1165,11 @@ function AddClientForm({ onClose, onSubmit }: any) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="client@chambers.in (optional)"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
             />
           </div>
         </div>
+
         <div>
           <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
             Initial Password <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Optional)</span>
@@ -1063,8 +1178,8 @@ function AddClientForm({ onClose, onSubmit }: any) {
             type="text"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Optional portal login key"
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-mono text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#111111] dark:focus:border-[#f3eee3] focus:ring-1 focus:ring-[#111111] dark:focus:ring-[#f3eee3]"
+            placeholder="Optional portal login key (auto-generated if left blank)"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs font-mono text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
           />
         </div>
       </div>
@@ -1088,12 +1203,10 @@ function AddClientForm({ onClose, onSubmit }: any) {
 }
 
 function EditClientForm({ client, onClose, onSubmit }: any) {
+  const [aadhaar, setAadhaar] = useState(formatAadhaar(client?.aadhaarNumber || ""));
   const [name, setName] = useState(client?.name || "");
   const [email, setEmail] = useState(client?.email || "");
   const [phone, setPhone] = useState(client?.phone || "");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
   const [copiedPass, setCopiedPass] = useState(false);
 
   const clientPermanentPassword = client.accessCode || (client.id === "u-client" ? "client123" : "LD" + client.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase());
@@ -1106,10 +1219,12 @@ function EditClientForm({ client, onClose, onSubmit }: any) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim() || !email.trim()) return;
+    if (!name.trim()) return;
+    const cleanAadhaar = aadhaar.replace(/\D/g, "").slice(0, 12);
     onSubmit({
       userId: client.id,
       name: name.trim(),
+      aadhaarNumber: cleanAadhaar,
       email: email.trim().toLowerCase(),
       phone: phone.trim(),
     });
@@ -1136,9 +1251,30 @@ function EditClientForm({ client, onClose, onSubmit }: any) {
       </div>
 
       <div className="p-6 space-y-4 text-xs font-serif">
+        {/* Aadhaar Number */}
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-xs font-cinzel font-semibold text-[#111111] dark:text-[#f3eee3]">
+              Aadhaar Number <span className="text-[#d9541e] font-bold">* (Super Mandatory)</span>
+            </label>
+            <span className="text-[10px] text-[#d9541e] font-serif italic">
+              12-Digit Litigant Unique Key
+            </span>
+          </div>
+          <input
+            type="text"
+            required
+            maxLength={14}
+            value={aadhaar}
+            onChange={(e) => setAadhaar(formatAadhaar(e.target.value))}
+            placeholder="XXXX XXXX XXXX"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-[#d9541e]/50 dark:border-[#d9541e]/60 bg-white dark:bg-[#202020] text-xs font-mono font-bold tracking-widest text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+          />
+        </div>
+
         <div>
           <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
-            Client Name / Entity *
+            Client Name / Entity <span className="text-[#d9541e]">*</span>
           </label>
           <input
             type="text"
@@ -1152,11 +1288,10 @@ function EditClientForm({ client, onClose, onSubmit }: any) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
             <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
-              Contact Phone * <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(10 digits)</span>
+              Contact Phone <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Recommended)</span>
             </label>
             <input
               type="tel"
-              required
               maxLength={10}
               value={phone}
               onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
@@ -1167,14 +1302,13 @@ function EditClientForm({ client, onClose, onSubmit }: any) {
 
           <div>
             <label className="block text-xs font-cinzel font-semibold text-[#555866] dark:text-[#f3eee3]/60 mb-1.5">
-              Email ID <span className="text-[#d9541e]">*</span> <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Mandatory for Login)</span>
+              Email ID <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Optional)</span>
             </label>
             <input
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="client@chambers.in"
+              placeholder="client@chambers.in (optional)"
               className="w-full px-3.5 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#202020] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
             />
           </div>
@@ -1883,6 +2017,7 @@ function ProvisionAdvocateForm({ onClose, onSubmit }: any) {
 }
 
 function EditUserAdminForm({ user, lawyers = [], onClose, onSubmit }: any) {
+  const [aadhaar, setAadhaar] = useState(formatAadhaar(user?.aadhaarNumber || ""));
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
@@ -1915,6 +2050,7 @@ function EditUserAdminForm({ user, lawyers = [], onClose, onSubmit }: any) {
       lawyerId: (role === "associate" || role === "client") ? lawyerId : "",
       disabled,
       status: disabled ? "disabled" : "active",
+      ...(role === "client" ? { aadhaarNumber: aadhaar.replace(/\D/g, "") } : {}),
       ...(newPassword.trim() ? { password: newPassword.trim() } : {}),
     });
   };
@@ -2033,6 +2169,28 @@ function EditUserAdminForm({ user, lawyers = [], onClose, onSubmit }: any) {
             />
           </div>
         </div>
+
+        {/* Aadhaar Number (For clients) */}
+        {role === "client" && (
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-cinzel font-semibold text-[#111111] dark:text-[#f3eee3]">
+                Aadhaar Number <span className="text-[#d9541e] font-bold">* (Super Mandatory)</span>
+              </label>
+              <span className="text-[10px] text-[#d9541e] font-serif italic">
+                12-Digit Litigant Unique Key
+              </span>
+            </div>
+            <input
+              type="text"
+              maxLength={14}
+              value={aadhaar}
+              onChange={(e) => setAadhaar(formatAadhaar(e.target.value))}
+              placeholder="XXXX XXXX XXXX"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#d9541e]/50 dark:border-[#d9541e]/60 bg-white dark:bg-[#202020] text-xs font-mono font-bold tracking-widest text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+            />
+          </div>
+        )}
 
         {/* Designation */}
         <div>

@@ -38,6 +38,11 @@ import {
 import { useChamber } from "@/context/ChamberContext";
 import { CustomField, CaseAttachment, TimesheetEntry, FeeReceipt } from "@/types";
 
+function formatAadhaar(val: string): string {
+  const digits = (val || "").replace(/\D/g, "").slice(0, 12);
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+}
+
 // ==========================================
 // 1. Sleek Searchable / Creatable Combobox
 // ==========================================
@@ -396,12 +401,13 @@ interface ClientComboboxProps {
   label: string;
   clientId: string;
   onChange: (id: string) => void;
-  onSelectClient?: (client: { id: string; name: string; phone?: string; email?: string; designation?: string }) => void;
+  onSelectClient?: (client: { id: string; name: string; phone?: string; email?: string; aadhaarNumber?: string; designation?: string }) => void;
   clients: Array<{
     id: string;
     name: string;
     phone?: string;
     email?: string;
+    aadhaarNumber?: string;
     designation?: string;
   }>;
   onAddNewContact: () => void;
@@ -422,11 +428,12 @@ function SearchableClientCombobox({
     name: string;
     phone?: string;
     email?: string;
+    aadhaarNumber?: string;
     designation?: string;
   } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [remoteLitigant, setRemoteLitigant] = useState<{ id: string; name: string; phone?: string; email?: string } | null>(null);
+  const [remoteLitigant, setRemoteLitigant] = useState<{ id: string; name: string; phone?: string; email?: string; aadhaarNumber?: string } | null>(null);
 
   const selectedClient =
     clients.find((c) => c.id === clientId) ||
@@ -460,7 +467,20 @@ function SearchableClientCombobox({
   const cleanDigits = searchTerm.replace(/[^0-9]/g, "");
 
   useEffect(() => {
-    if (cleanDigits.length === 10) {
+    if (cleanDigits.length >= 12) {
+      let isSubscribed = true;
+      fetch(`/api/clients/lookup?aadhaar=${cleanDigits}`)
+        .then((r) => r.json())
+        .then((res) => {
+          if (isSubscribed && res?.client) {
+            setRemoteLitigant(res.client);
+          }
+        })
+        .catch(() => {});
+      return () => {
+        isSubscribed = false;
+      };
+    } else if (cleanDigits.length === 10) {
       let isSubscribed = true;
       fetch(`/api/clients/lookup?phone=${cleanDigits}`)
         .then((r) => r.json())
@@ -482,10 +502,13 @@ function SearchableClientCombobox({
     if (!cleanTerm) return true;
     const nameMatch = (c.name || "").toLowerCase().includes(cleanTerm);
     const emailMatch = (c.email || "").toLowerCase().includes(cleanTerm);
+    const aadhaarMatch = cleanDigits
+      ? (c.aadhaarNumber || "").replace(/[^0-9]/g, "").includes(cleanDigits)
+      : false;
     const phoneMatch = cleanDigits
       ? (c.phone || "").replace(/[^0-9]/g, "").includes(cleanDigits)
       : (c.phone || "").toLowerCase().includes(cleanTerm);
-    return nameMatch || emailMatch || phoneMatch;
+    return nameMatch || emailMatch || aadhaarMatch || phoneMatch;
   });
 
   const comboboxItems = [
@@ -493,11 +516,12 @@ function SearchableClientCombobox({
     ...filtered,
   ];
 
-  const handleSelect = (c: { id: string; name: string; phone?: string; email?: string; designation?: string }) => {
+  const handleSelect = (c: { id: string; name: string; phone?: string; email?: string; aadhaarNumber?: string; designation?: string }) => {
     setInternalSelectedClient(c);
     onChange(c.id);
     onSelectClient?.(c);
-    setSearchTerm(`${c.name}${c.phone ? ` (${c.phone})` : ""}`);
+    const aadhaarFormatted = c.aadhaarNumber ? ` [UID: ${c.aadhaarNumber.replace(/(\d{4})(?=\d)/g, "$1 ").trim()}]` : "";
+    setSearchTerm(`${c.name}${aadhaarFormatted || (c.phone ? ` (${c.phone})` : "")}`);
     setIsOpen(false);
   };
 
@@ -538,7 +562,7 @@ function SearchableClientCombobox({
               setSearchTerm("");
             }
           }}
-          placeholder="Search by client name, phone (+91...), or email..."
+          placeholder="Search by client name, 12-digit Aadhaar, phone, or email..."
           className="w-full pl-9 pr-16 py-2.5 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs font-serif font-semibold text-[#111111] dark:text-[#f3eee3] placeholder:text-[#111111]/40 dark:placeholder:text-[#f3eee3]/40 focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e] shadow-2xs"
         />
 
@@ -598,8 +622,14 @@ function SearchableClientCombobox({
                       )}
                     </div>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5 text-[11px] font-mono text-[#111111]/60 dark:text-[#f3eee3]/60">
-                      {cl.phone && (
+                      {cl.aadhaarNumber && (
                         <span className="flex items-center gap-1 text-[#d9541e] font-semibold">
+                          <ShieldCheck className="w-2.5 h-2.5" />
+                          <span>UID: {cl.aadhaarNumber.replace(/(\d{4})(?=\d)/g, "$1 ")}</span>
+                        </span>
+                      )}
+                      {cl.phone && (
+                        <span className="flex items-center gap-1">
                           <Phone className="w-2.5 h-2.5" />
                           <span>{cl.phone}</span>
                         </span>
@@ -775,50 +805,57 @@ export function AddCaseView() {
   // Quick inline add new contact modal
   const [showAddContactModal, setShowAddContactModal] = useState(false);
   const [newContactTarget, setNewContactTarget] = useState<"client" | "opponent" | "opponentLawyer">("client");
+  const [newContactAadhaar, setNewContactAadhaar] = useState("");
   const [newContactName, setNewContactName] = useState("");
   const [newContactPhone, setNewContactPhone] = useState("");
   const [newContactEmail, setNewContactEmail] = useState("");
+  const [isLookingUpAadhaar, setIsLookingUpAadhaar] = useState(false);
+  const [quickAddAadhaarError, setQuickAddAadhaarError] = useState("");
   const [matchedCrossChamberClient, setMatchedCrossChamberClient] = useState<{
     id: string;
     name: string;
     email: string;
     phone: string;
+    aadhaarNumber?: string;
     accessCode?: string;
   } | null>(null);
-  const [isLookingUpPhone, setIsLookingUpPhone] = useState(false);
 
-  const handlePhoneLookup = async (phoneStr: string) => {
-    const clean = phoneStr.replace(/\D/g, "");
-    if (clean.length !== 10) {
+  const handleAadhaarLookup = async (aadhaarStr: string) => {
+    const clean = (aadhaarStr || "").replace(/\D/g, "").slice(0, 12);
+    if (clean.length !== 12) {
       setMatchedCrossChamberClient(null);
       return;
     }
     // Check local clientUsers first
     const local = (state?.users || []).find(
-      (u) => u.role === "client" && (u.phone || "").replace(/\D/g, "").slice(-10) === clean
+      (u) => u.role === "client" && (u.aadhaarNumber || "").replace(/\D/g, "") === clean
     );
     if (local) {
       setMatchedCrossChamberClient(local as any);
       setNewContactName(local.name);
+      if (local.phone) setNewContactPhone(local.phone);
       if (local.email) setNewContactEmail(local.email);
+      setQuickAddAadhaarError("");
       return;
     }
 
     try {
-      setIsLookingUpPhone(true);
-      const res = await fetch(`/api/clients/lookup?phone=${clean}`);
+      setIsLookingUpAadhaar(true);
+      const res = await fetch(`/api/clients/lookup?aadhaar=${clean}`);
       const data = await res.json();
       if (data?.client) {
         setMatchedCrossChamberClient(data.client);
         setNewContactName(data.client.name);
+        if (data.client.phone) setNewContactPhone(data.client.phone);
         if (data.client.email) setNewContactEmail(data.client.email);
+        setQuickAddAadhaarError("");
       } else {
         setMatchedCrossChamberClient(null);
       }
     } catch (e) {
-      console.warn("Lookup failed:", e);
+      console.warn("Aadhaar lookup failed:", e);
     } finally {
-      setIsLookingUpPhone(false);
+      setIsLookingUpAadhaar(false);
     }
   };
 
@@ -990,18 +1027,22 @@ export function AddCaseView() {
     if (!newContactName.trim()) return;
 
     if (newContactTarget === "client") {
-      if (!newContactPhone.trim() || newContactPhone.trim().length !== 10) {
-        addToast("Please enter a valid 10-digit mobile number for litigant contact", "error");
+      const cleanAadhaar = newContactAadhaar.replace(/\D/g, "").slice(0, 12);
+      if (!cleanAadhaar || cleanAadhaar.length !== 12) {
+        setQuickAddAadhaarError("Aadhaar Number is super mandatory. Please provide exactly 12 digits.");
+        addToast("Aadhaar Number is super mandatory. Please provide exactly 12 digits.", "error");
         return;
       }
 
       if (matchedCrossChamberClient) {
         setClientId(matchedCrossChamberClient.id);
         addToast(`Existing Litigant Profile ${matchedCrossChamberClient.name} linked to this matter across chambers.`, "success");
+        setNewContactAadhaar("");
         setNewContactName("");
         setNewContactPhone("");
         setNewContactEmail("");
         setMatchedCrossChamberClient(null);
+        setQuickAddAadhaarError("");
         setShowAddContactModal(false);
         return;
       }
@@ -1010,9 +1051,10 @@ export function AddCaseView() {
       const newClientUser = {
         id: newUserId,
         name: newContactName.trim(),
+        aadhaarNumber: cleanAadhaar,
         email: newContactEmail.trim() || "",
         role: "client" as const,
-        phone: newContactPhone.trim(),
+        phone: newContactPhone.trim() || "",
         lawyerId: chamberLawyerId,
       };
 
@@ -1027,9 +1069,11 @@ export function AddCaseView() {
       addToast(`Opponent advocate recorded as ${newContactName}`, "info");
     }
 
+    setNewContactAadhaar("");
     setNewContactName("");
     setNewContactPhone("");
     setNewContactEmail("");
+    setQuickAddAadhaarError("");
     setShowAddContactModal(false);
   };
 
@@ -2408,46 +2452,71 @@ export function AddCaseView() {
             <form onSubmit={handleSaveQuickContact} className="space-y-3.5 text-xs font-serif">
               {newContactTarget === "client" ? (
                 <>
+                  {/* Super Mandatory Aadhaar Field */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80">
-                        Contact Mobile Phone <span className="text-[#d9541e]">*</span>
+                        Aadhaar Number <span className="text-[#d9541e] font-bold">* (Super Mandatory)</span>
                       </label>
                       <span className="text-[10px] text-[#d9541e] font-serif italic">
-                        Type 10 digits to autofill
+                        12-Digit Litigant Unique Key
                       </span>
                     </div>
-                    <input
-                      type="tel"
-                      required
-                      autoFocus
-                      maxLength={10}
-                      placeholder="10-digit mobile number"
-                      value={newContactPhone}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, "").slice(0, 10);
-                        setNewContactPhone(val);
-                        handlePhoneLookup(val);
-                      }}
-                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
-                    />
-                    {isLookingUpPhone && (
-                      <p className="text-[10px] text-amber-600 dark:text-amber-400 font-serif italic mt-1 animate-pulse">
-                        Checking LexDaily universal litigant database...
+                    <div className="relative">
+                      <input
+                        type="text"
+                        required
+                        autoFocus
+                        maxLength={14}
+                        placeholder="XXXX XXXX XXXX"
+                        value={newContactAadhaar}
+                        onChange={(e) => {
+                          const formatted = formatAadhaar(e.target.value);
+                          setNewContactAadhaar(formatted);
+                          const clean = formatted.replace(/\D/g, "");
+                          if (clean.length === 12) {
+                            handleAadhaarLookup(clean);
+                            setQuickAddAadhaarError("");
+                          } else {
+                            if (matchedCrossChamberClient) setMatchedCrossChamberClient(null);
+                            if (clean.length > 0 && clean.length < 12) {
+                              setQuickAddAadhaarError("Aadhaar must be exactly 12 digits");
+                            } else {
+                              setQuickAddAadhaarError("");
+                            }
+                          }
+                        }}
+                        onBlur={() => {
+                          const clean = newContactAadhaar.replace(/\D/g, "").slice(0, 12);
+                          if (clean.length === 12) handleAadhaarLookup(clean);
+                        }}
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#d9541e]/50 dark:border-[#d9541e]/60 bg-white dark:bg-[#1e1c19] text-xs font-mono font-bold tracking-widest text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e] focus:ring-1 focus:ring-[#d9541e]"
+                      />
+                      {isLookingUpAadhaar && (
+                        <p className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-amber-600 dark:text-amber-400 font-serif italic animate-pulse">
+                          Checking universal database...
+                        </p>
+                      )}
+                    </div>
+                    {quickAddAadhaarError && (
+                      <p className="text-[10px] text-rose-600 dark:text-rose-400 mt-1 font-serif">
+                        {quickAddAadhaarError}
                       </p>
                     )}
                     {matchedCrossChamberClient && (
                       <div className="mt-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-[11px] text-emerald-900 dark:text-emerald-200 font-serif">
-                        <p className="font-bold font-cinzel text-emerald-800 dark:text-emerald-300">
-                          ✓ Existing Litigant Profile Detected across Chambers
+                        <p className="font-bold font-cinzel text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          <span>✓ Existing Litigant Profile Detected across Chambers</span>
                         </p>
                         <p className="text-[10.5px] mt-0.5">
-                          {matchedCrossChamberClient.name} is already registered in LexDaily. Full client details autofilled automatically. Their single universal login password will link all cases.
+                          <strong>{matchedCrossChamberClient.name}</strong> is already registered in LexDaily. Full client particulars autofilled automatically. Their single universal login passcode will link all matters.
                         </p>
                       </div>
                     )}
                   </div>
 
+                  {/* Mandatory Name */}
                   <div>
                     <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
                       Full Client Name <span className="text-[#d9541e]">*</span>
@@ -2462,20 +2531,34 @@ export function AddCaseView() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
-                      Email Address <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Optional)</span>
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="litigant@chamber.in (Optional for case intake)"
-                      value={newContactEmail}
-                      onChange={(e) => setNewContactEmail(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
-                    />
-                    <p className="text-[10px] font-serif italic text-[#111111]/50 dark:text-[#f3eee3]/50 mt-1">
-                      Email is optional while entering client details for a case. You can add it later via Edit Client in the Client Register when granting portal login.
-                    </p>
+                  {/* Recommended Mobile Phone & Optional Email */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
+                        Mobile Phone <span className="font-sans font-normal text-[#111111]/60 dark:text-[#f3eee3]/60">(Recommended)</span>
+                      </label>
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        placeholder="10-digit mobile number"
+                        value={newContactPhone}
+                        onChange={(e) => setNewContactPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-cinzel font-semibold text-[#111111]/80 dark:text-[#f3eee3]/80 mb-1">
+                        Email Address <span className="font-sans font-normal text-[#111111]/45 dark:text-[#f3eee3]/45">(Optional)</span>
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="client@chambers.in (Optional)"
+                        value={newContactEmail}
+                        onChange={(e) => setNewContactEmail(e.target.value)}
+                        className="w-full px-3.5 py-2 rounded-xl border border-[#111111]/15 dark:border-[#f3eee3]/20 bg-white dark:bg-[#1e1c19] text-xs text-[#111111] dark:text-[#f3eee3] focus:outline-none focus:border-[#d9541e]"
+                      />
+                    </div>
                   </div>
                 </>
               ) : (
