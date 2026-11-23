@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { applyOp, getChamberState, recordSystemErrorLog } from "@/lib/dataService";
 import { getAuthUser } from "@/lib/auth";
+import { triggerSitemapRegeneration } from "@/lib/sitemap-generator";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,9 @@ export async function POST(req: NextRequest) {
     for (const op of ops) {
       await applyOp(op, authorId);
     }
+
+    // Auto-update sitemap if matters/cases were altered
+    triggerSitemapRegeneration();
 
     const state = await getChamberState({
       id: authorId,
